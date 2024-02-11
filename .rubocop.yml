@@ -1,0 +1,16 @@
+require:
+  - rubocop-rails
+  - rubocop-capybara
+
+AllCops:
+  NewCops: enable
+
+Style/Documentation:
+  Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Metrics:
+  Exclude:
+    - 'bin/**'
