@@ -1,62 +1,49 @@
-# syntax = docker/dockerfile:1
+FROM ruby:3.3.0
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.3.0
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+# Tell Rails this is a production environment
+ENV RAILS_ENV='production' \
+    PORT='80' \
+    BUNDLE_DEPLOYMENT='1' \
+    BUNDLE_WITHOUT='development test'
 
-# Rails app lives here
-WORKDIR /rails
+# Enforce the use of TLS to encrypt HTTP connections
+ENV ENABLE_TLS='true'
 
-# Set production environment
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+# Install binary package dependencies
+COPY config/docker/scripts/install-deps.sh /tmp/install-deps.sh
+RUN bash /tmp/install-deps.sh
 
+# Run and own only the runtime files as a non-root user for security
+RUN groupadd rails && \
+    useradd --system --create-home --shell /bin/bash --gid rails rails && \
+    mkdir /app && \
+    chown -R rails:rails /app
 
-# Throw-away build stage to reduce size of final image
-FROM base as build
+# Switch to the newly-created user and app directory
+USER rails:rails
+WORKDIR /app
 
-# Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git pkg-config
+# Install dependencies in an intermediate step,
+# to allow caching the image.
+COPY --chown=rails:rails Gemfile Gemfile.lock ./
 
-# Install application gems
-COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
-    bundle exec bootsnap precompile --gemfile
+RUN bundle install
+# Precompile gem code for faster boot times
+RUN bundle exec bootsnap precompile --gemfile
 
-# Copy application code
-COPY . .
+# Copy the rest of the source files
+COPY --chown=rails:rails . /app
 
-# Precompile bootsnap code for faster boot times
+# Precompile app code
 RUN bundle exec bootsnap precompile app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN RAILS_PRECOMPILE_ASSETS=1 SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-
-# Final stage for app image
-FROM base
-
-# Install packages needed for deployment
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libsqlite3-0 && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-# Copy built artifacts: gems, application
-COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build /rails /rails
-
-# Run and own only the runtime files as a non-root user for security
-RUN useradd rails --create-pages --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
-USER rails:rails
+EXPOSE 80
+EXPOSE 443
 
 # Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+ENTRYPOINT ["/app/bin/docker-entrypoint"]
 
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
 CMD ["./bin/rails", "server"]

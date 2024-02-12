@@ -6,6 +6,9 @@
 # Ignore bundler config.
 /.bundle
 
+# Ignore Docker compose files.
+/compose*.yaml
+
 # Ignore all environment files (except templates).
 /.env*
 !/.env*.erb
