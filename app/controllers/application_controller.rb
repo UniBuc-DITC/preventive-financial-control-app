@@ -17,4 +17,11 @@ class ApplicationController < ActionController::Base
     flash[:alert] = 'Trebuie să fii autentificat pentru a putea folosi aplicația.'
     redirect_to root_path
   end
+
+  def require_admin
+    return if session[:current_user_role] == 'admin'
+
+    flash[:alert] = 'Trebuie să fii administrator pentru a putea accesa această pagină.'
+    redirect_back_or_to root_path
+  end
 end

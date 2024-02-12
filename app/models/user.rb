@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  ROLES = %i[employee supervisor admin].freeze
+  ROLES = %w[employee supervisor admin].freeze
 
   enum role: ROLES.zip(ROLES).to_h
 

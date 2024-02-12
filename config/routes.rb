@@ -13,9 +13,11 @@ Rails.application.routes.draw do
   get '/auth/:provider/callback', to: 'sessions#create'
   post '/auth/sign_out', to: 'sessions#destroy', as: :sign_out
 
-  resources :expenditures, except: [:destroy]
+  resources :users, only: %i[index new create]
 
-  resources :commitments, except: [:destroy]
+  resources :expenditures, only: %i[index new create]
+
+  resources :commitments, only: %i[index new create]
 
   resources :audit_events, only: [:index]
 end

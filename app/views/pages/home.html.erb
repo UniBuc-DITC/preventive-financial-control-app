@@ -21,6 +21,7 @@
     <li>Categorii de proiect</li>
     <li>Articole de cheltuială</li>
     <li>Modalități de plată</li>
+    <li><%= link_to 'Utilizatori', users_path %></li>
     <li><%= link_to 'Istoric activități', audit_events_path %></li>
   </ul>
   <%= bootstrap_form_with url: sign_out_path, method: :post, data: { turbo: false } do %>

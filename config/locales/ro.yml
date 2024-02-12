@@ -5,6 +5,8 @@ ro:
         required: "nu poate fi gol"
         present: "nu trebuie să fie setat"
     attributes:
+      user:
+        entra_user_id: "ID în Microsoft Entra"
       expenditure:
         year: "Anul înregistrării"
         registration_number: "Număr de înregistrare"

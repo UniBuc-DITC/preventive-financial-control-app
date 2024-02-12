@@ -1,0 +1,32 @@
+<h1>Adaugă un utilizator nou</h1>
+
+<p><%= link_to 'Înapoi la lista de utilizatori', users_path %></p>
+
+<% if flash.notice %>
+  <p class="alert alert-primary">
+    <%= flash.notice %>
+  </p>
+<% end %>
+
+<% if flash.alert %>
+  <p class="alert alert-danger">
+    <%= flash.alert %>
+  </p>
+<% end %>
+
+<%= bootstrap_form_for @user do |f| %>
+  <%= f.alert_message 'Vă rog să rezolvați erorile de mai jos:' %>
+
+  <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+    <%= f.text_field :entra_user_id %>
+
+    <%= f.select :role,
+                 User.roles.keys.map { |role|
+                   [role, role]
+                 },
+                 { include_blank: 'Selectează rolul utilizatorului...' }
+    %>
+
+    <%= f.submit 'Adaugă' %>
+  </div>
+<% end %>
