@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_11_182055) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_12_120315) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "audit_events", force: :cascade do |t|
+    t.datetime "timestamp", precision: nil, null: false
+    t.bigint "user_id", null: false
+    t.integer "action", null: false
+    t.integer "target_table", null: false
+    t.text "target_object_id", null: false
+    t.index ["user_id"], name: "index_audit_events_on_user_id"
+  end
 
   create_table "commitments", force: :cascade do |t|
     t.integer "year", null: false
@@ -30,6 +39,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_11_182055) do
     t.bigint "updated_by_user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "registration_date", default: -> { "CURRENT_DATE" }, null: false
     t.index ["created_by_user_id"], name: "index_commitments_on_created_by_user_id"
     t.index ["expenditure_article_id"], name: "index_commitments_on_expenditure_article_id"
     t.index ["financing_source_id"], name: "index_commitments_on_financing_source_id"
@@ -114,6 +124,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_11_182055) do
     t.index ["entra_user_id"], name: "index_users_on_entra_user_id", unique: true
   end
 
+  add_foreign_key "audit_events", "users"
   add_foreign_key "commitments", "expenditure_articles"
   add_foreign_key "commitments", "financing_sources"
   add_foreign_key "commitments", "users", column: "created_by_user_id"

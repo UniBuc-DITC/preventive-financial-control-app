@@ -16,4 +16,6 @@ Rails.application.routes.draw do
   resources :expenditures, except: [:destroy]
 
   resources :commitments, except: [:destroy]
+
+  resources :audit_events, only: [:index]
 end

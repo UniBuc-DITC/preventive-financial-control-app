@@ -1,0 +1,41 @@
+<h1>Istoric activități</h1>
+
+<p><%= link_to 'Înapoi la pagina principală', root_path %></p>
+
+<div class="table-responsive">
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Data și timpul</th>
+      <th scope="col">Utilizatorul</th>
+      <th scope="col">Activitatea</th>
+      <th scope="col">Tabelul țintă</th>
+      <th scope="col">ID obiect țintă</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @paginated_audit_events.each do |audit_event| %>
+      <tr>
+        <th scope="row"><%= audit_event.id %></th>
+        <td><%= audit_event.timestamp.strftime('%d.%m.%Y %H:%M:%S %Z') %></td>
+        <td><%= audit_event.user.full_name %></td>
+        <td><%= audit_event.action %></td>
+        <td><%= audit_event.target_table %></td>
+        <td><%= audit_event.target_object_id %></td>
+      </tr>
+    <% end %>
+    </tbody>
+    <tfoot>
+    <% if @audit_events.empty? %>
+      <tr>
+        <td colspan="17" class="ps-5 py-3">
+          Nu a fost înregistrată încă nicio activitate.
+        </td>
+      </tr>
+    <% end %>
+    </tfoot>
+  </table>
+</div>
+
+<%= will_paginate @paginated_audit_events, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>

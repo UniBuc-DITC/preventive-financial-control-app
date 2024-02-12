@@ -45,6 +45,16 @@ class ExpendituresController < ApplicationController
       @expenditure.registration_number = last_registration_number + 1
 
       successfully_saved = @expenditure.save
+
+      if successfully_saved
+        AuditEvent.create!(
+          timestamp: DateTime.now,
+          user: current_user,
+          action: :insert,
+          target_table: :expenditures,
+          target_object_id: "#{@expenditure.registration_number}/#{@expenditure.year}",
+        )
+      end
     end
 
     if successfully_saved

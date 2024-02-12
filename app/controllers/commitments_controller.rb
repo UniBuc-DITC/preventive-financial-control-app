@@ -54,6 +54,16 @@ class CommitmentsController < ApplicationController
       @commitment.registration_number = last_registration_number + 1
 
       successfully_saved = @commitment.save
+
+      if successfully_saved
+        AuditEvent.create!(
+          timestamp: DateTime.now,
+          user: current_user,
+          action: :insert,
+          target_table: :commitments,
+          target_object_id: "#{@commitment.registration_number}/#{@commitment.year}",
+        )
+      end
     end
 
     if successfully_saved
