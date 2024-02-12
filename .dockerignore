@@ -13,6 +13,9 @@
 /.env*
 !/.env*.erb
 
+# Ignore certificate files.
+/*.pem
+
 # Ignore all default key files.
 /config/master.key
 /config/credentials/*.key

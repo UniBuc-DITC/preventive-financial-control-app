@@ -22,12 +22,14 @@ services:
       DATABASE_PASSWORD:
       # Master key for decrypting credentials file
       RAILS_MASTER_KEY:
+      # Enforce the use of TLS to encrypt HTTP connections
+      ENABLE_TLS: true
       # Paths to TLS certificate and private key
       TLS_CERTIFICATE_PATH: "/app/cert.pem"
       TLS_KEY_PATH: "/app/key.pem"
     ports:
-      - "80:80"
-      - "443:443"
+      - "80:3000"
+      - "443:3001"
     volumes:
       - "./cert.pem:/app/cert.pem:ro"
       - "./key.pem:/app/key.pem:ro"

@@ -2,12 +2,8 @@ FROM ruby:3.3.0
 
 # Tell Rails this is a production environment
 ENV RAILS_ENV='production' \
-    PORT='80' \
     BUNDLE_DEPLOYMENT='1' \
     BUNDLE_WITHOUT='development test'
-
-# Enforce the use of TLS to encrypt HTTP connections
-ENV ENABLE_TLS='true'
 
 # Install binary package dependencies
 COPY config/docker/scripts/install-deps.sh /tmp/install-deps.sh
@@ -40,8 +36,8 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN RAILS_PRECOMPILE_ASSETS=1 SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-EXPOSE 80
-EXPOSE 443
+EXPOSE 3000
+EXPOSE 3001
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/app/bin/docker-entrypoint"]

@@ -11,6 +11,9 @@
 /.env*
 !/.env*.erb
 
+# Ignore certificate files.
+/*.pem
+
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*

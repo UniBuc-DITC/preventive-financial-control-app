@@ -13,6 +13,8 @@ Rails.application.config.assets.version = '1.0'
 # folder are already added.
 Rails.application.config.assets.precompile += %w[jquery3.min.js bootstrap.min.js popper.js]
 
+Rails.application.config.assets.precompile << 'rails_bootstrap_forms.css'
+
 Rails.application.config.assets.precompile += %w[select2.min.js select2.css]
 
 Rails.application.config.assets.precompile += %w[
