@@ -6,6 +6,8 @@ ruby '3.3.0'
 
 gem 'rails', '~> 7.1.3'
 
+gem 'rails-i18n', '~> 7.0.0'
+
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'
 
@@ -33,9 +35,37 @@ gem 'tzinfo-data', platforms: %i[windows jruby]
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
+# Sass language support
+gem 'dartsass-sprockets'
+
+# JQuery library
+gem 'jquery-rails'
+
+# Bootstrap 5 UI library
+gem 'bootstrap', '~> 5.3.2'
+
+# Make Rails form elements use Bootstrap
+gem 'bootstrap_form', '~> 5.4'
+
+# Helper for querying the Microsoft Graph API
+gem 'microsoft_graph', '>= 0.22'
+
+# Authentication support
+gem 'omniauth'
+gem 'omniauth-rails_csrf_protection'
+# Required for authenticating against the Microsoft Identity platform
+gem 'omniauth-oauth2'
+
+# Pagination support
+gem 'will_paginate', '~> 4.0'
+gem 'will_paginate-bootstrap-style'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri windows]
+
+  # Factory Bot makes it easy to create new objects with fake data
+  gem 'factory_bot_rails'
 end
 
 group :development do

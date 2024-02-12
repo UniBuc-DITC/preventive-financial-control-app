@@ -9,6 +9,13 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.paths << Emoji.images_path
 
 # Precompile additional assets.
-# application.js, application.css, and all non-JS/CSS in the app/assets
+# application.js, application.scss, and all non-JS/CSS in the app/assets
 # folder are already added.
-# Rails.application.config.assets.precompile += %w( admin.js admin.css )
+Rails.application.config.assets.precompile += %w[jquery3.min.js bootstrap.min.js popper.js]
+
+Rails.application.config.assets.precompile += %w[select2.min.js select2.css]
+
+Rails.application.config.assets.precompile += %w[
+  vanillajs-datepicker.min.js
+  vanillajs-datepicker-bs5.min.css
+]

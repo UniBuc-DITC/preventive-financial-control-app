@@ -29,7 +29,10 @@ module PreventiveFinancialControlApp
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
 
-    config.time_zone = 'Bucharest'
+    config.i18n.available_locales = %i[ro]
+    config.i18n.default_locale = :ro
+
+    config.time_zone = 'Europe/Bucharest'
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

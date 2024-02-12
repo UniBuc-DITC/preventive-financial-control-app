@@ -45,6 +45,26 @@ sudo apt install libpq-dev
 
 Once you have Ruby and Node.js on your machine, you can install the package dependencies by running `bundle install` in the project's root directory.
 
+### Configuring API credentials
+
+The app relies on [Microsoft Entra ID](https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id) for authentication. You will have to [create an app registration](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app) on the Microsoft identity platform to be able to sign in.
+
+You can edit the (encrypted) credentials file by running:
+
+```shell
+rails credentials:edit
+```
+
+then add a section with the following structure:
+
+```yaml
+# Credentials for Microsoft Entra ID
+microsoft_identity_platform:
+  tenant_id: <tenant ID>
+  client_id: <client ID>
+  client_secret: <client secret>
+```
+
 ### Starting the database
 
 The app needs to connect to a [PostgreSQL](https://www.postgresql.org/) instance to use as a database.

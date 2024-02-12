@@ -1,0 +1,40 @@
+<h1>Bază de date Control Financiar Preventiv</h1>
+
+<% if flash.notice %>
+  <p>
+    <%= flash.notice %>
+  </p>
+<% end %>
+
+<% if flash.alert %>
+  <p>
+    <%= flash.alert %>
+  </p>
+<% end %>
+
+<% if session.has_key? :current_user_id %>
+  <p>Bună, <%= session[:current_user_full_name] %>!</p>
+  <ul>
+    <li><%= link_to 'Cheltuieli', expenditures_path %></li>
+    <li><%= link_to 'Angajamente', commitments_path %></li>
+    <li>Surse de finanțare</li>
+    <li>Categorii de proiect</li>
+    <li>Articole de cheltuială</li>
+    <li>Modalități de plată</li>
+    <li>Istoric activități</li>
+  </ul>
+  <%= bootstrap_form_with url: sign_out_path, method: :post, data: { turbo: false } do %>
+    <%= submit_tag 'Deconectare', class: 'btn btn-secondary' %>
+  <% end %>
+<% else %>
+  <p>Bine ați venit. Pentru a accesa aplicația, conectați-vă în
+    cont.</p>
+  <p>
+    <%= bootstrap_form_with url: '/auth/microsoft_identity_platform', method: :post, data: { turbo: false } do %>
+      <button type="submit" class="btn btn-primary">
+        <%= image_tag 'microsoft-logo.svg', width: 16, height: 16 %>
+        <span>Autentificare folosind contul instituțional de Microsoft 365</span>
+      </button>
+    <% end %>
+  </p>
+<% end %>

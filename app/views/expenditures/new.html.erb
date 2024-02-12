@@ -1,0 +1,17 @@
+<h1>Adaugă o cheltuială nouă</h1>
+
+<p><%= link_to 'Înapoi la registrul de cheltuieli', expenditures_path %></p>
+
+<% if flash.notice %>
+  <p class="alert alert-primary">
+    <%= flash.notice %>
+  </p>
+<% end %>
+
+<% if flash.alert %>
+  <p class="alert alert-danger">
+    <%= flash.alert %>
+  </p>
+<% end %>
+
+<%= render partial: 'form' %>

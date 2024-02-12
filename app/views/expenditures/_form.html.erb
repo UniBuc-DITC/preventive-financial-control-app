@@ -1,0 +1,73 @@
+<%= bootstrap_form_for @expenditure do |f| %>
+  <%= f.alert_message 'Vă rog să rezolvați erorile de mai jos:' %>
+
+  <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+    <%= f.number_field :year, disabled: true %>
+
+    <%= f.text_field :registration_date,
+                     # TODO: come up with a better way to handle date formatting
+                     value: f.object.registration_date&.strftime('%d.%m.%Y'),
+                     data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
+
+    <%= f.select :financing_source_id,
+                 FinancingSource.order(:name).map { |financing_source|
+                   [financing_source.name, financing_source.id]
+                 },
+                 { include_blank: 'Selectează o sursă de finanțare...' },
+                 { data: { use_select2: true } }
+    %>
+
+    <%= f.select :project_category_id,
+                 ProjectCategory.order(:name).map { |project_category|
+                   [project_category.name, project_category.id]
+                 },
+                 { include_blank: 'Selectează o categorie de proiect...' },
+                 {
+                   disabled: true,
+                   data: {
+                     enable_for_financing_source_id: FinancingSource.find_by!(name: 'Cercetare').id,
+                     use_select2: true
+                   }
+                 }
+    %>
+
+    <%= f.select :expenditure_article_id,
+                 ExpenditureArticle.order(:code).map { |expenditure_article|
+                   ["#{expenditure_article.code} - #{expenditure_article.name}", expenditure_article.id]
+                 },
+                 { include_blank: 'Selectează articolul de cheltuială...' },
+                 { data: { use_select2: true } }
+    %>
+
+    <%= f.text_area :details %>
+
+    <%= f.text_field :procurement_type %>
+
+    <%= f.text_field :ordinance_number %>
+    <%= f.text_field :ordinance_date,
+                     value: f.object.ordinance_date&.strftime('%d.%m.%Y'),
+                     data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
+
+    <%= f.number_field :value, step: '0.01' %>
+
+    <%= f.select :payment_method_id,
+                 PaymentMethod.order(:name).map { |payment_method|
+                   [payment_method.name, payment_method.id]
+                 },
+                 { include_blank: 'Selectează modalitatea de plată...' },
+                 { data: { use_select2: true } }
+    %>
+
+    <%= f.text_field :beneficiary %>
+
+    <%= f.text_field :invoice %>
+
+    <%= f.text_area :noncompliance %>
+
+    <%= f.text_area :remarks %>
+
+    <%= f.text_field :created_by_user, value: f.object.created_by_user.full_name, disabled: true %>
+
+    <%= f.submit 'Adaugă' %>
+  </div>
+<% end %>

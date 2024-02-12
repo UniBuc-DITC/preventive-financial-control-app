@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Preventive Financial Control App</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<html lang="<%= I18n.locale %>">
+<head>
+  <title>Aplicație CFP</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
-  </head>
+  <%= stylesheet_link_tag 'application', data: { turbo_track: 'reload' } %>
+  <%= javascript_importmap_tags %>
+</head>
 
-  <body>
-    <%= yield %>
-  </body>
+<body>
+<main class="mt-5 container">
+  <%= yield %>
+</main>
+</body>
 </html>
