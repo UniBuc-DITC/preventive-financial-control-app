@@ -10,6 +10,8 @@ class Expenditure < ApplicationRecord
   }
   validates :ordinance_number, :ordinance_date, :value, :beneficiary, presence: true
 
+  validate :ordinance_date_before_registration_date
+
   belongs_to :financing_source
   belongs_to :project_category, optional: true
   belongs_to :expenditure_article
@@ -17,4 +19,13 @@ class Expenditure < ApplicationRecord
 
   belongs_to :created_by_user, class_name: 'User'
   belongs_to :updated_by_user, class_name: 'User'
+
+  private
+
+  def ordinance_date_before_registration_date
+    return unless registration_date.present? && ordinance_date.present?
+    return if ordinance_date <= registration_date
+
+    errors.add(:registration_date, 'nu poate fi înainte de data ordonanțării')
+  end
 end
