@@ -1,0 +1,10 @@
+<%= bootstrap_form_for @expenditure_article do |f| %>
+  <%= f.alert_message 'Vă rog să rezolvați erorile de mai jos:' %>
+
+  <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+    <%= f.text_field :code %>
+    <%= f.text_field :name %>
+
+    <%= f.submit f.object.persisted? ? 'Salvează' : 'Adaugă' %>
+  </div>
+<% end %>

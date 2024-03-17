@@ -1,0 +1,39 @@
+<h1>Categorii de proiecte</h1>
+
+<% can_modify_project_categories = current_user.supervisor? || current_user.admin? %>
+
+<p><%= link_to 'Înapoi la pagina principală', root_path %></p>
+<% if can_modify_project_categories %>
+  <p><%= link_to 'Adaugă o categorie de proiect nouă', new_project_category_path %></p>
+<% end %>
+
+<%= render partial: 'flashes' %>
+
+<div class="table-responsive">
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Denumire</th>
+      <% if can_modify_project_categories %>
+        <th scope="col">Acțiuni</th>
+      <% end %>
+    </tr>
+    </thead>
+    <tbody>
+    <% @project_categories.each do |project_category| %>
+      <tr>
+        <td><%= project_category.id %></td>
+        <td><%= project_category.name %></td>
+        <% if can_modify_project_categories %>
+          <td>
+            <%= link_to 'Editează', edit_project_category_path(project_category.id) %>
+            <%= link_to 'Șterge', project_category_path(project_category.id), method: :delete,
+                        data: { confirm: 'Ești sigur că vrei să ștergi această categorie de proiect?' } %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,25 +1,15 @@
 <h1>Bază de date Control Financiar Preventiv</h1>
 
-<% if flash.notice %>
-  <p class="alert alert-primary">
-    <%= flash.notice %>
-  </p>
-<% end %>
-
-<% if flash.alert %>
-  <p class="alert alert-danger">
-    <%= flash.alert %>
-  </p>
-<% end %>
+<%= render partial: 'flashes' %>
 
 <% if session.has_key? :current_user_id %>
   <p>Bună, <%= session[:current_user_full_name] %>!</p>
   <ul>
     <li><%= link_to 'Cheltuieli', expenditures_path %></li>
     <li><%= link_to 'Angajamente', commitments_path %></li>
-    <li>Surse de finanțare</li>
-    <li>Categorii de proiect</li>
-    <li>Articole de cheltuială</li>
+    <li><%= link_to 'Surse de finanțare', financing_sources_path %></li>
+    <li><%= link_to 'Categorii de proiect', project_categories_path %></li>
+    <li><%= link_to 'Articole de cheltuială', expenditure_articles_path %></li>
     <li>Modalități de plată</li>
     <li><%= link_to 'Utilizatori', users_path %></li>
     <li><%= link_to 'Istoric activități', audit_events_path %></li>

@@ -1,0 +1,11 @@
+<h1>Importă cheltuieli</h1>
+
+<p><%= link_to 'Înapoi la registrul de cheltuieli', expenditures_path %></p>
+
+<%= render partial: 'flashes' %>
+
+<%= bootstrap_form_with url: import_upload_expenditures_path, method: :post do |form| %>
+  <%= form.file_field :file, accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' %>
+
+  <%= form.submit 'Importă' %>
+<% end %>

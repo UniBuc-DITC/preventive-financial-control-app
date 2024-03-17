@@ -4,9 +4,18 @@ ro:
       messages:
         required: "nu poate fi gol"
         present: "nu trebuie să fie setat"
+        restrict_dependent_destroy:
+          has_many: "nu se poate șterge un obiect cât încă are entități asociate"
     attributes:
       user:
         entra_user_id: "ID în Microsoft Entra"
+      financing_source:
+        name: "Denumire"
+      project_category:
+        name: "Denumire"
+      expenditure_article:
+        code: "Cod"
+        name: "Denumire"
       expenditure:
         year: "Anul înregistrării"
         registration_number: "Număr de înregistrare"
@@ -15,6 +24,7 @@ ro:
         financing_source_id: "Sursă de finanțare"
         project_category: "Categorie de proiect"
         project_category_id: "Categorie de proiect"
+        project_details: "Detalii proiect"
         expenditure_article: "Articol de cheltuială"
         expenditure_article_id: "Articol de cheltuială"
         details: "Detalii"

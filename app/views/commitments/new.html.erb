@@ -2,17 +2,7 @@
 
 <p><%= link_to 'Înapoi la registrul de angajamente', commitments_path %></p>
 
-<% if flash.notice %>
-  <p class="alert alert-primary">
-    <%= flash.notice %>
-  </p>
-<% end %>
-
-<% if flash.alert %>
-  <p class="alert alert-danger">
-    <%= flash.alert %>
-  </p>
-<% end %>
+<%= render partial: 'flashes' %>
 
 <% if @source_expenditure.present? %>
   <p class="alert alert-info">

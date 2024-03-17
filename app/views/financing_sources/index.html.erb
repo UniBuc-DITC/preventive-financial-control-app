@@ -1,0 +1,39 @@
+<h1>Surse de finanțare (centre de cost)</h1>
+
+<% can_modify_financing_sources = current_user.supervisor? || current_user.admin? %>
+
+<p><%= link_to 'Înapoi la pagina principală', root_path %></p>
+<% if can_modify_financing_sources %>
+  <p><%= link_to 'Adaugă o sursă de finanțare nouă', new_financing_source_path %></p>
+<% end %>
+
+<%= render partial: 'flashes' %>
+
+<div class="table-responsive">
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Denumire</th>
+      <% if can_modify_financing_sources %>
+        <th scope="col">Acțiuni</th>
+      <% end %>
+    </tr>
+    </thead>
+    <tbody>
+    <% @financing_sources.each do |financing_source| %>
+      <tr>
+        <td><%= financing_source.id %></td>
+        <td><%= financing_source.name %></td>
+        <% if can_modify_financing_sources %>
+          <td>
+            <%= link_to 'Editează', edit_financing_source_path(financing_source.id) %>
+            <%= link_to 'Șterge', financing_source_path(financing_source.id), method: :delete,
+                        data: { confirm: 'Ești sigur că vrei să ștergi această sursă de finanțare?' } %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

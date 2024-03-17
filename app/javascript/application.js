@@ -3,6 +3,7 @@ import "@hotwired/turbo-rails";
 import "controllers";
 
 import "jquery";
+import "@rails/ujs";
 
 import "@popperjs/core";
 import "bootstrap";
@@ -73,21 +74,23 @@ document.documentElement.addEventListener("turbo:load", () => {
     });
   });
 
-  $("select#expenditure_financing_source_id").on(
-    "select2:select",
-    function (e) {
-      const projectCategorySelect = $("select#expenditure_project_category_id");
-
-      const selectedFinancingSourceId = e.target.value;
-      const desiredFinancingSourceId = projectCategorySelect
-        .data("enable-for-financing-source-id")
-        .toString();
-
-      if (desiredFinancingSourceId === selectedFinancingSourceId) {
-        projectCategorySelect.prop("disabled", false);
-      } else {
-        projectCategorySelect.prop("disabled", true);
-      }
-    },
-  );
+  // We used to allow the selection of projects only for expenditures associated to "Research" financing sources,
+  // but this is not the case anymore.
+  // $("select#expenditure_financing_source_id").on(
+  //   "select2:select",
+  //   function (e) {
+  //     const projectCategorySelect = $("select#expenditure_project_category_id");
+  //
+  //     const selectedFinancingSourceId = e.target.value;
+  //     const desiredFinancingSourceId = projectCategorySelect
+  //       .data("enable-for-financing-source-id")
+  //       .toString();
+  //
+  //     if (desiredFinancingSourceId === selectedFinancingSourceId) {
+  //       projectCategorySelect.prop("disabled", false);
+  //     } else {
+  //       projectCategorySelect.prop("disabled", true);
+  //     }
+  //   },
+  // );
 });

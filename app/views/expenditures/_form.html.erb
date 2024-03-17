@@ -22,14 +22,10 @@
                    [project_category.name, project_category.id]
                  },
                  { include_blank: 'Selectează o categorie de proiect...' },
-                 {
-                   disabled: true,
-                   data: {
-                     enable_for_financing_source_id: FinancingSource.find_by!(name: 'Cercetare').id,
-                     use_select2: true
-                   }
-                 }
+                 { data: { use_select2: true } }
     %>
+
+    <%= f.text_field :project_details %>
 
     <%= f.select :expenditure_article_id,
                  ExpenditureArticle.order(:code).map { |expenditure_article|
@@ -68,6 +64,6 @@
 
     <%= f.text_field :created_by_user, value: f.object.created_by_user.full_name, disabled: true %>
 
-    <%= f.submit 'Adaugă' %>
+    <%= f.submit f.object.persisted? ? 'Salvează' : 'Adaugă' %>
   </div>
 <% end %>

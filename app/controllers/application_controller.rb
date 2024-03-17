@@ -3,6 +3,8 @@
 class ApplicationController < ActionController::Base
   before_action :require_login
 
+  helper_method :current_user
+
   protected
 
   def current_user
@@ -22,6 +24,13 @@ class ApplicationController < ActionController::Base
     return if session[:current_user_role] == 'admin'
 
     flash[:alert] = 'Trebuie să fii administrator pentru a putea accesa această pagină.'
+    redirect_back_or_to root_path
+  end
+
+  def require_supervisor_or_admin
+    return if session[:current_user_role] == 'supervisor' or session[:current_user_role] == 'admin'
+
+    flash[:alert] = 'Trebuie să fii șef de birou sau administrator de aplicație pentru a putea accesa această pagină.'
     redirect_back_or_to root_path
   end
 end

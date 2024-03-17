@@ -15,7 +15,16 @@ Rails.application.routes.draw do
 
   resources :users, only: %i[index new create]
 
-  resources :expenditures, only: %i[index new create]
+  resources :financing_sources
+
+  resources :project_categories
+
+  resources :expenditure_articles
+
+  resources :expenditures, only: %i[index new create] do
+    get 'import', to: 'expenditures#import', as: :import, on: :collection
+    post 'import', to: 'expenditures#import_upload', as: :import_upload, on: :collection
+  end
 
   resources :commitments, only: %i[index new create]
 

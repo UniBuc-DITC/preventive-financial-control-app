@@ -3,17 +3,7 @@
 <p><%= link_to 'Înapoi la pagina principală', root_path %></p>
 <p><%= link_to 'Adaugă un utilizator nou', new_user_path %></p>
 
-<% if flash.notice %>
-  <p class="alert alert-primary">
-    <%= flash.notice %>
-  </p>
-<% end %>
-
-<% if flash.alert %>
-  <p class="alert alert-danger">
-    <%= flash.alert %>
-  </p>
-<% end %>
+<%= render partial: 'flashes' %>
 
 <div class="table-responsive">
   <table class="table table-striped table-hover">

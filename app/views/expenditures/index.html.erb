@@ -2,24 +2,27 @@
 
 <p><%= link_to 'Înapoi la pagina principală', root_path %></p>
 <p><%= link_to 'Adaugă o cheltuială nouă', new_expenditure_path %></p>
-
-<% if flash.notice %>
-  <p class="alert alert-primary">
-    <%= flash.notice %>
-  </p>
+<% if current_user.admin? %>
+  <p><%= link_to 'Importă cheltuieli din Excel', import_expenditures_path %></p>
 <% end %>
 
-<% if flash.alert %>
-  <p class="alert alert-danger">
-    <%= flash.alert %>
-  </p>
-<% end %>
+<%= render partial: 'flashes' %>
 
 <%= bootstrap_form_with method: :get, layout: :inline do |form| %>
   <%= form.text_field :start_date, value: params[:start_date], label: 'Data de început',
                       data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
   <%= form.text_field :end_date, value: params[:end_date], label: 'Data de sfârșit',
                       data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
+  <%= form.select :financing_source_id,
+                  FinancingSource.order(:name).map { |financing_source|
+                    [financing_source.name, financing_source.id]
+                  },
+                  {
+                    selected: params[:financing_source_id],
+                    label: 'Sursă de finanțare (centru de cost)',
+                    include_blank: 'Selectează o sursă de finanțare...',
+                  },
+                  { data: { use_select2: true } } %>
   <%= form.select :expenditure_article_id,
                   ExpenditureArticle.order(:code).map { |expenditure_article|
                     ["#{expenditure_article.code} - #{expenditure_article.name}", expenditure_article.id]
@@ -43,6 +46,7 @@
       <th scope="col">Data înregistrării</th>
       <th scope="col">Sursă de finanțare</th>
       <th scope="col">Categorie proiect</th>
+      <th scope="col">Detalii proiect</th>
       <th scope="col">Articol de cheltuială</th>
       <th scope="col">Detalii</th>
       <th scope="col">Tip achiziție</th>
@@ -66,11 +70,12 @@
         <td><%= expenditure.registration_date.strftime('%d.%m.%Y') %></td>
         <td><%= expenditure.financing_source.name %></td>
         <td><%= expenditure.project_category&.name %></td>
+        <td><%= expenditure.project_details %></td>
         <td><%= "#{expenditure.expenditure_article.code} - #{expenditure.expenditure_article.name}" %></td>
         <td><%= expenditure.details %></td>
         <td><%= expenditure.procurement_type %></td>
         <td><%= expenditure.ordinance_number %></td>
-        <td><%= expenditure.ordinance_date.strftime('%d.%m.%Y') %></td>
+        <td><%= expenditure.ordinance_date&.strftime('%d.%m.%Y') %></td>
         <td><%= expenditure.value %></td>
         <td><%= expenditure.payment_method.name %></td>
         <td><%= expenditure.beneficiary %></td>

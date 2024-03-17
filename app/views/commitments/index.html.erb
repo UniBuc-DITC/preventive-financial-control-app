@@ -3,17 +3,7 @@
 <p><%= link_to 'Înapoi la pagina principală', root_path %></p>
 <p><%= link_to 'Adaugă un angajament nou', new_commitment_path %></p>
 
-<% if flash.notice %>
-  <p class="alert alert-primary">
-    <%= flash.notice %>
-  </p>
-<% end %>
-
-<% if flash.alert %>
-  <p class="alert alert-danger">
-    <%= flash.alert %>
-  </p>
-<% end %>
+<%= render partial: 'flashes' %>
 
 <%= bootstrap_form_with method: :get, layout: :inline do |form| %>
   <%= form.text_field :start_date, value: params[:start_date], label: 'Data de început',

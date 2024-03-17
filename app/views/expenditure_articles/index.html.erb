@@ -1,0 +1,41 @@
+<h1>Articole de cheltuială</h1>
+
+<% can_modify_expenditure_articles = current_user.supervisor? || current_user.admin? %>
+
+<p><%= link_to 'Înapoi la pagina principală', root_path %></p>
+<% if can_modify_expenditure_articles %>
+  <p><%= link_to 'Adaugă un articol de cheltuială nou', new_expenditure_article_path %></p>
+<% end %>
+
+<%= render partial: 'flashes' %>
+
+<div class="table-responsive">
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Cod</th>
+      <th scope="col">Denumire</th>
+      <% if can_modify_expenditure_articles %>
+        <th scope="col">Acțiuni</th>
+      <% end %>
+    </tr>
+    </thead>
+    <tbody>
+    <% @expenditure_articles.each do |expenditure_article| %>
+      <tr>
+        <td><%= expenditure_article.id %></td>
+        <td><%= expenditure_article.code %></td>
+        <td><%= expenditure_article.name %></td>
+        <% if can_modify_expenditure_articles %>
+          <td>
+            <%= link_to 'Editează', edit_expenditure_article_path(expenditure_article.id) %>
+            <%= link_to 'Șterge', expenditure_article_path(expenditure_article.id), method: :delete,
+                        data: { confirm: 'Ești sigur că vrei să ștergi acest articol de cheltuială?' } %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
