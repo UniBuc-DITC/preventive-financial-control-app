@@ -7,8 +7,8 @@ class UserTest < ActiveSupport::TestCase
     user = User.new(
       entra_user_id: SecureRandom.uuid,
       email: 'test.user@example.com',
-      given_name: 'Test',
-      family_name: 'User',
+      first_name: 'Test',
+      last_name: 'User',
       role: :supervisor,
     )
 
