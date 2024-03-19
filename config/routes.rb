@@ -26,7 +26,10 @@ Rails.application.routes.draw do
     post 'import', to: 'expenditures#import_upload', as: :import_upload, on: :collection
   end
 
-  resources :commitments, only: %i[index new create]
+  resources :commitments, only: %i[index new create] do
+    get 'import', to: 'commitments#import', as: :import, on: :collection
+    post 'import', to: 'commitments#import_upload', as: :import_upload, on: :collection
+  end
 
   resources :audit_events, only: [:index]
 end

@@ -21,6 +21,8 @@
                  { data: { use_select2: true } }
     %>
 
+    <%= f.text_field :project_details %>
+
     <%= f.select :expenditure_article_id,
                  ExpenditureArticle.order(:code).map { |expenditure_article|
                    ["#{expenditure_article.code} - #{expenditure_article.name}", expenditure_article.id]

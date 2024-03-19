@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_17_132055) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_18_211350) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,7 +26,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_17_132055) do
   create_table "commitments", force: :cascade do |t|
     t.integer "year", null: false
     t.integer "registration_number", null: false
-    t.date "registration_date", default: -> { "CURRENT_DATE" }, null: false
     t.bigint "financing_source_id", null: false
     t.bigint "expenditure_article_id", null: false
     t.string "document_number", null: false
@@ -40,6 +39,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_17_132055) do
     t.bigint "updated_by_user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "registration_date", default: -> { "CURRENT_DATE" }, null: false
+    t.string "project_details", default: "", null: false
     t.index ["created_by_user_id"], name: "index_commitments_on_created_by_user_id"
     t.index ["expenditure_article_id"], name: "index_commitments_on_expenditure_article_id"
     t.index ["financing_source_id"], name: "index_commitments_on_financing_source_id"

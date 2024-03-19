@@ -2,6 +2,9 @@
 
 <p><%= link_to 'Înapoi la pagina principală', root_path %></p>
 <p><%= link_to 'Adaugă un angajament nou', new_commitment_path %></p>
+<% if current_user.admin? %>
+  <p><%= link_to 'Importă angajamente din Excel', import_commitments_path %></p>
+<% end %>
 
 <%= render partial: 'flashes' %>
 

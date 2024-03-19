@@ -45,6 +45,7 @@ ro:
         registration_date: "Data înregistrării"
         financing_source: "Reprezentant UB / Sursă de finanțare"
         financing_source_id: "Reprezentant UB / Sursă de finanțare"
+        project_details: "Detalii proiect"
         expenditure_article: "Articol de cheltuială"
         expenditure_article_id: "Articol de cheltuială"
         document_number: "Număr document"
