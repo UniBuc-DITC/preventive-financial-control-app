@@ -135,23 +135,11 @@ class ExpendituresController < ApplicationController
 
     financing_source_name = row[2]
 
-    if row_index == 360
-      # TODO: get this fixed upstream
-      financing_source_name = 'cercetare'
-    elsif row_index == 1508
-      # TODO: ask upstream. This is just a guess
-      financing_source_name = 'teologie ortodoxa'
-    elsif row_index == 1781
-      # TODO: ask what happened
-      return
-    end
-
     financing_source = nil
     case financing_source_name
-    when 'venituri', 'venituri ub'
+    when 'venituri', 'venituri ub', 'rectorat'
       financing_source = FinancingSource.find_by(name: 'Venituri')
     when 'finantare complementara'
-      # TODO: decide whether this should be a financing source, or use revenues and have it be a project category
       financing_source = FinancingSource.find_by(name: 'Finanțare complementară')
     when 'cercetare',
       # TODO: fix this, line 317
@@ -225,9 +213,7 @@ class ExpendituresController < ApplicationController
     when 'icub', 'ICUB'
       financing_source = FinancingSource.find_by(name: 'ICUB')
       ## Faculties
-    when 'adm si afaceri', 'fac ad si afaceri',
-      # TODO: is this correct? Row 2374
-      'administratie'
+    when 'adm si afaceri', 'fac ad si afaceri', 'administratie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Administrație și Afaceri')
     when 'biologie', 'fac biologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Biologie')
@@ -251,10 +237,11 @@ class ExpendituresController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'Facultatea de Geologie și Geofizică')
     when 'litere'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Litere')
-    when 'lls',
-      # TODO: check and fix this, line 363
-      'lma'
+    when 'lls'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Limbi și Literaturi Străine')
+    when 'lma'
+      # TODO: add
+      financing_source = FinancingSource.find_by(name: 'Limbi Moderne Aplicate')
     when 'matematica'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Matematică și Informatică')
     when 'jurnalism'
@@ -267,9 +254,6 @@ class ExpendituresController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'Facultatea de Științe Politice')
     when 'sociologie', 'fac sociologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Sociologie și Asistență Socială')
-      # TODO: Check if this is a proper cost center
-    when 'rectorat'
-      financing_source = FinancingSource.find_by(name: 'Rectorat')
     end
 
     if financing_source.nil?
@@ -282,12 +266,8 @@ class ExpendituresController < ApplicationController
 
     # TODO: get this fixed, the code got saved as a decimal and the trailing zero got removed
     if expenditure_article_code == '59.4'
+      # TODO: delete 59.04
       expenditure_article_code = '59.40'
-    end
-
-    # TODO: get this fixed upstream
-    if row_index == 1298
-      expenditure_article_code = '20.01.03'
     end
 
     expenditure_article = ExpenditureArticle.find_by(code: expenditure_article_code)
@@ -327,7 +307,6 @@ class ExpendituresController < ApplicationController
       # TODO: what is this category?
       project_category = ProjectCategory.find_by!(name: 'Proiect cu finanțare în valută')
     when 'premiile senatului'
-      # TODO: ask if this should be a distinct project category
       project_category = ProjectCategory.find_by!(name: 'Premiile Senatului')
     when /^pfe/
       project_details = project_name.delete_prefix('pfe')
