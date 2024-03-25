@@ -2,9 +2,10 @@
 
 class Expenditure < ApplicationRecord
   validates :year, :registration_number, :registration_date, presence: true
-  validates :project_category, presence: true, if: lambda {
-    financing_source.present? && financing_source.requires_project_category?
-  }
+  # TODO: decide if we really want to enforce this validation
+  # validates :project_category, presence: true, if: lambda {
+  #   financing_source.present? && financing_source.requires_project_category?
+  # }
   validates :value, :beneficiary, presence: true
 
   # TODO: check why this fails for row 13 in Excel import

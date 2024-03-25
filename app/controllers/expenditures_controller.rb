@@ -145,6 +145,21 @@ class ExpendituresController < ApplicationController
 
     expenditure.registration_number = row[0]
 
+    if expenditure.registration_number == 2623
+      # TODO: what are the AKS funds?
+      return
+    end
+
+    if expenditure.registration_number == 2744
+      # TODO: fix duplicate registration number issue
+      return
+    end
+
+    if expenditure.registration_number == 3772
+      # TODO: fix missing value
+      return
+    end
+
     registration_date = Date.strptime(row[1], '%d.%m.%Y')
     expenditure.registration_date = registration_date
     expenditure.year = registration_date.year
@@ -153,9 +168,13 @@ class ExpendituresController < ApplicationController
 
     financing_source = nil
     case financing_source_name
-    when 'venituri', 'venituri ub', 'rectorat'
+    when 'financiar'
+      financing_source = FinancingSource.find_by(name: 'Direcția Financiar-Contabilă')
+    when 'venituri', 'venituri ub', 'venituri BCR', 'venituri trez', 'rectorat', 'buget'
       financing_source = FinancingSource.find_by(name: 'Venituri')
-    when 'finantare complementara'
+    when 'finantare complementara',
+      # TODO: fix typo
+      'finantare complementare'
       financing_source = FinancingSource.find_by(name: 'Finanțare complementară')
     when 'cercetare',
       # TODO: fix this, line 317
@@ -171,7 +190,9 @@ class ExpendituresController < ApplicationController
       # TODO: check this as well
       'fse',
       # TODO: check this as well
-      'pr men'
+      'pr men',
+      # TODO: validate this upstream
+      'timss'
       financing_source = FinancingSource.find_by(name: 'Cercetare')
     when 'pnrr', 'PNRR',
       # TODO: get this fixed
@@ -182,6 +203,9 @@ class ExpendituresController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'POCU')
     when 'fdi', 'FDI'
       financing_source = FinancingSource.find_by(name: 'FDI')
+    when 'proiecte in valuta'
+      financing_source = FinancingSource.find_by(name: 'Cercetare')
+      row[4] = 'pr. cu finantare in valuta'
     when 'camine',
       # TODO: check these as well
       'cam a1 grozavesti', 'cam st militaru', 'cam b groavesti'
@@ -212,10 +236,14 @@ class ExpendituresController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'Stațiunea de cercetări de la Sfântu Gheorghe')
     when 'st orsova'
       financing_source = FinancingSource.find_by(name: 'Stațiunea de cercetare de la Orșova')
-    when 'st braila'
+    when 'st braila', 'braila',
+      # TODO: fix this upstream
+      'statiunea braile'
       financing_source = FinancingSource.find_by(name: 'Stațiunea de Cercetări Ecologice Brăila')
-    when 'statiunea sinaia'
+    when 'statiunea sinaia', 'st sinaia'
       financing_source = FinancingSource.find_by(name: 'Stațiunea Zoologică Sinaia')
+    when 'statiunea hateg'
+      financing_source = FinancingSource.find_by(name: 'Geoparcul Țara Hațegului')
     when 'academica'
       financing_source = FinancingSource.find_by(name: 'Casa de Oaspeți „Academica”')
     when 'gaudeamus'
@@ -229,7 +257,7 @@ class ExpendituresController < ApplicationController
     when 'icub', 'ICUB'
       financing_source = FinancingSource.find_by(name: 'ICUB')
       ## Faculties
-    when 'adm si afaceri', 'fac ad si afaceri', 'administratie'
+    when 'adm si afaceri', 'fac ad si afaceri', 'administratie', 'admin si afaceri'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Administrație și Afaceri')
     when 'biologie', 'fac biologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Biologie')
@@ -237,32 +265,36 @@ class ExpendituresController < ApplicationController
       # TODO: fix this upstream, line 2344
       'chmie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Chimie')
-    when 'drept'
+    when 'drept', 'fac drept'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Drept')
-    when 'filosofie'
+    when 'filosofie', 'fac filosofie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Filosofie')
     when 'fizica'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Fizică')
-    when 'istorie'
+    when 'istorie', 'fac istorie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Istorie')
-    when 'teologie ortodoxa', 'teol ortodoxa'
+    when 'teologie ortodoxa', 'teol ortodoxa', 'TEOLOGIE ORTODOXA', 'fac teol ort'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Teologie Ortodoxă')
+    when 'teologie baptista', 'teol baptista'
+      financing_source = FinancingSource.find_by(name: 'Facultatea de Teologie Baptistă')
+    when 'teologie rom catolica', 'teol romano catolica'
+      financing_source = FinancingSource.find_by(name: 'Facultatea de Teologie Romano-Catolică')
     when 'geografie', 'fac geografie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Geografie')
     when 'geologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Geologie și Geofizică')
-    when 'litere'
+    when 'litere', 'fac litere'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Litere')
-    when 'lls'
+    when 'lls', 'fac lls'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Limbi și Literaturi Străine')
     when 'lma'
       # TODO: add
       financing_source = FinancingSource.find_by(name: 'Limbi Moderne Aplicate')
-    when 'matematica'
+    when 'matematica', 'fac matematica', 'fac mate'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Matematică și Informatică')
-    when 'jurnalism'
+    when 'jurnalism', 'fac jurnalism'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Jurnalism')
-    when 'psihologie', 'fac psihologie'
+    when 'psihologie', 'fac psihologie', 'fa psihologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Psihologie și Științele Educației')
     when 'stiinte politice', 'st politice',
       # TODO: fix this, line 839
@@ -278,7 +310,15 @@ class ExpendituresController < ApplicationController
 
     expenditure_article_code = row[3].to_s.strip
 
-    # TODO: what corresponds to code 61.01?
+    if expenditure.registration_number == 2600
+      # TODO: get this fixed upstream, looks like it should be 59.40
+      return
+    end
+
+    if expenditure_article_code == '59.01.'
+      # TODO: check upstream if this fix is correct
+      expenditure_article_code = '59.01'
+    end
 
     # TODO: get this fixed, the code got saved as a decimal and the trailing zero got removed
     if expenditure_article_code == '59.4'
@@ -317,10 +357,9 @@ class ExpendituresController < ApplicationController
     when 'pr cu tva', 'pr tva', 'proiecte cu tva'
       project_category = ProjectCategory.find_by!(name: 'Proiect cu TVA')
     when 'pr. cu finantare in valuta',
-      'pr valuta',
+      'pr valuta', 'proiecte in valuta',
       # TODO: check if this is the same thing
       'finantare valuta'
-      # TODO: what is this category?
       project_category = ProjectCategory.find_by!(name: 'Proiect cu finanțare în valută')
     when 'premiile senatului'
       project_category = ProjectCategory.find_by!(name: 'Premiile Senatului')
@@ -331,6 +370,18 @@ class ExpendituresController < ApplicationController
       project_category = ProjectCategory.find_by!(name: 'PFE')
     when /^fss/, /^FSS/
       project_details = project_name.delete_prefix('fss').delete_prefix('FSS')
+                                    .delete_prefix('/')
+                                    .strip
+      project_category = ProjectCategory.find_by!(name: 'FSS')
+    when /^pr fss/
+      project_details = project_name.delete_prefix('pr fss')
+                                    .strip
+                                    .delete_prefix('/')
+                                    .strip
+      project_category = ProjectCategory.find_by!(name: 'FSS')
+    when /^proiecte fss/
+      project_details = project_name.delete_prefix('proiecte fss')
+                                    .strip
                                     .delete_prefix('/')
                                     .strip
       project_category = ProjectCategory.find_by!(name: 'FSS')
@@ -355,11 +406,19 @@ class ExpendituresController < ApplicationController
     when /^i\d/
       project_details = project_name.strip
       project_category = ProjectCategory.find_by!(name: 'PNRR')
+    when 'EDIS'
+      project_category = ProjectCategory.find_by!(name: 'EDIS')
     when 'CDI'
       project_category = ProjectCategory.find_by!(name: 'CDI')
     when /^cdi/
       project_details = project_name.delete_prefix('cdi').delete_prefix('/').strip
       project_category = ProjectCategory.find_by!(name: 'CDI')
+    when /^CPI/
+      project_details = project_name.delete_prefix('CPI').delete_prefix('/').strip
+      project_category = ProjectCategory.find_by!(name: 'CPI')
+    when /^grant cpi/
+      project_details = project_name.delete_prefix('grant cpi').strip
+      project_category = ProjectCategory.find_by!(name: 'CPI')
     when /^pocu/
       project_details = project_name.delete_prefix('pocu').delete_prefix('/').strip
       project_category = ProjectCategory.find_by!(name: 'POCU')
@@ -379,16 +438,23 @@ class ExpendituresController < ApplicationController
       project_details = project_name.delete_prefix('pr')
                                     .delete_prefix('purowax').delete_prefix('/').strip
       project_category = ProjectCategory.find_by!(name: 'PUROWAX')
+    when /^pr growing/, /^pr employer/, /^pr ev potential/, /^pr siec/
+      project_details = project_name.delete_suffix('- fin cercetarii stiintifice').strip
+      project_category = ProjectCategory.find_by!(name: 'Finanțarea cercetării')
     when /^timss/
       project_details = project_name.strip
       project_category = ProjectCategory.find_by!(name: 'Proiecte Ministerul Educației Naționale')
       # TODO: should this really exist?
     when 'fond cercetare chifiriuc'
       project_category = ProjectCategory.find_by!(name: 'Fond cercetare Chifiriuc')
-    when 'buget', 'venit trezorerie', 'venituri ub', 'ven trez', 'venit bcr', 'venituri BCR', 'venituri', 'trezorerie'
+    when 'buget', 'BUGET', 'venituri ub',
+      'venit bcr', 'venituri BCR', 'venituri',
+      'trezorerie', 'venit trezorerie', 'ven trez', 'venituri trezorerie'
       if financing_source.name == 'Facultatea de Chimie'
         # TODO: this should be fixed upstream
         project_category = nil
+      elsif financing_source.name.in? ['Cămine', 'Grădina Botanică']
+        # Allow these, for now.
       elsif financing_source.name != 'Venituri'
         raise ImportError.new(row_index, "categorie de proiect necunoscută: '#{project_name}'")
       end
@@ -396,10 +462,13 @@ class ExpendituresController < ApplicationController
       # For different kinds of revenues, store their type in the "project details" field
       project_details = project_name
       project_category = nil
+    when 'venit trezorerie/erasmus'
+      # TODO: ask whether this is the right solution
+      financing_source = FinancingSource.find_by!(name: 'Erasmus')
     when 'finantare complementara'
       # TODO: decide whether this should stay as a project category or should be moved into financing source
       project_category = ProjectCategory.find_by!(name: 'Finanțare complementară')
-    when 'editura UB'
+    when 'editura UB', 'editura ub'
       # TODO: check if this solution is alright
       financing_source = FinancingSource.find_by!(name: 'Editura UB')
       project_category = nil
@@ -412,10 +481,11 @@ class ExpendituresController < ApplicationController
       financing_source = FinancingSource.find_by!(name: 'Casa Universitarilor')
       project_category = nil
     when 'finantarea cercetarii', 'fin cercetarii', 'finantarea cercetarii stiintifice',
+      'fin cercetarii stiintifice',
       # TODO: fix this typo upstream
       'finanatarea cercetarii stiintifice',
       # TODO: is this the same?
-      'fond cercetare'
+      'fond cercetare', 'fond cercetare stiintifica'
       # TODO: check if this solution is alright
       project_category = ProjectCategory.find_by!(name: 'Finanțarea cercetării')
     when 'icub', 'ICUB'
@@ -423,17 +493,39 @@ class ExpendituresController < ApplicationController
       # Shouldn't ICUB pe a cost center?
       financing_source = FinancingSource.find_by!(name: 'ICUB')
       project_category = nil
-    when 'drept universal'
+    when 'camine'
+      financing_source = FinancingSource.find_by(name: 'Cămine')
+      project_category = nil
+    when 'drept universal', 'dr universal'
       # TODO: ask if this should really be a project
       project_category = ProjectCategory.find_by!(name: 'Drept Universal')
-    when 'civis cofinantare', 'cofinantare civis'
+    when 'civis cofinantare', 'cofinantare civis', 'co-finantare civis'
       # TODO: ask if this should really be a project
       project_category = ProjectCategory.find_by!(name: 'Cofinanțare CIVIS')
+    when /^pr civis 2/
+      project_details = project_name.delete_prefix('pr civis 2')
+                                    .strip
+      project_category = ProjectCategory.find_by!(name: 'CIVIS 2')
     when /^erasmus/
       # TODO: is this correct?
       project_details = project_name.delete_prefix('erasmus').delete_prefix('/').delete_prefix('+')
                                     .strip
-    when /^proiect \d/, /^pr ka/
+    when /^pr erasmus/
+      project_details = project_name
+    when 'ven erasmus'
+      # TODO: ask if this should really be a project
+      project_category = ProjectCategory.find_by!(name: 'Erasmus')
+    when /^proiect caipe/
+      # TODO: ask if this should really be a project
+      project_category = ProjectCategory.find_by!(name: 'CAIPE')
+    when /^proiect cdi/
+      project_details = project_name.delete_prefix('proiect cdi').strip
+      project_category = ProjectCategory.find_by!(name: 'CDI')
+    when /^proiect addendum/
+      project_details = project_name.delete_prefix('proiect addendum').delete_prefix('/')
+                                    .strip
+      project_category = ProjectCategory.find_by!(name: 'CDI')
+    when /^proiect \d/, /^pr ka/, /^pr renewteach/
       if financing_source.name != 'Erasmus'
         raise ImportError.new(row_index, "categorie de proiect necunoscută: '#{project_name}'")
       end
@@ -445,7 +537,7 @@ class ExpendituresController < ApplicationController
     when 'progr comunitare erasmus'
       # TODO: is this correct? Should we instead fill in the project details field?
       project_category = ProjectCategory.find_by!(name: 'Programe comunitare Erasmus')
-    when 'fondul rectorului'
+    when 'fondul rectorului', 'protocol rector'
       # TODO: check if this solution is alright
       project_category = ProjectCategory.find_by!(name: 'Fondul Rectorului')
     when 'grant doctoral'
@@ -459,7 +551,25 @@ class ExpendituresController < ApplicationController
       # TODO: check if this approach is correct
       financing_source = FinancingSource.find_by!(name: 'Consiliul Studiilor Universitare de Doctorat')
       project_category = nil
-    when 'altele'
+    when 'st braila'
+      # TODO: fix this upstream (number 2544)
+      project_category = nil
+      financing_source = FinancingSource.find_by(name: 'Stațiunea de Cercetări Ecologice Brăila')
+    when 'st orsova'
+      # TODO: fix this upstream (number 2545
+      project_category = nil
+      financing_source = FinancingSource.find_by(name: 'Stațiunea de cercetare de la Orșova')
+    when 'st sinaia'
+      # TODO: fix this upstream (number 2547)
+      project_category = nil
+      financing_source = FinancingSource.find_by(name: 'Stațiunea Zoologică Sinaia')
+      # This is for the situation where the "project" entry has been used inappropriately
+    when /^global campus/, /^proiect masks/, /^pr eBelong2/, 'imobil d brandza', 'inst botanic',
+      /^grozavesti/, 'poligrafie', /^pallady/, 'cam fundeni', 'cam magurele', 'cam grozavesti a1',
+      /^st militaru/
+      project_details = project_name
+      project_category = nil
+    when 'altele', 'burse'
       project_category = nil
     else
       raise ImportError.new(row_index, "categorie de proiect necunoscută: '#{project_name}'")
@@ -470,10 +580,11 @@ class ExpendituresController < ApplicationController
       project_category = ProjectCategory.find_by!(name: 'Finanțarea cercetării')
     end
 
-    if financing_source.requires_project_category? && project_category.nil?
-      raise ImportError.new(row_index, "nu a putut fi găsită un tip de proiect denumit '#{project_name}'. " +
-        "Categoria de proiect nu poate fi necompletată, având în vedere că sursa de finanțare este '#{financing_source.name}'")
-    end
+    # TODO: decide what to do about this
+    # if financing_source.requires_project_category? && project_category.nil?
+    #   raise ImportError.new(row_index, "nu a putut fi găsită un tip de proiect denumit '#{project_name}'. " +
+    #     "Categoria de proiect nu poate fi necompletată, având în vedere că sursa de finanțare este '#{financing_source.name}'")
+    # end
 
     expenditure.financing_source = financing_source
     expenditure.project_category = project_category
