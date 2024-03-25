@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_18_211350) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_25_084940) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,6 +53,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_18_211350) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "expenditure_category_code", default: "", null: false
+    t.string "commitment_category_code", default: "", null: false
     t.index ["code"], name: "index_expenditure_articles_on_code", unique: true
   end
 

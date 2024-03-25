@@ -17,14 +17,30 @@ class ExpendituresController < ApplicationController
       @expenditures = @expenditures.where('registration_date <= ?', end_date)
     end
 
-    if params[:financing_source_id].present?
-      financing_source = FinancingSource.find(params[:financing_source_id])
-      @expenditures = @expenditures.where(financing_source:)
+    if params[:expenditure_category_code].present?
+      @expenditures = @expenditures.where(
+        expenditure_article: {
+          expenditure_category_code: params[:expenditure_category_code]
+        }
+      )
     end
 
-    if params[:expenditure_article_id].present?
-      expenditure_article = ExpenditureArticle.find(params[:expenditure_article_id])
-      @expenditures = @expenditures.where(expenditure_article:)
+    @financing_source_ids = params[:financing_source_ids]
+    if @financing_source_ids.present?
+      @financing_source_ids = @financing_source_ids.select(&:present?)
+
+      unless @financing_source_ids.empty?
+        @expenditures = @expenditures.where(financing_source_id: @financing_source_ids)
+      end
+    end
+
+    @expenditure_article_ids = params[:expenditure_article_ids]
+    if @expenditure_article_ids.present?
+      @expenditure_article_ids = @expenditure_article_ids.select(&:present?)
+
+      unless @expenditure_article_ids.empty?
+        @expenditures = @expenditures.where(expenditure_article_id: @expenditure_article_ids)
+      end
     end
 
     @paginated_expenditures = @expenditures.paginate(page: params[:page], per_page: 5)

@@ -104,6 +104,11 @@ class ExpenditureArticlesController < ApplicationController
   private
 
   def expenditure_article_params
-    params.require(:expenditure_article).permit(:code, :name)
+    params.require(:expenditure_article).permit(
+      :code,
+      :expenditure_category_code,
+      :commitment_category_code,
+      :name
+    )
   end
 end

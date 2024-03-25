@@ -17,9 +17,21 @@ class CommitmentsController < ApplicationController
       @commitments = @commitments.where('registration_date <= ?', end_date)
     end
 
-    if params[:expenditure_article_id].present?
-      expenditure_article = ExpenditureArticle.find(params[:expenditure_article_id])
-      @commitments = @commitments.where(expenditure_article:)
+    if params[:commitment_category_code].present?
+      @commitments = @commitments.where(
+        expenditure_article: {
+          commitment_category_code: params[:commitment_category_code]
+        }
+      )
+    end
+
+    @expenditure_article_ids = params[:expenditure_article_ids]
+    if @expenditure_article_ids.present?
+      @expenditure_article_ids = @expenditure_article_ids.select(&:present?)
+
+      unless @expenditure_article_ids.empty?
+        @commitments = @commitments.where(expenditure_article_id: @expenditure_article_ids)
+      end
     end
 
     @paginated_commitments = @commitments.paginate(page: params[:page])

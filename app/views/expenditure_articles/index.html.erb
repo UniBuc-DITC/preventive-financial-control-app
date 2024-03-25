@@ -16,6 +16,8 @@
       <th scope="col">ID</th>
       <th scope="col">Cod</th>
       <th scope="col">Denumire</th>
+      <th scope="col">Indicator cheltuieli</th>
+      <th scope="col">Indicator angajamente</th>
       <% if can_modify_expenditure_articles %>
         <th scope="col">Acțiuni</th>
       <% end %>
@@ -27,11 +29,15 @@
         <td><%= expenditure_article.id %></td>
         <td><%= expenditure_article.code %></td>
         <td><%= expenditure_article.name %></td>
+        <td><%= expenditure_article.expenditure_category_code %></td>
+        <td><%= expenditure_article.commitment_category_code %></td>
         <% if can_modify_expenditure_articles %>
-          <td>
-            <%= link_to 'Editează', edit_expenditure_article_path(expenditure_article.id) %>
+          <td class="text-nowrap">
+            <%= link_to 'Editează', edit_expenditure_article_path(expenditure_article.id),
+                        class: 'btn btn-warning' %>
             <%= link_to 'Șterge', expenditure_article_path(expenditure_article.id), method: :delete,
-                        data: { confirm: 'Ești sigur că vrei să ștergi acest articol de cheltuială?' } %>
+                        data: { confirm: 'Ești sigur că vrei să ștergi acest articol de cheltuială?' },
+                        class: 'btn btn-danger' %>
           </td>
         <% end %>
       </tr>

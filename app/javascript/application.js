@@ -54,6 +54,10 @@ Datepicker.locales.ro = {
   format: "dd.mm.yyyy",
 };
 
+document.documentElement.addEventListener("turbo:before-cache", () => {
+  $("select[data-use-select2]").select2("destroy");
+});
+
 document.documentElement.addEventListener("turbo:load", () => {
   jQuery("input[data-datepicker]").each(function () {
     this.placeholder = "zz.ll.aaaa";
@@ -67,11 +71,27 @@ document.documentElement.addEventListener("turbo:load", () => {
   });
 
   $("select[data-use-select2]").each(function () {
+    const options = {
+      // Make select boxes full width
+      width: '100%'
+    };
+
+    // Since the standard `select` element doesn't support the `placeholder` attribute,
+    // we instead set it as a data attribute.
+    if (this.dataset.placeholder) {
+      options.placeholder = this.dataset.placeholder;
+    }
+
     const selectBox = this;
-    $(selectBox).select2();
-    $.data(selectBox).select2.on("focus", function () {
-      $(selectBox).select2("open");
-    });
+    $(selectBox).select2(options);
+
+    // Multiple select boxes automatically open the list of options upon being focused.
+    if (!this.attributes.multiple) {
+      // For regular select boxes, implement this behavior explicitly.
+      $.data(selectBox).select2.on("focus", function () {
+        $(selectBox).select2("open");
+      });
+    }
   });
 
   // We used to allow the selection of projects only for expenditures associated to "Research" financing sources,

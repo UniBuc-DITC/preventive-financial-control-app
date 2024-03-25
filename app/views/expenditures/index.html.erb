@@ -13,28 +13,43 @@
                       data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
   <%= form.text_field :end_date, value: params[:end_date], label: 'Data de sfârșit',
                       data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
-  <%= form.select :financing_source_id,
+  <%= form.text_field :expenditure_category_code,
+                      value: params[:expenditure_category_code],
+                      label: 'Indicator tip de cheltuială',
+                      placeholder: 'Exemplu: C1' %>
+  <%= form.select :financing_source_ids,
                   FinancingSource.order(:name).map { |financing_source|
                     [financing_source.name, financing_source.id]
                   },
                   {
-                    selected: params[:financing_source_id],
+                    multiple: true,
+                    selected: @financing_source_ids,
                     label: 'Sursă de finanțare (centru de cost)',
-                    include_blank: 'Selectează o sursă de finanțare...',
+                    wrapper: { class: 'col-12' }
                   },
-                  { data: { use_select2: true } } %>
-  <%= form.select :expenditure_article_id,
+                  {
+                    data: {
+                      use_select2: true,
+                      placeholder: 'Selectează o sursă de finanțare...'
+                    }
+                  } %>
+  <%= form.select :expenditure_article_ids,
                   ExpenditureArticle.order(:code).map { |expenditure_article|
                     ["#{expenditure_article.code} - #{expenditure_article.name}", expenditure_article.id]
                   },
                   {
-                    selected: params[:expenditure_article_id],
+                    multiple: true,
+                    selected: @expenditure_article_ids,
                     label: 'Articol de cheltuială',
-                    include_blank: 'Selectează un articol de cheltuială...',
+                    wrapper: { class: 'col-12' }
                   },
-                  { data: { use_select2: true } }
+                  {
+                    data: {
+                      use_select2: true,
+                      placeholder: 'Selectează un articol de cheltuială...'
+                    }
+                  }
   %>
-
   <%= form.submit 'Filtrează' %>
 <% end %>
 

@@ -16,6 +16,8 @@ ro:
       expenditure_article:
         code: "Cod"
         name: "Denumire"
+        expenditure_category_code: "Indicator tip de cheltuială"
+        commitment_category_code: "Indicator tip de angajament"
       expenditure:
         year: "Anul înregistrării"
         registration_number: "Număr de înregistrare"
