@@ -60,7 +60,11 @@ gem 'omniauth-oauth2'
 gem 'will_paginate', '~> 4.0'
 gem 'will_paginate-bootstrap-style'
 
-# Spreadsheet reading support
+# Excel export support
+gem 'caxlsx'
+gem 'caxlsx_rails'
+
+# Excel import support
 gem 'roo', '~> 2.10.0'
 
 group :development, :test do

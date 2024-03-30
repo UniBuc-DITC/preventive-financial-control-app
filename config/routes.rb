@@ -19,7 +19,11 @@ Rails.application.routes.draw do
 
   resources :project_categories
 
-  resources :expenditure_articles
+  resources :expenditure_articles do
+    get 'export', to: 'expenditure_articles#export_download', as: :export_download, on: :collection, format: 'xlsx'
+    get 'import', to: 'expenditure_articles#import', as: :import, on: :collection
+    post 'import', to: 'expenditure_articles#import_upload', as: :import_upload, on: :collection
+  end
 
   resources :expenditures, only: %i[index new create] do
     get 'import', to: 'expenditures#import', as: :import, on: :collection

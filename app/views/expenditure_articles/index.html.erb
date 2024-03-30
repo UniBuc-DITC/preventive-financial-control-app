@@ -6,6 +6,11 @@
 <% if can_modify_expenditure_articles %>
   <p><%= link_to 'Adaugă un articol de cheltuială nou', new_expenditure_article_path %></p>
 <% end %>
+<% if current_user.admin? %>
+  <p><%= link_to 'Exportă lista de articole de cheltuială', export_download_expenditure_articles_path,
+                 download: true, data: { turbo: false } %></p>
+  <p><%= link_to 'Importă articole de cheltuială din Excel', import_expenditure_articles_path %></p>
+<% end %>
 
 <%= render partial: 'flashes' %>
 

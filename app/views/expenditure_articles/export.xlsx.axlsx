@@ -1,0 +1,23 @@
+# frozen_string_literal: true
+
+workbook = xlsx_package.workbook
+
+workbook.add_worksheet(name: 'Articole de cheltuială') do |sheet|
+  header = [
+    'Cod',
+    'Denumire',
+    'Indicator cheltuieli',
+    'Indicator angajamente'
+  ]
+  sheet.add_row header
+
+  @expenditure_articles.each do |expenditure_article|
+    row = [
+      expenditure_article.code.strip,
+      expenditure_article.name.strip,
+      expenditure_article.expenditure_category_code.strip,
+      expenditure_article.commitment_category_code.strip
+    ]
+    sheet.add_row row, types: ([:string] * row.length)
+  end
+end
