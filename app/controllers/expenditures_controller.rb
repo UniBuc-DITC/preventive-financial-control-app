@@ -160,17 +160,25 @@ class ExpendituresController < ApplicationController
       return
     end
 
+    # TODO: ask about registration number 4813, it has a weird value
+
     registration_date = Date.strptime(row[1], '%d.%m.%Y')
     expenditure.registration_date = registration_date
     expenditure.year = registration_date.year
 
-    financing_source_name = row[2]
+    financing_source_name = row[2].strip
+
+    if financing_source_name == 'valuta studii'
+      # TODO: ask what is this financing source
+      return
+    end
 
     financing_source = nil
     case financing_source_name
     when 'financiar'
       financing_source = FinancingSource.find_by(name: 'Direcția Financiar-Contabilă')
     when 'venituri', 'venituri ub', 'venituri BCR', 'venituri trez', 'rectorat', 'buget'
+      # TODO: ask if budget financing source should exist
       financing_source = FinancingSource.find_by(name: 'Venituri')
     when 'finantare complementara',
       # TODO: fix typo
@@ -217,12 +225,12 @@ class ExpendituresController < ApplicationController
     when 'casierie'
       financing_source = FinancingSource.find_by(name: 'Casierie')
     when 'editura ub', 'editura UB', 'editura universitatii'
-      financing_source = FinancingSource.find_by!(name: 'Editura UB')
+      financing_source = FinancingSource.find_by(name: 'Editura UB')
     when 'teren sport'
       financing_source = FinancingSource.find_by(name: 'Teren de sport')
     when 'casa universitarilor'
-      financing_source = FinancingSource.find_by!(name: 'Casa Universitarilor')
-    when 'purowax'
+      financing_source = FinancingSource.find_by(name: 'Casa Universitarilor')
+    when 'purowax', 'PUROWAX'
       financing_source = FinancingSource.find_by(name: 'PUROWAX')
     when 'see', 'SEE'
       financing_source = FinancingSource.find_by(name: 'SEE')
@@ -236,7 +244,7 @@ class ExpendituresController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'Stațiunea de cercetări de la Sfântu Gheorghe')
     when 'st orsova'
       financing_source = FinancingSource.find_by(name: 'Stațiunea de cercetare de la Orșova')
-    when 'st braila', 'braila',
+    when 'st braila', 'braila', 'statiunea braila', 'statiune braila',
       # TODO: fix this upstream
       'statiunea braile'
       financing_source = FinancingSource.find_by(name: 'Stațiunea de Cercetări Ecologice Brăila')
@@ -246,7 +254,9 @@ class ExpendituresController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'Geoparcul Țara Hațegului')
     when 'academica'
       financing_source = FinancingSource.find_by(name: 'Casa de Oaspeți „Academica”')
-    when 'gaudeamus'
+    when 'gaudeamus',
+      # TODO: ask if this is the same?
+      'camin gaudeamus'
       financing_source = FinancingSource.find_by(name: 'Hotel Gaudeamus')
     when 'confucius'
       financing_source = FinancingSource.find_by(name: 'Institutul Confucius')
@@ -273,15 +283,17 @@ class ExpendituresController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'Facultatea de Fizică')
     when 'istorie', 'fac istorie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Istorie')
-    when 'teologie ortodoxa', 'teol ortodoxa', 'TEOLOGIE ORTODOXA', 'fac teol ort'
+    when 'teologie ortodoxa', 'teol ortodoxa', 'TEOLOGIE ORTODOXA', 'fac teol ort', 'teol ort',
+      # TODO: get this fixed upstream
+      'tel ortodoxa'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Teologie Ortodoxă')
     when 'teologie baptista', 'teol baptista'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Teologie Baptistă')
-    when 'teologie rom catolica', 'teol romano catolica'
+    when 'teologie rom catolica', 'teol romano catolica', 'teologie romano catolica'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Teologie Romano-Catolică')
     when 'geografie', 'fac geografie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Geografie')
-    when 'geologie'
+    when 'geologie', 'fac geologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Geologie și Geofizică')
     when 'litere', 'fac litere'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Litere')
@@ -296,12 +308,14 @@ class ExpendituresController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'Facultatea de Jurnalism')
     when 'psihologie', 'fac psihologie', 'fa psihologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Psihologie și Științele Educației')
-    when 'stiinte politice', 'st politice',
+    when 'stiinte politice', 'st politice', 'fac st politice',
       # TODO: fix this, line 839
       'sttinte politice'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Științe Politice')
     when 'sociologie', 'fac sociologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Sociologie și Asistență Socială')
+    when 'departamentul de sport', 'departamentul de educatie fizica'
+      financing_source = FinancingSource.find_by(name: 'Departamentul de Educație Fizică și Sport')
     end
 
     if financing_source.nil?
@@ -313,6 +327,9 @@ class ExpendituresController < ApplicationController
     if expenditure.registration_number == 2600
       # TODO: get this fixed upstream, looks like it should be 59.40
       return
+    elsif expenditure.registration_number == 4507
+      # TODO: another upstream typo
+      expenditure_article_code = '20.06.02'
     end
 
     if expenditure_article_code == '59.01.'
@@ -334,11 +351,6 @@ class ExpendituresController < ApplicationController
     expenditure.expenditure_article = expenditure_article
 
     project_name = row[4].strip
-
-    if row_index == 1464
-      # TODO: fix upstream
-      project_name = 'finantarea cercetarii'
-    end
 
     project_category = nil
     project_details = nil
@@ -438,11 +450,16 @@ class ExpendituresController < ApplicationController
       project_details = project_name.delete_prefix('pr')
                                     .delete_prefix('purowax').delete_prefix('/').strip
       project_category = ProjectCategory.find_by!(name: 'PUROWAX')
+    when 'PUROWAX'
+      project_category = ProjectCategory.find_by!(name: 'PUROWAX')
     when /^pr growing/, /^pr employer/, /^pr ev potential/, /^pr siec/
       project_details = project_name.delete_suffix('- fin cercetarii stiintifice').strip
       project_category = ProjectCategory.find_by!(name: 'Finanțarea cercetării')
     when /^timss/
       project_details = project_name.strip
+      project_category = ProjectCategory.find_by!(name: 'Proiecte Ministerul Educației Naționale')
+    when /^pt timss/
+      project_details = project_name.delete_prefix('pt').strip
       project_category = ProjectCategory.find_by!(name: 'Proiecte Ministerul Educației Naționale')
       # TODO: should this really exist?
     when 'fond cercetare chifiriuc'
@@ -502,7 +519,7 @@ class ExpendituresController < ApplicationController
     when 'civis cofinantare', 'cofinantare civis', 'co-finantare civis'
       # TODO: ask if this should really be a project
       project_category = ProjectCategory.find_by!(name: 'Cofinanțare CIVIS')
-    when /^pr civis 2/
+    when 'civis', /^pr civis 2/
       project_details = project_name.delete_prefix('pr civis 2')
                                     .strip
       project_category = ProjectCategory.find_by!(name: 'CIVIS 2')
@@ -510,7 +527,7 @@ class ExpendituresController < ApplicationController
       # TODO: is this correct?
       project_details = project_name.delete_prefix('erasmus').delete_prefix('/').delete_prefix('+')
                                     .strip
-    when /^pr erasmus/
+    when /^pr erasmus/, /^pr didafe/, /^pr \d+/
       project_details = project_name
     when 'ven erasmus'
       # TODO: ask if this should really be a project
@@ -596,7 +613,7 @@ class ExpendituresController < ApplicationController
     ordinance_date = row[8]
     if ordinance_date.present?
       # TODO: some rows have this date as a Float. Fix this upstream
-      if row_index.in? [1661, 1663, 1664]
+      if expenditure.registration_number.in? [1660, 1662, 1663]
         ordinance_date = registration_date
       else
         ordinance_date = Date.strptime(ordinance_date, '%d.%m.%Y')
