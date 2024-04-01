@@ -25,6 +25,15 @@ class CommitmentsController < ApplicationController
       )
     end
 
+    @financing_source_ids = params[:financing_source_ids]
+    if @financing_source_ids.present?
+      @financing_source_ids = @financing_source_ids.select(&:present?)
+
+      unless @financing_source_ids.empty?
+        @commitments = @commitments.where(financing_source_id: @financing_source_ids)
+      end
+    end
+
     @expenditure_article_ids = params[:expenditure_article_ids]
     if @expenditure_article_ids.present?
       @expenditure_article_ids = @expenditure_article_ids.select(&:present?)
@@ -34,7 +43,7 @@ class CommitmentsController < ApplicationController
       end
     end
 
-    @paginated_commitments = @commitments.paginate(page: params[:page])
+    @paginated_commitments = @commitments.paginate(page: params[:page], per_page: 5)
   end
 
   def new
@@ -113,7 +122,7 @@ class CommitmentsController < ApplicationController
 
   rescue ImportError => e
     flash.now[:alert] = e.to_s
-    return render :import
+    render :import
   end
 
   private

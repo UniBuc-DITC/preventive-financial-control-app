@@ -17,6 +17,22 @@
                       value: params[:commitment_category_code],
                       label: 'Indicator tip de angajament',
                       placeholder: 'Exemplu: A1' %>
+  <%= form.select :financing_source_ids,
+                  FinancingSource.order(:name).map { |financing_source|
+                    [financing_source.name, financing_source.id]
+                  },
+                  {
+                    multiple: true,
+                    selected: @financing_source_ids,
+                    label: 'Reprezentant UB / sursă de finanțare',
+                    wrapper: { class: 'col-12' }
+                  },
+                  {
+                    data: {
+                      use_select2: true,
+                      placeholder: 'Selectează o sursă de finanțare...'
+                    }
+                  } %>
   <%= form.select :expenditure_article_ids,
                   ExpenditureArticle.order(:code).map { |expenditure_article|
                     ["#{expenditure_article.code} - #{expenditure_article.name}", expenditure_article.id]
@@ -34,6 +50,7 @@
                     }
                   }
   %>
+  <%= form.submit 'Filtrează' %>
 <% end %>
 
 <div class="table-responsive">

@@ -115,7 +115,7 @@ class ExpendituresController < ApplicationController
 
   rescue ImportError => e
     flash.now[:alert] = e.to_s
-    return render :import
+    render :import
   end
 
   private
