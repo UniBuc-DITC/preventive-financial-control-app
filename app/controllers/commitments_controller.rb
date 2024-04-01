@@ -109,11 +109,11 @@ class CommitmentsController < ApplicationController
     end
 
     flash[:notice] = "S-au importat cu succes #{total_count} de înregistrări!"
-    redirect_to expenditures_path
+    redirect_to commitments_path
 
-    # rescue ImportError => e
-    #   flash.now[:alert] = e.to_s
-    #   return render :import
+  rescue ImportError => e
+    flash.now[:alert] = e.to_s
+    return render :import
   end
 
   private
@@ -135,14 +135,103 @@ class CommitmentsController < ApplicationController
   end
 
   def parse_commitment(row_index, row)
-    if row_index == 12
-      # TODO: ask what should 'A' mean in the financing source field
+    commitment = Commitment.new
+
+    if row_index == 691
+      # TODO: registration number should've been 689, but it's actually a date
       return
     end
 
-    commitment = Commitment.new
-
     commitment.registration_number = row[0]
+
+    if commitment.registration_number.in? [308, 991, 1012, 1213, 1400, 1401, 1914]
+      # TODO: how to handle this? Multiple value in financing source cell
+      return
+    elsif commitment.registration_number.in? [383, 675, 925, 936, 1000,
+                                              1004, 1005, 1006, 1007, 1008,
+                                              1295, 1371, 1393, 1473,
+                                              1799, 1906]
+      # TODO: financing source seems to be wrong
+      return
+    elsif commitment.registration_number.in? [487, 488, 489, 492, 507, 508, 1310]
+      # TODO: missing expenditure article code
+      return
+    end
+
+    if commitment.registration_number == 467
+      # TODO: missing validity
+      return
+    end
+
+    if commitment.registration_number == 580
+      # TODO: missing financing source
+      return
+    end
+
+    if commitment.registration_number == 668
+      # TODO: invalid financing source
+      return
+    end
+
+    if commitment.registration_number.in? [1147, 1795]
+      # TODO: ask what is this financing source, 'grant doctoral'
+      return
+    end
+
+    if commitment.registration_number == 1177
+      # TODO: ask what is this financing source
+      return
+    end
+
+    if commitment.registration_number == 1205
+      # TODO: what is this financing source
+      return
+    end
+
+    if commitment.registration_number == 1208
+      # TODO: what is this financing source
+      return
+    end
+
+    if commitment.registration_number.in? [1263, 1264]
+      # TODO: what are these?
+      return
+    end
+
+    if commitment.registration_number == 1788
+      # TODO: seems to have written value in place of expenditure article
+      return
+    end
+
+    if commitment.registration_number == 1827
+      # TODO: ask what 'microproductie' should be
+      return
+    end
+
+    if commitment.registration_number.in? [1919, 1920]
+      # TODO: why are they missing?
+      return
+    end
+
+    if commitment.registration_number == 1948
+      # TODO: why is there a person's name listed here?
+      return
+    end
+
+    if commitment.registration_number == 2011
+      # TODO: this one is very weird
+      return
+    end
+
+    if commitment.registration_number == 2063
+      # TODO: is this the right financing source?
+      return
+    end
+
+    if commitment.registration_number == 2064
+      # TODO: invalid expenditure article code
+      return
+    end
 
     registration_date = Date.strptime(row[1], '%d.%m.%Y')
     commitment.registration_date = registration_date
@@ -154,25 +243,29 @@ class CommitmentsController < ApplicationController
     financing_source_name = row[4]
 
     if financing_source_name.nil?
-      # TODO: fix this, registration number 17 is missing it
+      # TODO: fix this, registration number 17, 859, 860 are missing it
       return
     end
 
     financing_source = nil
-    project_details = nil
+    project_details = ''
     case financing_source_name.strip
-    when 'venituri', 'venituri ub'
+    when 'venituri', 'venituri ub', 'rectorat', 'ub', 'ven trez', 'ven trezorerie'
       financing_source = FinancingSource.find_by(name: 'Venituri')
     when /^venit/
       project_details = financing_source_name.delete_prefix('venit').strip
       financing_source = FinancingSource.find_by(name: 'Venituri')
       # TODO: is this correct?
-    when 'buget'
-      financing_source = FinancingSource.find_by(name: 'Buget')
-    when 'trezorerie'
-      # TODO: determine if this is alright
-      financing_source = FinancingSource.find_by(name: 'Trezorerie')
-    when 'finantare complementara'
+    when 'buget', 'trezorerie', 'BUGET'
+      project_details = financing_source_name.strip
+      financing_source = FinancingSource.find_by(name: 'Venituri')
+      # TODO: ask it this is correct or if this should be a separate financing source
+    when 'drept universal'
+      project_details = financing_source_name.strip
+      financing_source = FinancingSource.find_by(name: 'Venituri')
+    when 'finantare complementara',
+      # TODO: fix this typo
+      'finantare complemnetara' # Commitment no. 467
       # TODO: decide whether this should be a financing source, or use revenues and have it be a project category
       financing_source = FinancingSource.find_by(name: 'Finanțare complementară')
     when 'cercetare',
@@ -180,6 +273,17 @@ class CommitmentsController < ApplicationController
       'cercetre',
       # TODO: check if this is okay
       'finantarea cercetarii',
+      'finantarea cercetarii stiintifice',
+      'fin cercetarii',
+      'pr cu tva', 'pr nationale', 'pr internationale', 'proiecte internationale',
+      'proiecte in valuta', 'pr in valuta',
+      # TODO: check these to be correct
+      /^pfe /, /^pfe\//, /^fcs /, /^fcs\//, /^FCS\//,
+      /^fss\//, /^fss /, /^FSS\//, /^proiecte fss/,
+      /^CPI\//,
+      /^lifewatch/, /^timss/,
+      /^proiect caipe/, /^pr growing/, /^pr employer/, /^pr ev potential/, /^pr siec/,
+      /^proiect addendum/,
       # TODO: check this as well
       'fcs', 'FCS',
       # TODO: check this as well
@@ -189,14 +293,20 @@ class CommitmentsController < ApplicationController
       # TODO: check this as well
       'fse',
       # TODO: check this as well
-      'pr men'
+      /^pr men/
+      project_details = financing_source_name.strip
       financing_source = FinancingSource.find_by(name: 'Cercetare')
+    when /^llp-uri/
+      project_details = financing_source_name.delete_prefix('llp-uri').delete_prefix('/').strip
+      # TODO: is this choice correct?
+      financing_source = FinancingSource.find_by(name: 'Erasmus')
     when 'pnrr', 'PNRR',
       # TODO: get this fixed
       'pnnr'
       # TODO: should this actually be considered research?
       financing_source = FinancingSource.find_by(name: 'PNRR')
-    when 'pocu'
+    when /^pocu/
+      project_details = financing_source_name.delete_prefix('pocu').delete_prefix('/').strip
       financing_source = FinancingSource.find_by(name: 'POCU')
     when 'fdi', 'FDI'
       financing_source = FinancingSource.find_by(name: 'FDI')
@@ -204,9 +314,16 @@ class CommitmentsController < ApplicationController
       # TODO: check these as well
       'cam a1 grozavesti', 'cam st militaru', 'cam b groavesti'
       financing_source = FinancingSource.find_by(name: 'Cămine')
+    when /^camine /
+      project_details = financing_source_name.delete_prefix('camine').strip
+      financing_source = FinancingSource.find_by(name: 'Cămine')
     when 'cantina', 'cantina ub',
       # TODO: fix this
       'cantina  ub'
+      financing_source = FinancingSource.find_by(name: 'Cantine')
+    when /^cantina/
+      project_details = financing_source_name.delete_prefix('cantina').delete_prefix('/')
+                                             .strip
       financing_source = FinancingSource.find_by(name: 'Cantine')
     when 'casierie'
       financing_source = FinancingSource.find_by(name: 'Casierie')
@@ -218,19 +335,24 @@ class CommitmentsController < ApplicationController
       financing_source = FinancingSource.find_by!(name: 'Casa Universitarilor')
     when 'purowax'
       financing_source = FinancingSource.find_by(name: 'PUROWAX')
-    when 'see', 'SEE'
+    when 'see', 'SEE', 'grant SEE'
       financing_source = FinancingSource.find_by(name: 'SEE')
-    when 'erasmus'
+    when 'erasmus', 'ven erasmus', 'proiect de tip Erasmus'
       financing_source = FinancingSource.find_by(name: 'Erasmus')
-    when 'civis'
+    when /^erasmus\//
+      project_details = financing_source_name.delete_prefix('erasmus').delete_prefix('/')
+                                             .strip
+      financing_source = FinancingSource.find_by(name: 'Erasmus')
+    when 'civis', 'civis 2'
+      project_details = financing_source_name.strip
       financing_source = FinancingSource.find_by(name: 'CIVIS')
     when 'gr botanica', 'gradina botanica'
       financing_source = FinancingSource.find_by(name: 'Grădina Botanică')
     when 'st sf gheorghe'
       financing_source = FinancingSource.find_by(name: 'Stațiunea de cercetări de la Sfântu Gheorghe')
-    when 'st orsova'
+    when 'st orsova', 'st. orsova'
       financing_source = FinancingSource.find_by(name: 'Stațiunea de cercetare de la Orșova')
-    when 'st braila'
+    when 'statiunea braila', 'statiune braila', 'statiune Braila', 'st braila', 'braila'
       financing_source = FinancingSource.find_by(name: 'Stațiunea de Cercetări Ecologice Brăila')
     when 'statiunea sinaia'
       financing_source = FinancingSource.find_by(name: 'Stațiunea Zoologică Sinaia')
@@ -242,14 +364,24 @@ class CommitmentsController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'Institutul Confucius')
     when 'cls'
       financing_source = FinancingSource.find_by(name: 'Centrul de Limbi Străine')
-    when 'csud'
+    when 'csud', 'CSUD'
       financing_source = FinancingSource.find_by(name: 'Consiliul Studiilor Universitare de Doctorat')
-    when 'icub', 'ICUB'
+    when 'icub', 'ICUB', 'UB icub'
+      financing_source = FinancingSource.find_by(name: 'ICUB')
+    when /^icub/
+      project_details = financing_source_name.delete_prefix('icub').delete_prefix('-')
+                                             .strip
+      financing_source = FinancingSource.find_by(name: 'ICUB')
+    when /^ICUB/
+      project_details = financing_source_name.delete_prefix('ICUB').delete_prefix('/')
+                                             .strip
       financing_source = FinancingSource.find_by(name: 'ICUB')
       ## Faculties
-    when 'adm si afaceri', 'fac ad si afaceri',
+    when 'adm si afaceri', 'fac ad si afaceri', 'administratie si afaceri', 'admin si afaceri',
       # TODO: is this correct? Row 2374
-      'administratie'
+      'administratie',
+      # TODO: is this correct? Registration number 444
+      'Administratie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Administrație și Afaceri')
     when 'biologie', 'fac biologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Biologie')
@@ -257,49 +389,96 @@ class CommitmentsController < ApplicationController
       # TODO: fix this upstream, line 2344
       'chmie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Chimie')
-    when 'drept'
+    when 'drept', 'fac drept'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Drept')
-    when 'filosofie'
+    when /^DREPT /
+      project_details = financing_source_name.delete_prefix('DREPT').strip
+      financing_source = FinancingSource.find_by(name: 'Facultatea de Drept')
+    when 'filosofie', 'fac filosofie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Filosofie')
-    when 'fizica'
+    when /filosofie /
+      project_details = financing_source_name.delete_prefix('filosofie').strip
+      financing_source = FinancingSource.find_by(name: 'Facultatea de Filosofie')
+      # TODO: ask if this is fine
+    when /catedra unesco/
+      project_details = financing_source_name.strip
+      financing_source = FinancingSource.find_by(name: 'Facultatea de Filosofie')
+    when 'fizica', 'fac fizica'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Fizică')
-    when 'istorie'
+    when /^fizica /
+      project_details = financing_source_name.delete_prefix('fizica').strip
+      financing_source = FinancingSource.find_by(name: 'Facultatea de Fizică')
+    when 'istorie', 'fac istorie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Istorie')
     when 'teologie ortodoxa', 'teol ortodoxa'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Teologie Ortodoxă')
-    when 'geografie', 'fac geografie'
+    when 'teologie baptista', 'teol baptista'
+      financing_source = FinancingSource.find_by(name: 'Facultatea de Teologie Baptistă')
+    when 'teologie rom catolica', 'teol romano catolica', 'teologie romano catolica', 'teologie catolica'
+      financing_source = FinancingSource.find_by(name: 'Facultatea de Teologie Romano-Catolică')
+    when 'geografie', 'geografia', 'fac geografie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Geografie')
-    when 'geologie'
+    when 'geologie', 'fac geologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Geologie și Geofizică')
-    when 'litere'
+    when /^Fac. de Geologie/
+      project_details = financing_source_name.delete_prefix('Fac. de Geologie').strip
+                                             .delete_prefix('-').strip
+      financing_source = FinancingSource.find_by(name: 'Facultatea de Geologie și Geofizică')
+    when 'litere', 'Litere', 'fac litere'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Litere')
-    when 'lls',
-      # TODO: check and fix this, line 363
-      'lma'
+    when 'lls', 'fac lls', 'LLS'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Limbi și Literaturi Străine')
-    when 'matematica'
+    when 'lma'
+      # TODO: add
+      financing_source = FinancingSource.find_by(name: 'Limbi Moderne Aplicate')
+    when 'matematica', 'fac matematica', 'Matematica'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Matematică și Informatică')
-    when 'jurnalism'
+    when 'jurnalism', 'fac jurnalism'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Jurnalism')
-    when 'psihologie', 'fac psihologie'
+    when 'psihologie', 'Psihologie', 'fac psihologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Psihologie și Științele Educației')
-    when 'stiinte politice', 'st politice',
+    when /^psihologie/
+      project_details = financing_source_name.delete_prefix('psihologie').strip
+                                             .delete_prefix('/').strip
+      financing_source = FinancingSource.find_by(name: 'Facultatea de Psihologie și Științele Educației')
+    when 'stiinte politice', 'st politice', 'fac st politice'
       # TODO: fix this, line 839
       'sttinte politice'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Științe Politice')
     when 'sociologie', 'fac sociologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Sociologie și Asistență Socială')
-      # TODO: Check if this is a proper cost center
-    when 'rectorat'
-      financing_source = FinancingSource.find_by(name: 'Rectorat')
-    when 'tehnic'
-      financing_source = FinancingSource.find_by(name: 'Serviciul Tehnic')
+    when 'tehnic', 'TEHNIC'
+      financing_source = FinancingSource.find_by(name: 'Direcția Tehnică')
     when 'financiar'
       financing_source = FinancingSource.find_by(name: 'Direcția Financiar-Contabilă')
-    when 'ru'
+    when 'DGMA'
+      financing_source = FinancingSource.find_by(name: 'Direcția Generală Management Academic')
+    when 'dir relatii internationale'
+      financing_source = FinancingSource.find_by(name: 'Direcția Relații Internaționale')
+    when 'dir comunicare si relatii publice', 'directia comunicare si relatii publice',
+      'Directia Comunicare si Relatii Publice'
+      financing_source = FinancingSource.find_by(name: 'Direcția Comunicare și Relații Publice')
+    when 'departamentul de sport', 'departamentul de educatie fizica', 'DEFS'
+      financing_source = FinancingSource.find_by(name: 'Departamentul de Educație Fizică și Sport')
+    when 'IT'
+      financing_source = FinancingSource.find_by(name: 'Direcția IT&C')
+    when 'social'
+      financing_source = FinancingSource.find_by(name: 'Serviciul Social și Activități Studențești')
+    when 'patrimoniu'
+      financing_source = FinancingSource.find_by(name: 'Direcția Patrimoniu Imobiliar')
+    when 'spatii invatamant'
+      financing_source = FinancingSource.find_by(name: 'Serviciul Spații de Învățământ')
+    when 'achizitii'
+      financing_source = FinancingSource.find_by(name: 'Serviciul Achiziții Publice')
+    when 'ru', 'RU'
       financing_source = FinancingSource.find_by(name: 'Direcția Resurse Umane')
     when /^pnrr/, /^PNRR/
       project_details = financing_source_name.delete_prefix('pnrr').delete_prefix('PNRR')
+                                             .delete_prefix('/')
+                                             .strip
+      financing_source = FinancingSource.find_by(name: 'PNRR')
+    when /^pnnr/, /^PNNR/
+      project_details = financing_source_name.delete_prefix('pnnr').delete_prefix('PNNR')
                                              .delete_prefix('/')
                                              .strip
       financing_source = FinancingSource.find_by(name: 'PNRR')
@@ -309,9 +488,23 @@ class CommitmentsController < ApplicationController
                                              .delete_prefix('/')
                                              .strip
       financing_source = FinancingSource.find_by!(name: 'CDI')
+    when /^proiect cdi/
+      # TODO: is this alright?
+      project_details = financing_source_name.delete_prefix('proiect cdi')
+                                             .strip
+      financing_source = FinancingSource.find_by!(name: 'CDI')
+    when /^fdi/, /^FDI/
+      project_details = financing_source_name.delete_prefix('fdi').delete_prefix('FDI')
+                                             .delete_prefix('/')
+                                             .strip
+      financing_source = FinancingSource.find_by!(name: 'FDI')
     when /^purowax/, /^pr purowax/
       project_details = financing_source_name.delete_prefix('pr')
                                              .delete_prefix('purowax').delete_prefix('/')
+                                             .strip
+      financing_source = FinancingSource.find_by!(name: 'PUROWAX')
+    when /^Purowax/
+      project_details = financing_source_name.delete_prefix('Purowax').delete_prefix('/')
                                              .strip
       financing_source = FinancingSource.find_by!(name: 'PUROWAX')
     when /^see/, /^SEE/
@@ -332,11 +525,28 @@ class CommitmentsController < ApplicationController
 
     commitment.value = row[6]
 
-    commitment.procurement_type = row[7]
+    # TODO: check if procurement_type should be required
+    commitment.procurement_type = row[7].presence || ''
 
     expenditure_article_code = row[8].to_s.strip
 
+    # TODO: get this fixed, the code got saved as a decimal and the trailing zero got removed
+    if expenditure_article_code == '59.4'
+      # TODO: delete 59.04
+      expenditure_article_code = '59.40'
+    end
+
+    if expenditure_article_code == '55.48'
+      # TODO: what is this code? It doesn't exist
+      return
+    end
+
     # TODO: what corresponds to code 61.01?
+
+    # TODO: is this correct? Entry no. 1276
+    if expenditure_article_code == '71'
+      return
+    end
 
     expenditure_article = ExpenditureArticle.find_by(code: expenditure_article_code)
     if expenditure_article.nil?
@@ -351,10 +561,7 @@ class CommitmentsController < ApplicationController
     commitment.created_by_user = current_user
     commitment.updated_by_user = current_user
 
-    p commitment
-
-    # successfully_saved = commitment.save
-    successfully_saved = true
+    successfully_saved = commitment.save
 
     if successfully_saved
       # TODO: decide if we really need this many audit events

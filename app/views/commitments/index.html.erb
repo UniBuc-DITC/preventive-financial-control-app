@@ -45,6 +45,7 @@
       <th scope="col">Număr document</th>
       <th scope="col">Valabilitate</th>
       <th scope="col">Reprezentant UB / sursă de finanțare</th>
+      <th scope="col">Detalii proiect</th>
       <th scope="col">Articol de cheltuială</th>
       <th scope="col">Partener</th>
       <th scope="col">Valoare cu TVA (RON)</th>
@@ -63,6 +64,7 @@
         <td><%= commitment.document_number %></td>
         <td><%= commitment.validity %></td>
         <td><%= commitment.financing_source.name %></td>
+        <td><%= commitment.project_details %></td>
         <td><%= "#{commitment.expenditure_article.code} - #{commitment.expenditure_article.name}" %></td>
         <td><%= commitment.partner %></td>
         <td><%= commitment.value %></td>
