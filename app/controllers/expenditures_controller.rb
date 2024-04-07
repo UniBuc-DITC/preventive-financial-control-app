@@ -407,14 +407,10 @@ class ExpendituresController < ApplicationController
 
     # To avoid issues with '59.01' being interpreted as a decimal number,
     # they sometimes write '59.01.'
-    if expenditure_article_code == '59.01.'
-      expenditure_article_code = '59.01'
-    end
+    expenditure_article_code = '59.01' if expenditure_article_code == '59.01.'
 
     # Sometimes, article codes get saved as decimals and the trailing zero gets removed.
-    if expenditure_article_code == '59.4'
-      expenditure_article_code = '59.40'
-    end
+    expenditure_article_code = '59.40' if expenditure_article_code == '59.4'
 
     expenditure_article = ExpenditureArticle.find_by(code: expenditure_article_code)
     if expenditure_article.nil?

@@ -13,12 +13,20 @@
 
     <%= f.text_field :validity %>
 
-    <%= f.select :financing_source_id,
+    <%= f.select :financing_sources_ids,
                  FinancingSource.order(:name).map { |financing_source|
                    [financing_source.name, financing_source.id]
                  },
-                 { include_blank: 'Selectează o sursă de finanțare...' },
-                 { data: { use_select2: true } }
+                 {
+                   multiple: true,
+                   selected: f.object.financing_sources.map(&:id)
+                 },
+                 {
+                   data: {
+                     use_select2: true,
+                     placeholder: 'Selectează una sau mai multe surse de finanțare...'
+                   }
+                 }
     %>
 
     <%= f.text_field :project_details %>

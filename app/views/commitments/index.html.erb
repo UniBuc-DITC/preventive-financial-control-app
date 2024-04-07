@@ -8,7 +8,22 @@
 
 <%= render partial: 'flashes' %>
 
-<%= bootstrap_form_with method: :get, layout: :inline do |form| %>
+<p>
+  <%= button_tag type: 'button', class: 'btn btn-primary',
+                 data: { bs_toggle: 'collapse', bs_target: '#filter-form' },
+                 aria: { expanded: @show_filter_form, controls: 'filter-form' } do %>
+    Caută / filtrează înregistrări
+  <% end %>
+</p>
+
+<%= bootstrap_form_with method: :get, layout: :inline, id: 'filter-form',
+                        html: { class: 'border mt-3 pb-2 collapse' + (@show_filter_form ? ' show' : '') } do |form| %>
+  <%= form.text_field :registration_number,
+                      value: params[:registration_number],
+                      label: 'Număr de înregistrare' %>
+  <%= form.text_field :year,
+                      value: params[:year],
+                      label: 'Anul', wrapper: { style: 'width: 100px' } %>
   <%= form.text_field :start_date, value: params[:start_date], label: 'Data de început',
                       data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
   <%= form.text_field :end_date, value: params[:end_date], label: 'Data de sfârșit',
@@ -80,9 +95,9 @@
         <td><%= commitment.registration_date.strftime('%d.%m.%Y') %></td>
         <td><%= commitment.document_number %></td>
         <td><%= commitment.validity %></td>
-        <td><%= commitment.financing_source.name %></td>
+        <td><%= commitment.financing_sources.map(&:name).join(', ') %></td>
         <td><%= commitment.project_details %></td>
-        <td><%= "#{commitment.expenditure_article.code} - #{commitment.expenditure_article.name}" %></td>
+        <td><%= "#{commitment.expenditure_article&.code} - #{commitment.expenditure_article&.name}" %></td>
         <td><%= commitment.partner %></td>
         <td><%= commitment.value %></td>
         <td><%= commitment.procurement_type %></td>

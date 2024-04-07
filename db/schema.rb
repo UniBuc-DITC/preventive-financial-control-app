@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_01_213747) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_07_180557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,12 +23,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_01_213747) do
     t.index ["user_id"], name: "index_audit_events_on_user_id"
   end
 
+  create_table "commitment_financing_source_associations", force: :cascade do |t|
+    t.bigint "commitment_id"
+    t.bigint "financing_source_id"
+    t.index ["commitment_id", "financing_source_id"], name: "idx_on_commitment_id_financing_source_id_96ea06a6a4", unique: true
+    t.index ["commitment_id"], name: "idx_on_commitment_id_15130e554d"
+    t.index ["financing_source_id"], name: "idx_on_financing_source_id_3c4b5f2642"
+  end
+
   create_table "commitments", force: :cascade do |t|
     t.integer "year", null: false
     t.integer "registration_number", null: false
     t.date "registration_date", default: -> { "CURRENT_DATE" }, null: false
-    t.bigint "financing_source_id", null: false
-    t.bigint "expenditure_article_id", null: false
+    t.bigint "expenditure_article_id"
     t.string "document_number", null: false
     t.string "validity", null: false
     t.string "procurement_type", default: "", null: false
@@ -41,9 +48,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_01_213747) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "project_details", default: "", null: false
+    t.boolean "cancelled", default: false
     t.index ["created_by_user_id"], name: "index_commitments_on_created_by_user_id"
     t.index ["expenditure_article_id"], name: "index_commitments_on_expenditure_article_id"
-    t.index ["financing_source_id"], name: "index_commitments_on_financing_source_id"
     t.index ["updated_by_user_id"], name: "index_commitments_on_updated_by_user_id"
     t.index ["year", "registration_number"], name: "index_commitments_on_year_and_registration_number", unique: true
   end
@@ -62,15 +69,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_01_213747) do
     t.integer "year", null: false
     t.integer "registration_number", null: false
     t.date "registration_date", default: -> { "CURRENT_DATE" }, null: false
-    t.bigint "financing_source_id", null: false
+    t.bigint "financing_source_id"
     t.bigint "project_category_id"
-    t.bigint "expenditure_article_id", null: false
+    t.bigint "expenditure_article_id"
     t.string "details", default: "", null: false
     t.string "procurement_type", default: "", null: false
     t.string "ordinance_number"
     t.date "ordinance_date"
     t.decimal "value", precision: 15, scale: 2
-    t.bigint "payment_method_id", null: false
+    t.bigint "payment_method_id"
     t.string "beneficiary", null: false
     t.string "invoice", default: "", null: false
     t.string "noncompliance", default: "", null: false
@@ -80,6 +87,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_01_213747) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "project_details", default: "", null: false
+    t.boolean "cancelled", default: false, null: false
     t.index ["created_by_user_id"], name: "index_expenditures_on_created_by_user_id"
     t.index ["expenditure_article_id"], name: "index_expenditures_on_expenditure_article_id"
     t.index ["financing_source_id"], name: "index_expenditures_on_financing_source_id"
@@ -129,8 +137,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_01_213747) do
   end
 
   add_foreign_key "audit_events", "users"
+  add_foreign_key "commitment_financing_source_associations", "commitments"
+  add_foreign_key "commitment_financing_source_associations", "financing_sources"
   add_foreign_key "commitments", "expenditure_articles"
-  add_foreign_key "commitments", "financing_sources"
   add_foreign_key "commitments", "users", column: "created_by_user_id"
   add_foreign_key "commitments", "users", column: "updated_by_user_id"
   add_foreign_key "expenditures", "expenditure_articles"

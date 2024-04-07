@@ -171,16 +171,16 @@
       <tr>
         <th scope="row"><%= expenditure.registration_number %>/<%= expenditure.year %></th>
         <td><%= expenditure.registration_date.strftime('%d.%m.%Y') %></td>
-        <td><%= expenditure.financing_source.name %></td>
+        <td><%= expenditure.financing_source&.name %></td>
         <td><%= expenditure.project_category&.name %></td>
         <td><%= expenditure.project_details %></td>
-        <td><%= "#{expenditure.expenditure_article.code} - #{expenditure.expenditure_article.name}" %></td>
+        <td><%= "#{expenditure.expenditure_article&.code} - #{expenditure.expenditure_article&.name}" %></td>
         <td><%= expenditure.details %></td>
         <td><%= expenditure.procurement_type %></td>
         <td><%= expenditure.ordinance_number %></td>
         <td><%= expenditure.ordinance_date&.strftime('%d.%m.%Y') %></td>
         <td><%= number_to_currency expenditure.value, unit: '' %></td>
-        <td><%= expenditure.payment_method.name %></td>
+        <td><%= expenditure.payment_method&.name %></td>
         <td><%= expenditure.beneficiary %></td>
         <td><%= expenditure.invoice %></td>
         <td><%= expenditure.noncompliance %></td>
