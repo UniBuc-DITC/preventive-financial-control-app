@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+workbook = xlsx_package.workbook
+
+workbook.add_worksheet(name: 'Surse de finanțare') do |sheet|
+  header = ['Denumire']
+  sheet.add_row header
+
+  @financing_sources.each do |financing_source|
+    row = [financing_source.name.strip]
+    sheet.add_row row, types: ([:string] * row.length)
+  end
+end

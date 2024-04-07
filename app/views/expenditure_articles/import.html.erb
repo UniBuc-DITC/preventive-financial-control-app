@@ -5,7 +5,9 @@
 <%= render partial: 'flashes' %>
 
 <%= bootstrap_form_with url: import_upload_expenditure_articles_path, method: :post do |form| %>
-  <%= form.file_field :file, accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' %>
+  <%= form.file_field :file,
+                      label: 'Fișier Excel cu articolele de cheltuială',
+                      accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' %>
 
   <%= form.submit 'Importă' %>
 <% end %>

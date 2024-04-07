@@ -1,0 +1,13 @@
+<h1>Importă surse de finanțare</h1>
+
+<p><%= link_to 'Înapoi la lista de surse de finanțare', financing_sources_path %></p>
+
+<%= render partial: 'flashes' %>
+
+<%= bootstrap_form_with url: import_upload_financing_sources_path, method: :post do |form| %>
+  <%= form.file_field :file,
+                      label: 'Fișier Excel cu sursele de finanțare',
+                      accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' %>
+
+  <%= form.submit 'Importă' %>
+<% end %>

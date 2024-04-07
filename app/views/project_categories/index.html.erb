@@ -21,9 +21,9 @@
     </tr>
     </thead>
     <tbody>
-    <% @project_categories.each do |project_category| %>
+    <% @project_categories.each_with_index do |project_category, index| %>
       <tr>
-        <td><%= project_category.id %></td>
+        <td><%= index + 1 %></td>
         <td><%= project_category.name %></td>
         <% if can_modify_project_categories %>
           <td>

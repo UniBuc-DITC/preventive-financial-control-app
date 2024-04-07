@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class FinancingSourcesController < ApplicationController
-  before_action :require_supervisor_or_admin, only: %i[new edit create update destroy]
+  before_action :require_supervisor_or_admin, only: %i[new edit create update destroy import import_upload]
 
   def index
     @financing_sources = FinancingSource.order(name: :asc)
@@ -99,6 +99,44 @@ class FinancingSourcesController < ApplicationController
     end
 
     redirect_to financing_sources_path
+  end
+
+  def export_download
+    @financing_sources = FinancingSource.order(name: :asc)
+    date = Time.now.strftime('%Y-%m-%d')
+    render xlsx: 'export', disposition: 'attachment', filename: "Export surse de finanțare #{date}.xlsx"
+  end
+
+  def import; end
+
+  def import_upload
+    uploaded_file = params.require(:file)
+    spreadsheet = Roo::Spreadsheet.open(uploaded_file)
+    sheet = spreadsheet.sheet(0)
+
+    total_count = 0
+    FinancingSource.transaction do
+      (2..sheet.last_row).each do |row_index|
+        row = sheet.row row_index
+
+        name = row[0].strip
+
+        financing_source = FinancingSource.find_or_initialize_by(name:)
+
+        unless financing_source.save
+          raise ImportError.new(row_index, financing_source.errors.full_messages.join(', '))
+        end
+
+        total_count += 1
+      end
+    end
+
+    flash[:notice] = "S-au importat/actualizat cu succes #{total_count} surse de finanțare!"
+    redirect_to financing_sources_path
+
+  rescue ImportError => e
+    flash.now[:alert] = e.to_s
+    return render :import
   end
 
   private

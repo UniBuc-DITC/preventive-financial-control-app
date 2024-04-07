@@ -15,7 +15,11 @@ Rails.application.routes.draw do
 
   resources :users, only: %i[index new create]
 
-  resources :financing_sources
+  resources :financing_sources do
+    get 'export', to: 'financing_sources#export_download', as: :export_download, on: :collection, format: 'xlsx'
+    get 'import', to: 'financing_sources#import', as: :import, on: :collection
+    post 'import', to: 'financing_sources#import_upload', as: :import_upload, on: :collection
+  end
 
   resources :project_categories
 

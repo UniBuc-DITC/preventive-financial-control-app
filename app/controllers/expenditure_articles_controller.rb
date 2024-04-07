@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExpenditureArticlesController < ApplicationController
-  before_action :require_supervisor_or_admin, only: %i[new edit create update destroy]
+  before_action :require_supervisor_or_admin, only: %i[new edit create update destroy import import_upload]
 
   def index
     @expenditure_articles = ExpenditureArticle.order(code: :asc)
