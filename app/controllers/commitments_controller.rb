@@ -146,115 +146,45 @@ class CommitmentsController < ApplicationController
   def parse_commitment(row_index, row)
     commitment = Commitment.new
 
-    if row_index == 691
-      # TODO: registration number should've been 689, but it's actually a date
-      return
-    end
-
     commitment.registration_number = row[0]
 
+    # TODO: fix these financing sources
+    # 383 = parc auto
+    # 507, 508 = cercetare
+    # 675, 925, 936 = cercetare
+    # 1000, 1004, 1005, 1006, 1007, 1008 = Direcția Patrimoniu Imobiliar
+    # 1295 = cercetare + detalii proiect
+    # 1371 = finantare complentare
+    # 1393, 1473 = cercetare
+    # 1799 = cercetare / drept universal
+    # 1906 = cercetare
+    # TODO: or allow to be whatever
+
     if commitment.registration_number.in? [308, 991, 1012, 1213, 1400, 1401, 1914]
-      # TODO: how to handle this? Multiple value in financing source cell
-      return
-    elsif commitment.registration_number.in? [383, 675, 925, 936, 1000,
-                                              1004, 1005, 1006, 1007, 1008,
-                                              1295, 1371, 1393, 1473,
-                                              1799, 1906]
-      # TODO: financing source seems to be wrong
-      return
-    elsif commitment.registration_number.in? [487, 488, 489, 492, 507, 508, 1310]
-      # TODO: missing expenditure article code
+      # TODO: we will have to allow multiple cost centers for each commitment
+      # and handle this
       return
     end
 
-    if commitment.registration_number == 467
-      # TODO: missing validity
-      return
-    end
+    # grant doctoral = venituri
 
-    if commitment.registration_number == 580
-      # TODO: missing financing source
-      return
-    end
-
-    if commitment.registration_number == 668
-      # TODO: invalid financing source
-      return
-    end
-
-    if commitment.registration_number.in? [1147, 1795]
-      # TODO: ask what is this financing source, 'grant doctoral'
-      return
-    end
-
-    if commitment.registration_number == 1177
-      # TODO: ask what is this financing source
-      return
-    end
-
-    if commitment.registration_number == 1205
-      # TODO: what is this financing source
-      return
-    end
-
-    if commitment.registration_number == 1208
-      # TODO: what is this financing source
-      return
-    end
-
-    if commitment.registration_number.in? [1263, 1264]
-      # TODO: what are these?
-      return
-    end
-
-    if commitment.registration_number == 1788
-      # TODO: seems to have written value in place of expenditure article
-      return
-    end
-
-    if commitment.registration_number == 1827
-      # TODO: ask what 'microproductie' should be
-      return
-    end
-
-    if commitment.registration_number.in? [1919, 1920]
-      # TODO: why are they missing?
-      return
-    end
-
-    if commitment.registration_number == 1948
-      # TODO: why is there a person's name listed here?
-      return
-    end
-
-    if commitment.registration_number == 2011
-      # TODO: this one is very weird
-      return
-    end
-
-    if commitment.registration_number == 2063
-      # TODO: is this the right financing source?
-      return
-    end
-
-    if commitment.registration_number == 2064
-      # TODO: invalid expenditure article code
-      return
-    end
+    # 1177 cercetare
+    # 1205 cercetare
+    # 1208 ICUB
+    # 1263, 1264 ERASMUS
+    # 1827 punem microproductie
+    # 1948 - parc auto
+    # 2011 - cercetare
+    # 2063 - venituri
 
     registration_date = Date.strptime(row[1], '%d.%m.%Y')
     commitment.registration_date = registration_date
     commitment.year = registration_date.year
 
     commitment.document_number = row[2]
-    commitment.validity = row[3]
+    commitment.validity = row[3].presence || ''
 
     financing_source_name = row[4]
-
-    if financing_source_name.nil?
-      # TODO: fix this, registration number 17, 859, 860 are missing it
-      return
-    end
 
     financing_source = nil
     project_details = ''
@@ -264,12 +194,13 @@ class CommitmentsController < ApplicationController
     when /^venit/
       project_details = financing_source_name.delete_prefix('venit').strip
       financing_source = FinancingSource.find_by(name: 'Venituri')
-      # TODO: is this correct?
+      # TODO: is this correct? "buget" = "venituri"?
     when 'buget', 'trezorerie', 'BUGET'
       project_details = financing_source_name.strip
       financing_source = FinancingSource.find_by(name: 'Venituri')
-      # TODO: ask it this is correct or if this should be a separate financing source
     when 'drept universal'
+      # TODO: ask it this is correct or if this should be a separate financing source
+      # keep it as venituri add
       project_details = financing_source_name.strip
       financing_source = FinancingSource.find_by(name: 'Venituri')
     when 'finantare complementara',
@@ -429,7 +360,7 @@ class CommitmentsController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'Facultatea de Geografie')
     when 'geologie', 'fac geologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Geologie și Geofizică')
-    when /^Fac. de Geologie/
+    when /^Fac\. de Geologie/
       project_details = financing_source_name.delete_prefix('Fac. de Geologie').strip
                                              .delete_prefix('-').strip
       financing_source = FinancingSource.find_by(name: 'Facultatea de Geologie și Geofizică')
@@ -543,18 +474,6 @@ class CommitmentsController < ApplicationController
     if expenditure_article_code == '59.4'
       # TODO: delete 59.04
       expenditure_article_code = '59.40'
-    end
-
-    if expenditure_article_code == '55.48'
-      # TODO: what is this code? It doesn't exist
-      return
-    end
-
-    # TODO: what corresponds to code 61.01?
-
-    # TODO: is this correct? Entry no. 1276
-    if expenditure_article_code == '71'
-      return
     end
 
     expenditure_article = ExpenditureArticle.find_by(code: expenditure_article_code)

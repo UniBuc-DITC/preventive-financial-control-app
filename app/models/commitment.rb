@@ -2,8 +2,7 @@
 
 class Commitment < ApplicationRecord
   validates :year, :registration_number, :registration_date,
-            :document_number, :validity,
-            :partner, :value,
+            :document_number, :partner, :value,
             presence: true
 
   belongs_to :financing_source

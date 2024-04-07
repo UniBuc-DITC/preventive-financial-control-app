@@ -145,33 +145,11 @@ class ExpendituresController < ApplicationController
 
     expenditure.registration_number = row[0]
 
-    if expenditure.registration_number == 2623
-      # TODO: what are the AKS funds?
-      return
-    end
-
-    if expenditure.registration_number == 2744
-      # TODO: fix duplicate registration number issue
-      return
-    end
-
-    if expenditure.registration_number == 3772
-      # TODO: fix missing value
-      return
-    end
-
-    # TODO: ask about registration number 4813, it has a weird value
-
     registration_date = Date.strptime(row[1], '%d.%m.%Y')
     expenditure.registration_date = registration_date
     expenditure.year = registration_date.year
 
     financing_source_name = row[2].strip
-
-    if financing_source_name == 'valuta studii'
-      # TODO: ask what is this financing source
-      return
-    end
 
     financing_source = nil
     case financing_source_name
@@ -234,7 +212,7 @@ class ExpendituresController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'PUROWAX')
     when 'see', 'SEE'
       financing_source = FinancingSource.find_by(name: 'SEE')
-    when 'erasmus'
+    when 'erasmus', 'valuta studii'
       financing_source = FinancingSource.find_by(name: 'Erasmus')
     when 'civis'
       financing_source = FinancingSource.find_by(name: 'CIVIS')
@@ -271,9 +249,7 @@ class ExpendituresController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'Facultatea de Administrație și Afaceri')
     when 'biologie', 'fac biologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Biologie')
-    when 'fac chimie', 'chimie',
-      # TODO: fix this upstream, line 2344
-      'chmie'
+    when 'fac chimie', 'chimie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Chimie')
     when 'drept', 'fac drept'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Drept')
@@ -324,14 +300,6 @@ class ExpendituresController < ApplicationController
 
     expenditure_article_code = row[3].to_s.strip
 
-    if expenditure.registration_number == 2600
-      # TODO: get this fixed upstream, looks like it should be 59.40
-      return
-    elsif expenditure.registration_number == 4507
-      # TODO: another upstream typo
-      expenditure_article_code = '20.06.02'
-    end
-
     if expenditure_article_code == '59.01.'
       # TODO: check upstream if this fix is correct
       expenditure_article_code = '59.01'
@@ -369,9 +337,7 @@ class ExpendituresController < ApplicationController
     when 'pr cu tva', 'pr tva', 'proiecte cu tva'
       project_category = ProjectCategory.find_by!(name: 'Proiect cu TVA')
     when 'pr. cu finantare in valuta',
-      'pr valuta', 'proiecte in valuta',
-      # TODO: check if this is the same thing
-      'finantare valuta'
+      'pr valuta', 'proiecte in valuta'
       project_category = ProjectCategory.find_by!(name: 'Proiect cu finanțare în valută')
     when 'premiile senatului'
       project_category = ProjectCategory.find_by!(name: 'Premiile Senatului')
@@ -443,7 +409,8 @@ class ExpendituresController < ApplicationController
                                     .strip
       project_category = ProjectCategory.find_by!(name: 'SEE')
     when /^ctr/
-      # TODO: check if this makes sense
+      # TODO: this doesn't makes sense
+      # Fix this, should be Erasmus/research project and the contract number should be project number
       project_details = project_name.delete_prefix('ctr').strip
       project_category = ProjectCategory.find_by!(name: 'CTR')
     when /^purowax/, /^pr purowax/
@@ -463,6 +430,7 @@ class ExpendituresController < ApplicationController
       project_category = ProjectCategory.find_by!(name: 'Proiecte Ministerul Educației Naționale')
       # TODO: should this really exist?
     when 'fond cercetare chifiriuc'
+      # this shouldn't exist, this should be finantarea cercetarii
       project_category = ProjectCategory.find_by!(name: 'Fond cercetare Chifiriuc')
     when 'buget', 'BUGET', 'venituri ub',
       'venit bcr', 'venituri BCR', 'venituri',
@@ -548,11 +516,12 @@ class ExpendituresController < ApplicationController
       end
       project_details = project_name
       project_category = nil
-    when 'llp/erasmus'
+    when 'llp/erasmus', 'finantare valuta'
       # TODO: is this correct? Should we instead fill in the project details field?
       project_category = ProjectCategory.find_by!(name: 'LLP/Erasmus')
     when 'progr comunitare erasmus'
       # TODO: is this correct? Should we instead fill in the project details field?
+      # PCE and Erasmus
       project_category = ProjectCategory.find_by!(name: 'Programe comunitare Erasmus')
     when 'fondul rectorului', 'protocol rector'
       # TODO: check if this solution is alright
@@ -593,6 +562,9 @@ class ExpendituresController < ApplicationController
     end
 
     # TODO: get rid of this workaround somehow
+    # FCS e finantarea cercetarii stiintifice
+    # trebuie redenumit
+    # TODO: ask if this should be the same as "Cercetare"?
     if financing_source_name.downcase == 'fcs' && project_category.nil?
       project_category = ProjectCategory.find_by!(name: 'Finanțarea cercetării')
     end
@@ -612,22 +584,12 @@ class ExpendituresController < ApplicationController
     expenditure.ordinance_number = row[7]
     ordinance_date = row[8]
     if ordinance_date.present?
-      # TODO: some rows have this date as a Float. Fix this upstream
-      if expenditure.registration_number.in? [1660, 1662, 1663]
-        ordinance_date = registration_date
-      else
-        ordinance_date = Date.strptime(ordinance_date, '%d.%m.%Y')
-      end
+      ordinance_date = Date.strptime(ordinance_date, '%d.%m.%Y')
     end
     expenditure.ordinance_date = ordinance_date
 
     # TODO: check decimal handling
     expenditure.value = row[9]
-
-    if row_index == 673
-      # TODO: fix the original row upstream
-      row.insert(10, 'virament')
-    end
 
     payment_method_name = row[10].strip
 
@@ -649,8 +611,7 @@ class ExpendituresController < ApplicationController
 
     expenditure.payment_method = payment_method
 
-    # TODO: this should be mandatory, check row 2310
-    expenditure.beneficiary = row[11] || '-'
+    expenditure.beneficiary = row[11]
 
     expenditure.invoice = row[12] || ''
 

@@ -8,8 +8,8 @@ class Expenditure < ApplicationRecord
   # }
   validates :value, :beneficiary, presence: true
 
-  # TODO: check why this fails for row 13 in Excel import
-  # validate :ordinance_date_before_registration_date
+  # TODO: only check this for new records, not for updated/imported ones
+  validate :ordinance_date_before_registration_date
 
   belongs_to :financing_source
   belongs_to :project_category, optional: true
