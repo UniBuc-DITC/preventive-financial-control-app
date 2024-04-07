@@ -95,7 +95,7 @@ class ProjectCategoriesController < ApplicationController
     if successfully_deleted
       flash[:notice] = "A fost ștearsă cu succes categoria de proiect cu denumirea '#{@project_category.name}'"
     else
-      flash[:alert] = "Nu s-a putut șterge categoria de proiect: #{@expenditure_article.errors.full_messages.join(', ')}."
+      flash[:alert] = "Nu s-a putut șterge categoria de proiect: #{@project_category.errors.full_messages.join(', ')}."
     end
 
     redirect_to project_categories_path

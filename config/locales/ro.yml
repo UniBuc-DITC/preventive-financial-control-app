@@ -5,7 +5,7 @@ ro:
         required: "nu poate fi gol"
         present: "nu trebuie să fie setat"
         restrict_dependent_destroy:
-          has_many: "nu se poate șterge un obiect cât încă are entități asociate"
+          has_many: "nu se poate șterge un obiect cât timp încă există entități asociate acestuia"
     attributes:
       user:
         entra_user_id: "ID în Microsoft Entra"
