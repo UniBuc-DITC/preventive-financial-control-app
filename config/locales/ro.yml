@@ -1,4 +1,8 @@
 ro:
+  expenditures:
+    create:
+      success_message: "A fost salvată cu succes cheltuiala cu numărul de înregistrare %{registration_number}/%{year}."
+      error_message: "Nu s-a putut salva noua cheltuială. Verificați mesajele de eroare și încercați din nou."
   activerecord:
     errors:
       messages:

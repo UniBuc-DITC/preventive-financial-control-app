@@ -14,6 +14,8 @@ pin '@rails/ujs', to: 'rails-ujs.js', preload: true
 pin 'bootstrap', to: 'bootstrap.min.js', preload: true
 pin '@popperjs/core', to: 'popper.js', preload: true
 
+pin 'js-cookie', preload: true
+
 pin 'vanillajs-datepicker', to: 'vanillajs-datepicker.min.js', preload: true
 # Romanian locale is hardcoded in `application.js`
 # pin 'vanillajs-datepicker-ro', to: 'vanillajs-datepicker-ro.js', preload: true

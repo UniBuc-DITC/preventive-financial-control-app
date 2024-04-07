@@ -8,6 +8,8 @@ import "@rails/ujs";
 import "@popperjs/core";
 import "bootstrap";
 
+import Cookies from "js-cookie";
+
 import { Datepicker } from "vanillajs-datepicker";
 
 import "select2";
@@ -73,7 +75,7 @@ document.documentElement.addEventListener("turbo:load", () => {
   $("select[data-use-select2]").each(function () {
     const options = {
       // Make select boxes full width
-      width: '100%'
+      width: "100%",
     };
 
     // Since the standard `select` element doesn't support the `placeholder` attribute,
@@ -113,4 +115,33 @@ document.documentElement.addEventListener("turbo:load", () => {
   //     }
   //   },
   // );
+
+  function updateShowFilterFormInput(value) {
+    const showFilterForm = document.getElementById("show_filter_form");
+    showFilterForm.value = value;
+  }
+
+  function updateShowFilterFormSearchParam(value) {
+    const url = new URL(window.location);
+    url.searchParams.set("show_filter_form", value);
+    window.history.replaceState(null, "", url.toString());
+  }
+
+  /** Helper function to help persist changes to the filter form toggle. */
+  function updateShowFilterFormState(value) {
+    Cookies.set("show_filter_form", value.toString(), {
+      expires: 7,
+      path: window.location.pathname,
+    });
+  }
+
+  const filterForm = document.getElementById("filter-form");
+  if (filterForm) {
+    filterForm.addEventListener("shown.bs.collapse", () =>
+      updateShowFilterFormState(true),
+    );
+    filterForm.addEventListener("hidden.bs.collapse", () =>
+      updateShowFilterFormState(false),
+    );
+  }
 });

@@ -8,15 +8,32 @@
 
 <%= render partial: 'flashes' %>
 
-<%= bootstrap_form_with method: :get, layout: :inline do |form| %>
+<p>
+  <%= button_tag type: 'button', class: 'btn btn-primary',
+                 data: { bs_toggle: 'collapse', bs_target: '#filter-form' },
+                 aria: { expanded: @show_filter_form, controls: 'filter-form' } do %>
+    Caută / filtrează înregistrări
+  <% end %>
+</p>
+
+<%= bootstrap_form_with method: :get, layout: :inline, id: 'filter-form',
+                        html: { class: 'border mt-3 pb-2 collapse' + (@show_filter_form ? ' show' : '') } do |form| %>
+  <%= form.text_field :registration_number,
+                      value: params[:registration_number],
+                      label: 'Număr de înregistrare' %>
+  <%= form.text_field :year,
+                      value: params[:year],
+                      label: 'Anul', wrapper: { style: 'width: 100px' } %>
   <%= form.text_field :start_date, value: params[:start_date], label: 'Data de început',
+                      help: 'Data începând cu care să fie afișate înregistrările',
                       data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
   <%= form.text_field :end_date, value: params[:end_date], label: 'Data de sfârșit',
+                      help: 'Data până la care să fie incluse înregistrările afișate',
                       data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
   <%= form.text_field :expenditure_category_code,
                       value: params[:expenditure_category_code],
                       label: 'Indicator tip de cheltuială',
-                      placeholder: 'Exemplu: C1' %>
+                      help: 'Exemplu: C1' %>
   <%= form.select :financing_source_ids,
                   FinancingSource.order(:name).map { |financing_source|
                     [financing_source.name, financing_source.id]
@@ -31,6 +48,22 @@
                     data: {
                       use_select2: true,
                       placeholder: 'Selectează o sursă de finanțare...'
+                    }
+                  } %>
+  <%= form.select :project_category_ids,
+                  ProjectCategory.order(:name).map { |project_category|
+                    [project_category.name, project_category.id]
+                  },
+                  {
+                    multiple: true,
+                    selected: @project_category_ids,
+                    label: 'Categorie de proiect',
+                    wrapper: { class: 'col-12' }
+                  },
+                  {
+                    data: {
+                      use_select2: true,
+                      placeholder: 'Selectează o categorie de proiect...'
                     }
                   } %>
   <%= form.select :expenditure_article_ids,
@@ -50,7 +83,62 @@
                     }
                   }
   %>
-  <%= form.submit 'Filtrează' %>
+  <%= form.text_field :project_details,
+                      value: params[:project_details],
+                      label: 'Detalii proiect' %>
+  <%= form.text_field :details,
+                      value: params[:details],
+                      label: 'Detalii cheltuială' %>
+  <%= form.text_field :procurement_type,
+                      value: params[:procurement_type],
+                      label: 'Tip achiziție' %>
+  <%= form.text_field :ordinance_number,
+                      value: params[:ordinance_number],
+                      label: 'Număr ordonanțare' %>
+  <%= form.text_field :ordinance_date,
+                      value: params[:ordinance_date],
+                      label: 'Dată ordonanțare',
+                      data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
+  <%= form.form_group :value_filter do %>
+    <%= form.label 'value', 'Valoare', class: 'form-label' %>
+    <div class="input-group" id="value">
+      <span class="input-group-text">Între</span>
+      <%= form.number_field :min_value, value: params[:min_value], wrapper: false %>
+      <span class="input-group-text">și</span>
+      <%= form.number_field :max_value, value: params[:max_value], wrapper: false %>
+    </div>
+  <% end %>
+  <%= form.select :payment_method_ids,
+                  PaymentMethod.order(:name).map { |payment_method|
+                    [payment_method.name, payment_method.id]
+                  },
+                  {
+                    multiple: true,
+                    selected: @payment_method_ids,
+                    label: 'Metode de plată',
+                    wrapper: { class: 'col-3' }
+                  },
+                  {
+                    data: {
+                      use_select2: true,
+                      placeholder: 'Selectează o metodă de plată...'
+                    }
+                  } %>
+  <%= form.text_field :beneficiary,
+                      value: params[:beneficiary],
+                      label: 'Beneficiar' %>
+  <%= form.text_field :invoice,
+                      value: params[:invoice],
+                      label: 'Factură' %>
+  <%= form.text_field :noncompliance,
+                      value: params[:noncompliance],
+                      label: 'Neconformitate' %>
+  <%= form.text_field :remarks,
+                      value: params[:remarks],
+                      label: 'Observații' %>
+  <div class="col-12">
+    <%= form.submit 'Filtrează' %>
+  </div>
 <% end %>
 
 <div class="table-responsive">
@@ -91,7 +179,7 @@
         <td><%= expenditure.procurement_type %></td>
         <td><%= expenditure.ordinance_number %></td>
         <td><%= expenditure.ordinance_date&.strftime('%d.%m.%Y') %></td>
-        <td><%= expenditure.value %></td>
+        <td><%= number_to_currency expenditure.value, unit: '' %></td>
         <td><%= expenditure.payment_method.name %></td>
         <td><%= expenditure.beneficiary %></td>
         <td><%= expenditure.invoice %></td>
@@ -111,7 +199,11 @@
     <% if @expenditures.empty? %>
       <tr>
         <td colspan="17" class="ps-5 py-3">
-          Nu a fost adăugată încă nicio cheltuială.
+          <% if @any_filters_applied %>
+            Nu a fost găsită nicio cheltuială care să se potrivească cu criteriile introduse.
+          <% else %>
+            Nu a fost adăugată încă nicio cheltuială.
+          <% end %>
         </td>
       </tr>
     <% end %>
@@ -125,9 +217,9 @@
   <h2>Raport</h2>
   <p>Valorile de mai jos se referă strict la înregistrările care respectă criterile de filtrare selectate mai sus.</p>
   <p>
-    Număr înregistrări: <%= @expenditures.count %>
+    Număr înregistrări: <%= number_with_delimiter @expenditures.count %>
   </p>
   <p>
-    Valoare totală: <%= @expenditures.sum(:value) %> RON
+    Valoare totală: <%= number_to_currency @expenditures.sum(:value) %>
   </p>
 </section>

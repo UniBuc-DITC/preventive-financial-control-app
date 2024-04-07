@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
 class Expenditure < ApplicationRecord
-  validates :year, :registration_number, :registration_date, presence: true
-  # TODO: decide if we really want to enforce this validation
-  # validates :project_category, presence: true, if: lambda {
-  #   financing_source.present? && financing_source.requires_project_category?
-  # }
-  validates :value, :beneficiary, presence: true
+  attr_accessor :imported
 
-  # TODO: only check this for new records, not for updated/imported ones
-  validate :ordinance_date_before_registration_date
+  def imported?
+    !!@imported
+  end
+
+  validates :year, :registration_number, :registration_date, presence: true
+  validates :value, presence: true
+  # Some imported records might not have a beneficiary listed
+  validates :beneficiary, presence: true, unless: :imported?
+
+  validate :ordinance_date_before_registration_date, on: :create, unless: :imported?
 
   belongs_to :financing_source
   belongs_to :project_category, optional: true
