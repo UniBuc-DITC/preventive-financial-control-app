@@ -1,0 +1,11 @@
+<div class="col">
+  <div class="card mx-auto h-100" style="max-width: 18rem;">
+    <div class="card-body text-center">
+      <h4 class="card-title"><%= card_title %></h4>
+      <p class="card-text"><%= card_text %></p>
+      <% if defined? link_text %>
+        <%= link_to link_text, link_path, class: 'btn btn-secondary' %>
+      <% end %>
+    </div>
+  </div>
+</div>

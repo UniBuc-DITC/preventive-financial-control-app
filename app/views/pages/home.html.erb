@@ -4,19 +4,61 @@
 
 <% if session.has_key? :current_user_id %>
   <p>Bună, <%= session[:current_user_full_name] %>!</p>
-  <ul>
-    <li><%= link_to 'Cheltuieli', expenditures_path %></li>
-    <li><%= link_to 'Angajamente', commitments_path %></li>
-    <li><%= link_to 'Surse de finanțare', financing_sources_path %></li>
-    <li><%= link_to 'Categorii de proiect', project_categories_path %></li>
-    <li><%= link_to 'Articole de cheltuială', expenditure_articles_path %></li>
-    <li>Modalități de plată</li>
-    <li><%= link_to 'Utilizatori', users_path %></li>
-    <li><%= link_to 'Istoric activități', audit_events_path %></li>
-  </ul>
-  <%= bootstrap_form_with url: sign_out_path, method: :post, data: { turbo: false } do %>
-    <%= submit_tag 'Deconectare', class: 'btn btn-secondary' %>
-  <% end %>
+  <div class="d-flex flex-row flex-wrap justify-content-center">
+    <%= render partial: 'primary_card', locals: {
+      card_title: 'Cheltuieli',
+      card_text: "#{Expenditure.count} cheltuieli înregistrate",
+      link_path: expenditures_path,
+      link_text: 'Deschide registrul de cheltuieli'
+    } %>
+    <%= render partial: 'primary_card', locals: {
+      card_title: 'Angajamente',
+      card_text: "#{Commitment.count} angajamente înregistrate",
+      link_path: commitments_path,
+      link_text: 'Deschide registrul de angajamente'
+    } %>
+  </div>
+  <div class="mt-3 mx-auto row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" style="max-width: 60rem">
+    <%= render partial: 'secondary_card', locals: {
+      card_title: 'Surse de finanțare',
+      card_text: "#{FinancingSource.count} surse de finanțare înregistrate",
+      link_path: financing_sources_path,
+      link_text: 'Vezi sursele de finanțare'
+    } %>
+    <%= render partial: 'secondary_card', locals: {
+      card_title: 'Categorii de proiecte',
+      card_text: "#{ProjectCategory.count} categorii de proiecte înregistrate",
+      link_path: project_categories_path,
+      link_text: 'Vezi categoriile de proiecte'
+    } %>
+    <%= render partial: 'secondary_card', locals: {
+      card_title: 'Articole de cheltuială',
+      card_text: "#{ExpenditureArticle.count} articole de cheltuială înregistrate",
+      link_path: expenditure_articles_path,
+      link_text: 'Vezi articolele de cheltuială'
+    } %>
+    <%= render partial: 'secondary_card', locals: {
+      card_title: 'Metode de plată',
+      card_text: "#{PaymentMethod.count} metode de plată înregistrate"
+    } %>
+    <%= render partial: 'secondary_card', locals: {
+      card_title: 'Utilizatori',
+      card_text: "#{User.count} utilizatori înregistrați",
+      link_path: users_path,
+      link_text: 'Vezi utilizatorii'
+    } %>
+    <%= render partial: 'secondary_card', locals: {
+      card_title: 'Istoric activități',
+      card_text: "#{AuditEvent.count} activități înregistrate",
+      link_path: audit_events_path,
+      link_text: 'Vezi istoricul activităților'
+    } %>
+  </div>
+  <div class="mt-5 text-center">
+    <%= bootstrap_form_with url: sign_out_path, method: :post, data: { turbo: false } do %>
+      <%= submit_tag 'Deconectare', class: 'btn btn-danger' %>
+    <% end %>
+  </div>
 <% else %>
   <p>Bine ați venit. Pentru a accesa aplicația, conectați-vă în
     cont.</p>
