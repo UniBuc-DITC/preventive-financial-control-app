@@ -136,9 +136,6 @@ class CommitmentsController < ApplicationController
 
         commitment = parse_commitment row_index, row
 
-        # TODO: remove
-        next if commitment.nil?
-
         commitment.created_by_user = current_user
         commitment.updated_by_user = current_user
 
@@ -183,16 +180,6 @@ class CommitmentsController < ApplicationController
     commitment = Commitment.new
 
     commitment.registration_number = row[0]
-
-    if commitment.registration_number.in? [656, 863, 1022, 1438, 1694, 1786]
-      # TODO: these rows lack a financing source
-      return nil
-    end
-
-    # grant doctoral = venituri
-
-    # 2011 - cercetare
-    # 2063 - venituri
 
     registration_date = Date.strptime(row[1], '%d.%m.%Y')
     commitment.registration_date = registration_date
@@ -280,7 +267,7 @@ class CommitmentsController < ApplicationController
       project_details = financing_sources_column.strip
       financing_sources << FinancingSource.find_by(name: 'Direcția Patrimoniu Imobiliar')
     when 'cantina', 'cantina ub',
-      # TODO: fix this
+      # Typo
       'cantina  ub'
       financing_sources << FinancingSource.find_by(name: 'Cantine')
     when /^cantina/
@@ -343,10 +330,7 @@ class CommitmentsController < ApplicationController
       financing_sources << FinancingSource.find_by(name: 'ICUB')
       ## Faculties
     when 'adm si afaceri', 'fac ad si afaceri', 'administratie si afaceri', 'admin si afaceri',
-      # TODO: is this correct? Row 2374
-      'administratie',
-      # TODO: is this correct? Registration number 444
-      'Administratie'
+      'administratie', 'Administratie'
       financing_sources << FinancingSource.find_by(name: 'Facultatea de Administrație și Afaceri')
     when 'biologie', 'fac biologie'
       financing_sources << FinancingSource.find_by(name: 'Facultatea de Biologie')
@@ -364,7 +348,6 @@ class CommitmentsController < ApplicationController
     when /filosofie /
       project_details = financing_sources_column.delete_prefix('filosofie').strip
       financing_sources << FinancingSource.find_by(name: 'Facultatea de Filosofie')
-      # TODO: ask if this is fine
     when /catedra unesco/
       project_details = financing_sources_column.strip
       financing_sources << FinancingSource.find_by(name: 'Facultatea de Filosofie')
@@ -406,7 +389,7 @@ class CommitmentsController < ApplicationController
                                                 .delete_prefix('/').strip
       financing_sources << FinancingSource.find_by(name: 'Facultatea de Psihologie și Științele Educației')
     when 'stiinte politice', 'st politice', 'fac st politice'
-      # TODO: fix this, line 839
+      # Typo
       'sttinte politice'
       financing_sources << FinancingSource.find_by(name: 'Facultatea de Științe Politice')
     when 'sociologie', 'fac sociologie'
