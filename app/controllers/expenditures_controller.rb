@@ -253,11 +253,6 @@ class ExpendituresController < ApplicationController
     expenditure.registration_date = registration_date
     expenditure.year = registration_date.year
 
-    # TODO: fix this upstream, registration date seems to be from last year??
-    if registration_number == 1397
-      expenditure.year = 2024
-    end
-
     financing_source = nil
     project_category = nil
     project_details = nil
