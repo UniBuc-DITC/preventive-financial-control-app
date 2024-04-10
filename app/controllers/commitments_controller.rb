@@ -2,7 +2,7 @@
 
 class CommitmentsController < ApplicationController
   def index
-    @commitments = Commitment.order(id: :desc)
+    @commitments = Commitment.order('year desc, registration_number desc')
 
     relation_names = %i[expenditure_article created_by_user]
     @commitments = @commitments.references(relation_names).includes(relation_names)
@@ -190,6 +190,8 @@ class CommitmentsController < ApplicationController
       commitment.validity = ''
       commitment.partner = ''
       commitment.value = 0
+      commitment.remarks = row[9] || ''
+      commitment.noncompliance = row[10] || ''
       commitment.cancelled = true
       return commitment
     end
@@ -198,6 +200,11 @@ class CommitmentsController < ApplicationController
     commitment.validity = row[3].presence || ''
 
     financing_sources_column = row[4]
+
+    # This one had the two financing sources listed in the next column
+    if commitment.registration_number == 1786
+      financing_sources_column = row[5]
+    end
 
     financing_sources = []
     project_details = ''
@@ -381,7 +388,7 @@ class CommitmentsController < ApplicationController
     when 'matematica', 'fac matematica', 'Matematica'
       financing_sources << FinancingSource.find_by(name: 'Facultatea de Matematică și Informatică')
     when 'jurnalism', 'fac jurnalism'
-      financing_sources << FinancingSource.find_by(name: 'Facultatea de Jurnalism')
+      financing_sources << FinancingSource.find_by(name: 'Facultatea de Jurnalism și Științele Comunicării')
     when 'psihologie', 'Psihologie', 'fac psihologie'
       financing_sources << FinancingSource.find_by(name: 'Facultatea de Psihologie și Științele Educației')
     when /^psihologie/
@@ -469,6 +476,9 @@ class CommitmentsController < ApplicationController
       financing_sources << FinancingSource.find_by!(name: 'Stațiunea de Cercetări Ecologice Brăila')
       financing_sources << FinancingSource.find_by!(name: 'Stațiunea de cercetare de la Orșova')
       financing_sources << FinancingSource.find_by!(name: 'Stațiunea Zoologică Sinaia')
+    when 'drept/jurnalism'
+      financing_sources << FinancingSource.find_by!(name: 'Facultatea de Drept')
+      financing_sources << FinancingSource.find_by!(name: 'Facultatea de Jurnalism și Științele Comunicării')
     when 'cercetare si venituri'
       financing_sources << FinancingSource.find_by!(name: 'Cercetare')
       financing_sources << FinancingSource.find_by!(name: 'Venituri')

@@ -2,7 +2,7 @@
 
 class ExpendituresController < ApplicationController
   def index
-    @expenditures = Expenditure.order(id: :desc)
+    @expenditures = Expenditure.order('year desc, registration_number desc')
 
     relation_names = %i[financing_source project_category expenditure_article payment_method created_by_user]
     @expenditures = @expenditures.references(relation_names).includes(relation_names)
@@ -379,7 +379,7 @@ class ExpendituresController < ApplicationController
     when 'matematica', 'fac matematica', 'fac mate'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Matematică și Informatică')
     when 'jurnalism', 'fac jurnalism'
-      financing_source = FinancingSource.find_by(name: 'Facultatea de Jurnalism')
+      financing_source = FinancingSource.find_by(name: 'Facultatea de Jurnalism și Științele Comunicării')
     when 'psihologie', 'fac psihologie', 'fa psihologie'
       financing_source = FinancingSource.find_by(name: 'Facultatea de Psihologie și Științele Educației')
     when 'stiinte politice', 'st politice', 'fac st politice',
