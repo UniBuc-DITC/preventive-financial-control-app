@@ -1,20 +1,29 @@
 <h1>Angajamente</h1>
 
-<p><%= link_to 'Înapoi la pagina principală', root_path %></p>
-<p><%= link_to 'Adaugă un angajament nou', new_commitment_path %></p>
-<% if current_user.admin? %>
-  <p><%= link_to 'Importă angajamente din Excel', import_commitments_path %></p>
-<% end %>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
+      <p><%= link_to 'Adaugă un angajament nou', new_commitment_path, class: 'btn btn-primary' %></p>
+      <% if current_user.admin? %>
+        <p><%= link_to 'Importă angajamente din Excel', import_commitments_path, class: 'btn btn-success' %></p>
+      <% end %>
+      <p>
+        <%= button_tag type: 'button', class: 'btn btn-primary',
+                       data: { bs_toggle: 'collapse', bs_target: '#filter-form' },
+                       aria: { expanded: @show_filter_form, controls: 'filter-form' } do %>
+          Caută / filtrează înregistrări
+        <% end %>
+      </p>
+    </div>
+
+    <section class="col">
+      <%= render partial: 'application/statistics', locals: { collection: @commitments } %>
+    </section>
+  </div>
+</div>
 
 <%= render partial: 'flashes' %>
-
-<p>
-  <%= button_tag type: 'button', class: 'btn btn-primary',
-                 data: { bs_toggle: 'collapse', bs_target: '#filter-form' },
-                 aria: { expanded: @show_filter_form, controls: 'filter-form' } do %>
-    Caută / filtrează înregistrări
-  <% end %>
-</p>
 
 <%= bootstrap_form_with method: :get, layout: :inline, id: 'filter-form',
                         html: { class: 'border mt-3 pb-2 collapse' + (@show_filter_form ? ' show' : '') } do |form| %>
@@ -102,71 +111,64 @@
   </div>
 <% end %>
 
-<div class="table-responsive">
-  <table class="table table-striped table-hover">
-    <thead>
-    <tr>
-      <th scope="col">Număr de înregistrare</th>
-      <th scope="col">Data înregistrării</th>
-      <th scope="col">Număr document</th>
-      <th scope="col">Valabilitate</th>
-      <th scope="col">Reprezentant UB / sursă de finanțare</th>
-      <th scope="col">Detalii proiect</th>
-      <th scope="col">Articol de cheltuială</th>
-      <th scope="col">Partener</th>
-      <th scope="col">Valoare cu TVA (RON)</th>
-      <th scope="col">Tip achiziție</th>
-      <th scope="col">Neconformitate</th>
-      <th scope="col">Observații</th>
-      <th scope="col">Creat de</th>
-      <th scope="col">Creat la data de</th>
-      <th scope="col">Modificat de</th>
-      <th scope="col">Modificat la data de</th>
-    </tr>
-    </thead>
-    <tbody>
-    <% @paginated_commitments.each do |commitment| %>
-      <tr>
-        <th scope="row"><%= commitment.registration_number %>/<%= commitment.year %></th>
-        <td><%= commitment.registration_date.strftime('%d.%m.%Y') %></td>
-        <td><%= commitment.document_number %></td>
-        <td><%= commitment.validity %></td>
-        <td><%= commitment.financing_sources.map(&:name).join(', ') %></td>
-        <td><%= commitment.project_details %></td>
-        <td><%= "#{commitment.expenditure_article&.code} - #{commitment.expenditure_article&.name}" %></td>
-        <td><%= commitment.partner %></td>
-        <td><%= commitment.value %></td>
-        <td><%= commitment.procurement_type %></td>
-        <td><%= commitment.noncompliance %></td>
-        <td><%= commitment.remarks %></td>
-        <td><%= commitment.created_by_user.full_name %></td>
-        <td><%= commitment.created_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
-        <td><%= commitment.updated_by_user.full_name %></td>
-        <td><%= commitment.updated_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
-      </tr>
-    <% end %>
-    </tbody>
-    <tfoot>
-    <% if @commitments.empty? %>
-      <tr>
-        <td colspan="17" class="ps-5 py-3">
-          Nu a fost adăugat încă niciun angajament.
-        </td>
-      </tr>
-    <% end %>
-    </tfoot>
-  </table>
-</div>
+<turbo-frame id="commitments-table">
+  <%= will_paginate @paginated_commitments, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>
 
-<%= will_paginate @paginated_commitments, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead>
+      <tr>
+        <th scope="col">Număr de înregistrare</th>
+        <th scope="col">Data înregistrării</th>
+        <th scope="col">Număr document</th>
+        <th scope="col">Valabilitate</th>
+        <th scope="col">Reprezentant UB / sursă de finanțare</th>
+        <th scope="col">Detalii proiect</th>
+        <th scope="col">Articol de cheltuială</th>
+        <th scope="col">Partener</th>
+        <th scope="col">Valoare cu TVA (RON)</th>
+        <th scope="col">Tip achiziție</th>
+        <th scope="col">Neconformitate</th>
+        <th scope="col">Observații</th>
+        <th scope="col">Creat de</th>
+        <th scope="col">Creat la data de</th>
+        <th scope="col">Modificat de</th>
+        <th scope="col">Modificat la data de</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @paginated_commitments.each do |commitment| %>
+        <tr>
+          <th scope="row"><%= commitment.registration_number %>/<%= commitment.year %></th>
+          <td><%= commitment.registration_date.strftime('%d.%m.%Y') %></td>
+          <td><%= commitment.document_number %></td>
+          <td><%= commitment.validity %></td>
+          <td><%= commitment.financing_sources.map(&:name).join(', ') %></td>
+          <td><%= commitment.project_details %></td>
+          <td><%= "#{commitment.expenditure_article&.code} - #{commitment.expenditure_article&.name}" %></td>
+          <td><%= commitment.partner %></td>
+          <td><%= commitment.value %></td>
+          <td><%= commitment.procurement_type %></td>
+          <td><%= commitment.noncompliance %></td>
+          <td><%= commitment.remarks %></td>
+          <td><%= commitment.created_by_user.full_name %></td>
+          <td><%= commitment.created_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
+          <td><%= commitment.updated_by_user.full_name %></td>
+          <td><%= commitment.updated_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
+        </tr>
+      <% end %>
+      </tbody>
+      <tfoot>
+      <% if @commitments.empty? %>
+        <tr>
+          <td colspan="17" class="ps-5 py-3">
+            Nu a fost adăugat încă niciun angajament.
+          </td>
+        </tr>
+      <% end %>
+      </tfoot>
+    </table>
+  </div>
 
-<section class="mt-5">
-  <h2>Raport</h2>
-  <p>Valorile de mai jos se referă strict la înregistrările care respectă criterile de filtrare selectate mai sus.</p>
-  <p>
-    Număr înregistrări: <%= @commitments.count %>
-  </p>
-  <p>
-    Valoare totală: <%= @commitments.sum(:value) %> RON
-  </p>
-</section>
+  <%= will_paginate @paginated_commitments, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>
+</turbo-frame>
