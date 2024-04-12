@@ -1,0 +1,15 @@
+<%= form.select id,
+                User.order(:last_name, :first_name).map { |user|
+                  [user.full_name, user.id]
+                },
+                {
+                  multiple: true,
+                  selected: selected,
+                  label: local_assigns[:label] || 'Utilizator'
+                },
+                {
+                  data: {
+                    use_select2: true,
+                    placeholder: 'Selectează un utilizator...'
+                  }
+                } %>

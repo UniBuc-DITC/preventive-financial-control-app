@@ -24,14 +24,11 @@
   <%= form.text_field :year,
                       value: params[:year],
                       label: 'Anul', wrapper: { style: 'width: 100px' } %>
-  <%= form.text_field :start_date, value: params[:start_date], label: 'Data de început',
-                      data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
-  <%= form.text_field :end_date, value: params[:end_date], label: 'Data de sfârșit',
-                      data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
+  <%= render partial: 'application/filters/start_end_date_filters', locals: { form: } %>
   <%= form.text_field :commitment_category_code,
                       value: params[:commitment_category_code],
                       label: 'Indicator tip de angajament',
-                      placeholder: 'Exemplu: A1' %>
+                      help: 'Exemplu: A1' %>
   <%= form.select :financing_source_ids,
                   FinancingSource.order(:name).map { |financing_source|
                     [financing_source.name, financing_source.id]
@@ -65,7 +62,44 @@
                     }
                   }
   %>
-  <%= form.submit 'Filtrează' %>
+  <%= form.text_field :validity,
+                      value: params[:validity],
+                      label: 'Valabilitate' %>
+  <%= form.text_field :project_details,
+                      value: params[:project_details],
+                      label: 'Detalii proiect' %>
+  <%= form.text_field :partner,
+                      value: params[:partner],
+                      label: 'Partener' %>
+  <%= form.text_field :procurement_type,
+                      value: params[:procurement_type],
+                      label: 'Tip achiziție' %>
+  <%= form.text_field :noncompliance,
+                      value: params[:noncompliance],
+                      label: 'Neconformitate' %>
+  <%= form.text_field :remarks,
+                      value: params[:remarks],
+                      label: 'Observații' %>
+  <%= render partial: 'application/filters/value_filter', locals: { form: } %>
+  <%= render partial: 'application/filters/user_filter',
+             locals: {
+               form:,
+               id: :created_by_user_ids,
+               label: 'Creat de utilizatorul',
+               selected: @created_by_user_ids
+             }
+  %>
+  <%= render partial: 'application/filters/user_filter',
+             locals: {
+               form:,
+               id: :updated_by_user_ids,
+               label: 'Modificat de utilizatorul',
+               selected: @updated_by_user_ids
+             }
+  %>
+  <div class="col-12">
+    <%= render partial: 'filter_button', locals: { form: } %>
+  </div>
 <% end %>
 
 <div class="table-responsive">

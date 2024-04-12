@@ -1,0 +1,9 @@
+<%= form.form_group :value_filter do %>
+  <%= form.label 'value', 'Valoare', class: 'form-label' %>
+  <div class="input-group" id="value">
+    <span class="input-group-text">Între</span>
+    <%= form.number_field :min_value, value: params[:min_value], wrapper: false %>
+    <span class="input-group-text">și</span>
+    <%= form.number_field :max_value, value: params[:max_value], wrapper: false %>
+  </div>
+<% end %>

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ExpendituresController < ApplicationController
+  include Filtrable
+
   def index
     @expenditures = Expenditure.order('year desc, registration_number desc')
 
@@ -13,15 +15,8 @@ class ExpendituresController < ApplicationController
 
     @any_filters_applied = false
 
-    if params[:registration_number].present?
-      @expenditures = @expenditures.where(registration_number: params[:registration_number])
-      @any_filters_applied = true
-    end
-
-    if params[:year].present?
-      @expenditures = @expenditures.where(year: params[:year])
-      @any_filters_applied = true
-    end
+    @expenditures = apply_field_value_filter @expenditures, :registration_number
+    @expenditures = apply_field_value_filter @expenditures, :year
 
     if params[:start_date].present?
       start_date = Date.strptime(params[:start_date], '%d.%m.%Y')
@@ -44,25 +39,13 @@ class ExpendituresController < ApplicationController
       @any_filters_applied = true
     end
 
-    @financing_source_ids = params[:financing_source_ids]
-    if @financing_source_ids.present?
-      @financing_source_ids = @financing_source_ids.select(&:present?)
+    @expenditures = apply_ids_filter @expenditures,
+                                     :financing_source_ids,
+                                     :financing_source_id
 
-      unless @financing_source_ids.empty?
-        @expenditures = @expenditures.where(financing_source_id: @financing_source_ids)
-        @any_filters_applied = true
-      end
-    end
-
-    @project_category_ids = params[:project_category_ids]
-    if @project_category_ids.present?
-      @project_category_ids = @project_category_ids.select(&:present?)
-
-      unless @project_category_ids.empty?
-        @expenditures = @expenditures.where(project_category_id: @project_category_ids)
-        @any_filters_applied = true
-      end
-    end
+    @expenditures = apply_ids_filter @expenditures,
+                                     :project_category_ids,
+                                     :project_category_id
 
     @expenditure_article_ids = params[:expenditure_article_ids]
     if @expenditure_article_ids.present?
@@ -74,25 +57,10 @@ class ExpendituresController < ApplicationController
       end
     end
 
-    if params[:project_details].present?
-      @expenditures = @expenditures.where('project_details ILIKE ?', "%#{params[:project_details]}%")
-      @any_filters_applied = true
-    end
-
-    if params[:details].present?
-      @expenditures = @expenditures.where('details ILIKE ?', "%#{params[:details]}%")
-      @any_filters_applied = true
-    end
-
-    if params[:procurement_type].present?
-      @expenditures = @expenditures.where('procurement_type ILIKE ?', "%#{params[:procurement_type]}%")
-      @any_filters_applied = true
-    end
-
-    if params[:ordinance_number].present?
-      @expenditures = @expenditures.where('ordinance_number ILIKE ?', "%#{params[:ordinance_number]}%")
-      @any_filters_applied = true
-    end
+    @expenditures = apply_string_field_filter @expenditures, :project_details
+    @expenditures = apply_string_field_filter @expenditures, :details
+    @expenditures = apply_string_field_filter @expenditures, :procurement_type
+    @expenditures = apply_string_field_filter @expenditures, :ordinance_number
 
     if params[:ordinance_date].present?
       ordinance_date = Date.strptime(params[:ordinance_date], '%d.%m.%Y')
@@ -100,45 +68,20 @@ class ExpendituresController < ApplicationController
       @any_filters_applied = true
     end
 
-    if params[:min_value].present?
-      @expenditures = @expenditures.where('value >= ?', params[:min_value])
-      @any_filters_applied = true
-    end
+    @expenditures = apply_value_range_filter @expenditures
 
-    if params[:max_value].present?
-      @expenditures = @expenditures.where('value <= ?', params[:max_value])
-      @any_filters_applied = true
-    end
+    @expenditures = apply_ids_filter @expenditures,
+                                     :payment_method_ids,
+                                     :payment_method_id,
+                                     :payment_method_ids
 
-    @payment_method_ids = params[:payment_method_ids]
-    if @payment_method_ids.present?
-      @payment_method_ids = @payment_method_ids.select(&:present?)
+    @expenditures = apply_string_field_filter @expenditures, :beneficiary
+    @expenditures = apply_string_field_filter @expenditures, :invoice
+    @expenditures = apply_string_field_filter @expenditures, :noncompliance
+    @expenditures = apply_string_field_filter @expenditures, :remarks
 
-      unless @payment_method_ids.empty?
-        @expenditures = @expenditures.where(payment_method_id: @payment_method_ids)
-        @any_filters_applied = true
-      end
-    end
-
-    if params[:beneficiary].present?
-      @expenditures = @expenditures.where('beneficiary ILIKE ?', "%#{params[:beneficiary]}%")
-      @any_filters_applied = true
-    end
-
-    if params[:invoice].present?
-      @expenditures = @expenditures.where('invoice ILIKE ?', "%#{params[:invoice]}%")
-      @any_filters_applied = true
-    end
-
-    if params[:noncompliance].present?
-      @expenditures = @expenditures.where('noncompliance ILIKE ?', "%#{params[:noncompliance]}%")
-      @any_filters_applied = true
-    end
-
-    if params[:remarks].present?
-      @expenditures = @expenditures.where('remarks ILIKE ?', "%#{params[:remarks]}%")
-      @any_filters_applied = true
-    end
+    @expenditures = apply_created_by_user_ids_filter @expenditures
+    @expenditures = apply_updated_by_user_ids_filter @expenditures
 
     @paginated_expenditures = @expenditures.paginate(page: params[:page], per_page: 5)
   end

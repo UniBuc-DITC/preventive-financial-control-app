@@ -1,0 +1,6 @@
+<%= form.text_field :start_date, value: params[:start_date], label: 'Data de început',
+                    help: 'Data începând cu care să fie afișate înregistrările',
+                    data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
+<%= form.text_field :end_date, value: params[:end_date], label: 'Data de sfârșit',
+                    help: 'Data până la care să fie incluse înregistrările afișate',
+                    data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>

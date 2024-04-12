@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CommitmentsController < ApplicationController
+  include Filtrable
+
   def index
     @commitments = Commitment.order('year desc, registration_number desc')
 
@@ -15,15 +17,8 @@ class CommitmentsController < ApplicationController
 
     @any_filters_applied = false
 
-    if params[:registration_number].present?
-      @commitments = @commitments.where(registration_number: params[:registration_number])
-      @any_filters_applied = true
-    end
-
-    if params[:year].present?
-      @commitments = @commitments.where(year: params[:year])
-      @any_filters_applied = true
-    end
+    @commitments = apply_field_value_filter @commitments, :registration_number
+    @commitments = apply_field_value_filter @commitments, :year
 
     if params[:start_date].present?
       start_date = Date.strptime(params[:start_date], '%d.%m.%Y')
@@ -46,25 +41,25 @@ class CommitmentsController < ApplicationController
       @any_filters_applied = true
     end
 
-    @financing_source_ids = params[:financing_source_ids]
-    if @financing_source_ids.present?
-      @financing_source_ids = @financing_source_ids.select(&:present?)
+    @commitments = apply_ids_filter @commitments,
+                                    :financing_source_ids,
+                                    :financing_source_ids
 
-      unless @financing_source_ids.empty?
-        @commitments = @commitments.where(financing_source_id: @financing_source_ids)
-        @any_filters_applied = true
-      end
-    end
+    @commitments = apply_ids_filter @commitments,
+                                    :expenditure_article_ids,
+                                    :expenditure_article_id
 
-    @expenditure_article_ids = params[:expenditure_article_ids]
-    if @expenditure_article_ids.present?
-      @expenditure_article_ids = @expenditure_article_ids.select(&:present?)
+    @commitments = apply_string_field_filter @commitments, :validity
+    @commitments = apply_string_field_filter @commitments, :project_details
+    @commitments = apply_string_field_filter @commitments, :partner
+    @commitments = apply_string_field_filter @commitments, :procurement_type
+    @commitments = apply_string_field_filter @commitments, :noncompliance
+    @commitments = apply_string_field_filter @commitments, :remarks
 
-      unless @expenditure_article_ids.empty?
-        @commitments = @commitments.where(expenditure_article_id: @expenditure_article_ids)
-        @any_filters_applied = true
-      end
-    end
+    @commitments = apply_value_range_filter @commitments
+
+    @commitments = apply_created_by_user_ids_filter @commitments
+    @commitments = apply_updated_by_user_ids_filter @commitments
 
     @paginated_commitments = @commitments.paginate(page: params[:page], per_page: 5)
   end
