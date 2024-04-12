@@ -38,8 +38,10 @@
       link_text: 'Vezi articolele de cheltuială'
     } %>
     <%= render partial: 'secondary_card', locals: {
-      card_title: 'Metode de plată',
-      card_text: "#{PaymentMethod.count} metode de plată înregistrate"
+      card_title: 'Tipuri de plăți',
+      card_text: "#{PaymentType.count} tipuri de plăți înregistrate",
+      link_path: payment_types_path,
+      link_text: 'Vezi tipurile de plăți'
     } %>
     <%= render partial: 'secondary_card', locals: {
       card_title: 'Utilizatori',

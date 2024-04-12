@@ -22,6 +22,8 @@ ro:
         name: "Denumire"
         expenditure_category_code: "Indicator tip de cheltuială"
         commitment_category_code: "Indicator tip de angajament"
+      payment_type:
+        name: "Denumire"
       expenditure:
         year: "Anul înregistrării"
         registration_number: "Număr de înregistrare"
@@ -38,8 +40,8 @@ ro:
         ordinance_number: "Număr ordonanțare"
         ordinance_date: "Dată ordonanțare"
         value: "Valoare"
-        payment_method: "Modalitate de plată"
-        payment_method_id: "Modalitate de plată"
+        payment_type: "Tip de plată"
+        payment_type_id: "Tip de plată"
         beneficiary: "Beneficiar"
         invoice: "Număr factură"
         noncompliance: "Neconformitate"

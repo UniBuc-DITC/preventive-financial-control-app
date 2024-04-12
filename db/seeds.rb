@@ -86,5 +86,5 @@ puts 'Seeding payment methods...'
 
 ['Avans numerar', 'Avans virament', 'Numerar', 'Virament'].each do |name|
   puts "Creating project category '#{name}'"
-  PaymentMethod.find_or_create_by!(name:)
+  PaymentType.find_or_create_by!(name:)
 end

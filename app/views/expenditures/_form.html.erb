@@ -46,11 +46,11 @@
 
     <%= f.number_field :value, step: '0.01' %>
 
-    <%= f.select :payment_method_id,
-                 PaymentMethod.order(:name).map { |payment_method|
-                   [payment_method.name, payment_method.id]
+    <%= f.select :payment_type_id,
+                 PaymentType.order(:name).map { |payment_type|
+                   [payment_type.name, payment_type.id]
                  },
-                 { include_blank: 'Selectează modalitatea de plată...' },
+                 { include_blank: 'Selectează tipul de plată...' },
                  { data: { use_select2: true } }
     %>
 

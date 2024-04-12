@@ -12,7 +12,7 @@ class AuditEvent < ApplicationRecord
     financing_sources: 2,
     project_categories: 3,
     expenditure_articles: 4,
-    payment_methods: 5,
+    payment_types: 5,
     settings: 6,
     users: 7
   }

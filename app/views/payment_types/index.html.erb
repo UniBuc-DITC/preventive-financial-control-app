@@ -1,0 +1,44 @@
+<h1>Tipuri de plăți</h1>
+
+<% can_modify_payment_types = current_user.supervisor? || current_user.admin? %>
+
+<p><%= link_to 'Înapoi la pagina principală', root_path %></p>
+<% if can_modify_payment_types %>
+  <p><%= link_to 'Adaugă un tip de plată nou', new_payment_type_path %></p>
+<% end %>
+<p><%= link_to 'Exportă lista de tipuri de plăți', export_download_payment_types_path,
+               download: true, data: { turbo: false } %></p>
+<% if can_modify_payment_types %>
+  <p><%= link_to 'Importă tipuri de plăți din Excel', import_payment_types_path %></p>
+<% end %>
+
+<%= render partial: 'flashes' %>
+
+<div class="table-responsive">
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr>
+      <th scope="col">Nr. crt.</th>
+      <th scope="col">Denumire</th>
+      <% if can_modify_payment_types %>
+        <th scope="col">Acțiuni</th>
+      <% end %>
+    </tr>
+    </thead>
+    <tbody>
+    <% @payment_types.each_with_index do |payment_type, index| %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= payment_type.name %></td>
+        <% if can_modify_payment_types %>
+          <td>
+            <%= link_to 'Editează', edit_payment_type_path(payment_type.id) %>
+            <%= link_to 'Șterge', payment_type_path(payment_type.id), method: :delete,
+                        data: { confirm: 'Ești sigur că vrei să ștergi acest tip de plată?' } %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

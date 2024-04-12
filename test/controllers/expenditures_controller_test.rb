@@ -29,7 +29,7 @@ class ExpendituresControllerTest < ActionDispatch::IntegrationTest
     Setting.create!(key: :current_year, value: Date.today.year)
     FinancingSource.create!(name: 'Buget')
     ExpenditureArticle.create!(code: '1', name: 'Cheltuială')
-    PaymentMethod.create!(name: 'Transfer bancar')
+    PaymentType.create!(name: 'Transfer bancar')
   end
 
   test 'rolls back transaction if auditing record fails to save' do
@@ -44,7 +44,7 @@ class ExpendituresControllerTest < ActionDispatch::IntegrationTest
       :ordinance_number,
       :ordinance_date,
       :value,
-      :payment_method_id,
+      :payment_type_id,
       :beneficiary,
       :invoice,
       :noncompliance,

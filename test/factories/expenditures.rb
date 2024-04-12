@@ -20,7 +20,7 @@ FactoryBot.define do
 
     value { 1250.15 }
 
-    payment_method { PaymentMethod.first }
+    payment_type { PaymentType.first }
 
     sequence(:beneficiary) { "Beneficiar #{_1}" }
 

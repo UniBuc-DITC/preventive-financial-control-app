@@ -6,7 +6,7 @@ class ExpendituresController < ApplicationController
   def index
     @expenditures = Expenditure.order('year desc, registration_number desc')
 
-    relation_names = %i[financing_source project_category expenditure_article payment_method created_by_user]
+    relation_names = %i[financing_source project_category expenditure_article payment_type created_by_user]
     @expenditures = @expenditures.references(relation_names).includes(relation_names)
 
     if cookies[:show_filter_form].present?
@@ -71,9 +71,9 @@ class ExpendituresController < ApplicationController
     @expenditures = apply_value_range_filter @expenditures
 
     @expenditures = apply_ids_filter @expenditures,
-                                     :payment_method_ids,
-                                     :payment_method_id,
-                                     :payment_method_ids
+                                     :payment_type_ids,
+                                     :payment_type_id,
+                                     :payment_type_ids
 
     @expenditures = apply_string_field_filter @expenditures, :beneficiary
     @expenditures = apply_string_field_filter @expenditures, :invoice
@@ -179,7 +179,7 @@ class ExpendituresController < ApplicationController
       :ordinance_number,
       :ordinance_date,
       :value,
-      :payment_method_id,
+      :payment_type_id,
       :beneficiary,
       :invoice,
       :noncompliance,
@@ -586,25 +586,25 @@ class ExpendituresController < ApplicationController
 
     expenditure.value = row[9]
 
-    payment_method_name = row[10].strip
+    payment_type_name = row[10].strip
 
-    payment_method = nil
-    case payment_method_name
+    payment_type = nil
+    case payment_type_name
     when 'numerar'
-      payment_method = PaymentMethod.find_by(name: 'Numerar')
+      payment_type = PaymentType.find_by(name: 'Numerar')
     when 'virament'
-      payment_method = PaymentMethod.find_by(name: 'Virament')
+      payment_type = PaymentType.find_by(name: 'Virament')
     when 'avans numerar'
-      payment_method = PaymentMethod.find_by(name: 'Avans numerar')
+      payment_type = PaymentType.find_by(name: 'Avans numerar')
     when 'avans virament'
-      payment_method = PaymentMethod.find_by(name: 'Avans virament')
+      payment_type = PaymentType.find_by(name: 'Avans virament')
     end
 
-    if payment_method.nil?
-      raise ImportError.new(row_index, "nu a putut fi găsită o metodă de plată denumită '#{payment_method_name}'")
+    if payment_type.nil?
+      raise ImportError.new(row_index, "nu a putut fi găsită tipul de plată denumit '#{payment_type_name}'")
     end
 
-    expenditure.payment_method = payment_method
+    expenditure.payment_type = payment_type
 
     expenditure.beneficiary = row[11] || ''
 

@@ -95,20 +95,20 @@
                       label: 'Dată ordonanțare',
                       data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
   <%= render partial: 'application/filters/value_filter', locals: { form: } %>
-  <%= form.select :payment_method_ids,
-                  PaymentMethod.order(:name).map { |payment_method|
-                    [payment_method.name, payment_method.id]
+  <%= form.select :payment_type_ids,
+                  PaymentType.order(:name).map { |payment_type|
+                    [payment_type.name, payment_type.id]
                   },
                   {
                     multiple: true,
-                    selected: @payment_method_ids,
-                    label: 'Metode de plată',
+                    selected: @payment_type_ids,
+                    label: 'Tip de plată',
                     wrapper: { class: 'col-3' }
                   },
                   {
                     data: {
                       use_select2: true,
-                      placeholder: 'Selectează o metodă de plată...'
+                      placeholder: 'Selectează un tip de plată...'
                     }
                   } %>
   <%= form.text_field :beneficiary,
@@ -159,7 +159,7 @@
       <th scope="col">Număr ordonanțare</th>
       <th scope="col">Dată ordonanțare</th>
       <th scope="col">Valoare plată (RON)</th>
-      <th scope="col">Metodă de plată</th>
+      <th scope="col">Tip de plată</th>
       <th scope="col">Beneficiar</th>
       <th scope="col">Factură</th>
       <th scope="col">Neconformitate</th>
@@ -185,7 +185,7 @@
         <td><%= expenditure.ordinance_number %></td>
         <td><%= expenditure.ordinance_date&.strftime('%d.%m.%Y') %></td>
         <td><%= number_to_currency expenditure.value, unit: '' %></td>
-        <td><%= expenditure.payment_method&.name %></td>
+        <td><%= expenditure.payment_type&.name %></td>
         <td><%= expenditure.beneficiary %></td>
         <td><%= expenditure.invoice %></td>
         <td><%= expenditure.noncompliance %></td>

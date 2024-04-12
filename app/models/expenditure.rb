@@ -2,7 +2,7 @@
 
 class Expenditure < ApplicationRecord
   validates :year, :registration_number, :registration_date, presence: true
-  validates :financing_source, :expenditure_article, :payment_method, :value,
+  validates :financing_source, :expenditure_article, :payment_type, :value,
             presence: true, unless: :cancelled?
   # Some imported records might not have a beneficiary listed
   validates :beneficiary, presence: true, unless: -> { cancelled? || imported? }
@@ -12,7 +12,7 @@ class Expenditure < ApplicationRecord
   belongs_to :financing_source, optional: true
   belongs_to :project_category, optional: true
   belongs_to :expenditure_article, optional: true
-  belongs_to :payment_method, optional: true
+  belongs_to :payment_type, optional: true
 
   belongs_to :created_by_user, class_name: 'User'
   belongs_to :updated_by_user, class_name: 'User'

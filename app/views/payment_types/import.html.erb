@@ -1,0 +1,13 @@
+<h1>Importă tipuri de plăți</h1>
+
+<p><%= link_to 'Înapoi la lista de tipuri de plăți', payment_types_path %></p>
+
+<%= render partial: 'flashes' %>
+
+<%= bootstrap_form_with url: import_upload_payment_types_path, method: :post do |form| %>
+  <%= form.file_field :file,
+                      label: 'Fișier Excel cu tipurile de plăți',
+                      accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' %>
+
+  <%= form.submit 'Importă' %>
+<% end %>

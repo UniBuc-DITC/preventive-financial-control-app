@@ -29,6 +29,12 @@ Rails.application.routes.draw do
     post 'import', to: 'expenditure_articles#import_upload', as: :import_upload, on: :collection
   end
 
+  resources :payment_types do
+    get 'export', to: 'payment_types#export_download', as: :export_download, on: :collection, format: 'xlsx'
+    get 'import', to: 'payment_types#import', as: :import, on: :collection
+    post 'import', to: 'payment_types#import_upload', as: :import_upload, on: :collection
+  end
+
   resources :expenditures, only: %i[index new create] do
     get 'import', to: 'expenditures#import', as: :import, on: :collection
     post 'import', to: 'expenditures#import_upload', as: :import_upload, on: :collection

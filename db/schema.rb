@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_07_180557) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_12_062405) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -77,7 +77,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_07_180557) do
     t.string "ordinance_number"
     t.date "ordinance_date"
     t.decimal "value", precision: 15, scale: 2
-    t.bigint "payment_method_id"
+    t.bigint "payment_type_id"
     t.string "beneficiary", null: false
     t.string "invoice", default: "", null: false
     t.string "noncompliance", default: "", null: false
@@ -91,7 +91,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_07_180557) do
     t.index ["created_by_user_id"], name: "index_expenditures_on_created_by_user_id"
     t.index ["expenditure_article_id"], name: "index_expenditures_on_expenditure_article_id"
     t.index ["financing_source_id"], name: "index_expenditures_on_financing_source_id"
-    t.index ["payment_method_id"], name: "index_expenditures_on_payment_method_id"
+    t.index ["payment_type_id"], name: "index_expenditures_on_payment_type_id"
     t.index ["project_category_id"], name: "index_expenditures_on_project_category_id"
     t.index ["updated_by_user_id"], name: "index_expenditures_on_updated_by_user_id"
     t.index ["year", "registration_number"], name: "index_expenditures_on_year_and_registration_number", unique: true
@@ -104,11 +104,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_07_180557) do
     t.index ["name"], name: "index_financing_sources_on_name", unique: true
   end
 
-  create_table "payment_methods", force: :cascade do |t|
+  create_table "payment_types", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_payment_methods_on_name", unique: true
+    t.index ["name"], name: "index_payment_types_on_name", unique: true
   end
 
   create_table "project_categories", force: :cascade do |t|
@@ -144,7 +144,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_07_180557) do
   add_foreign_key "commitments", "users", column: "updated_by_user_id"
   add_foreign_key "expenditures", "expenditure_articles"
   add_foreign_key "expenditures", "financing_sources"
-  add_foreign_key "expenditures", "payment_methods"
+  add_foreign_key "expenditures", "payment_types"
   add_foreign_key "expenditures", "project_categories"
   add_foreign_key "expenditures", "users", column: "created_by_user_id"
   add_foreign_key "expenditures", "users", column: "updated_by_user_id"

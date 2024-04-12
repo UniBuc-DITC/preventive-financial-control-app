@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+workbook = xlsx_package.workbook
+
+workbook.add_worksheet(name: 'Tipuri de plăți') do |sheet|
+  header = ['Denumire']
+  sheet.add_row header
+
+  @payment_types.each do |payment_type|
+    row = [payment_type.name.strip]
+    sheet.add_row row, types: ([:string] * row.length)
+  end
+end
