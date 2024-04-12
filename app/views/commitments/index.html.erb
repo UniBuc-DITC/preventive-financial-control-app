@@ -120,6 +120,8 @@
       <th scope="col">Observații</th>
       <th scope="col">Creat de</th>
       <th scope="col">Creat la data de</th>
+      <th scope="col">Modificat de</th>
+      <th scope="col">Modificat la data de</th>
     </tr>
     </thead>
     <tbody>
@@ -139,6 +141,8 @@
         <td><%= commitment.remarks %></td>
         <td><%= commitment.created_by_user.full_name %></td>
         <td><%= commitment.created_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
+        <td><%= commitment.updated_by_user.full_name %></td>
+        <td><%= commitment.updated_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
       </tr>
     <% end %>
     </tbody>
