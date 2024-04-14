@@ -103,7 +103,7 @@ class PaymentTypesController < ApplicationController
 
   def export_download
     @payment_types = PaymentType.order(name: :asc)
-    date = Time.now.strftime('%Y-%m-%d')
+    date = Time.current.strftime('%Y-%m-%d')
     render xlsx: 'export', disposition: 'attachment', filename: "Export tipuri de plăți #{date}.xlsx"
   end
 

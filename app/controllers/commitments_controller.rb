@@ -6,62 +6,13 @@ class CommitmentsController < ApplicationController
   def index
     @commitments = Commitment.order('year desc, registration_number desc')
 
-    relation_names = %i[expenditure_article created_by_user]
-    @commitments = @commitments.references(relation_names).includes(relation_names)
-    @commitments = @commitments.references(commitment_financing_source_associations: [:financing_source])
-                               .includes(commitment_financing_source_associations: [:financing_source])
+    include_dependent_entities
 
     if cookies[:show_filter_form].present?
       @show_filter_form = ActiveRecord::Type::Boolean.new.cast(cookies[:show_filter_form])
     end
 
-    @any_filters_applied = false
-
-    @commitments = apply_field_value_filter @commitments, :registration_number
-    @commitments = apply_field_value_filter @commitments, :year
-
-    if params[:start_date].present?
-      start_date = Date.strptime(params[:start_date], '%d.%m.%Y')
-      @commitments = @commitments.where('registration_date >= ?', start_date)
-      @any_filters_applied = true
-    end
-
-    if params[:end_date].present?
-      end_date = Date.strptime(params[:end_date], '%d.%m.%Y')
-      @commitments = @commitments.where('registration_date <= ?', end_date)
-      @any_filters_applied = true
-    end
-
-    if params[:commitment_category_code].present?
-      @commitments = @commitments.where(
-        expenditure_article: {
-          commitment_category_code: params[:commitment_category_code]
-        }
-      )
-      @any_filters_applied = true
-    end
-
-    @commitments = apply_ids_filter @commitments,
-                                    :financing_source_ids,
-                                    :financing_source_ids
-
-    @commitments = apply_ids_filter @commitments,
-                                    :expenditure_article_ids,
-                                    :expenditure_article_id
-
-    @commitments = apply_exclude_cash_receipts_filter @commitments
-
-    @commitments = apply_string_field_filter @commitments, :validity
-    @commitments = apply_string_field_filter @commitments, :project_details
-    @commitments = apply_string_field_filter @commitments, :partner
-    @commitments = apply_string_field_filter @commitments, :procurement_type
-    @commitments = apply_string_field_filter @commitments, :noncompliance
-    @commitments = apply_string_field_filter @commitments, :remarks
-
-    @commitments = apply_value_range_filter @commitments
-
-    @commitments = apply_created_by_user_ids_filter @commitments
-    @commitments = apply_updated_by_user_ids_filter @commitments
+    apply_filters
 
     @paginated_commitments = @commitments.paginate(page: params[:page], per_page: 5)
   end
@@ -155,6 +106,16 @@ class CommitmentsController < ApplicationController
     render :import
   end
 
+  def export_download
+    @commitments = Commitment.order('year, registration_number')
+
+    include_dependent_entities
+    apply_filters
+
+    date = Time.current.strftime('%Y-%m-%d')
+    render xlsx: 'export', disposition: 'attachment', filename: "Export angajamente #{date}.xlsx"
+  end
+
   private
 
   def commitment_params
@@ -171,6 +132,63 @@ class CommitmentsController < ApplicationController
       :remarks,
       financing_sources_ids: []
     )
+  end
+
+  def include_dependent_entities
+    relation_names = %i[expenditure_article created_by_user updated_by_user]
+    @commitments = @commitments.references(relation_names).includes(relation_names)
+    @commitments = @commitments.references(:financing_sources)
+                               .includes(:financing_sources)
+  end
+
+  def apply_filters
+    @any_filters_applied = false
+
+    @commitments = apply_field_value_filter @commitments, :registration_number
+    @commitments = apply_field_value_filter @commitments, :year
+
+    if params[:start_date].present?
+      start_date = Date.strptime(params[:start_date], '%d.%m.%Y')
+      @commitments = @commitments.where('registration_date >= ?', start_date)
+      @any_filters_applied = true
+    end
+
+    if params[:end_date].present?
+      end_date = Date.strptime(params[:end_date], '%d.%m.%Y')
+      @commitments = @commitments.where('registration_date <= ?', end_date)
+      @any_filters_applied = true
+    end
+
+    if params[:commitment_category_code].present?
+      @commitments = @commitments.where(
+        expenditure_article: {
+          commitment_category_code: params[:commitment_category_code]
+        }
+      )
+      @any_filters_applied = true
+    end
+
+    @commitments = apply_ids_filter @commitments,
+                                    :financing_source_ids,
+                                    :financing_source_ids
+
+    @commitments = apply_ids_filter @commitments,
+                                    :expenditure_article_ids,
+                                    :expenditure_article_id
+
+    @commitments = apply_exclude_cash_receipts_filter @commitments
+
+    @commitments = apply_string_field_filter @commitments, :validity
+    @commitments = apply_string_field_filter @commitments, :project_details
+    @commitments = apply_string_field_filter @commitments, :partner
+    @commitments = apply_string_field_filter @commitments, :procurement_type
+    @commitments = apply_string_field_filter @commitments, :noncompliance
+    @commitments = apply_string_field_filter @commitments, :remarks
+
+    @commitments = apply_value_range_filter @commitments
+
+    @commitments = apply_created_by_user_ids_filter @commitments
+    @commitments = apply_updated_by_user_ids_filter @commitments
   end
 
   def parse_commitment(row_index, row)

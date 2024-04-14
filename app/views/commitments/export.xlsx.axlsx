@@ -1,0 +1,43 @@
+# frozen_string_literal: true
+
+workbook = xlsx_package.workbook
+
+workbook.add_worksheet(name: 'Angajamente') do |sheet|
+  header = [
+    'Număr de înregistrare',
+    'Data înregistrării',
+    'Număr document',
+    'Valabilitate',
+    'Reprezentant UB / sursă de finanțare',
+    'Detalii proiect',
+    'Articol de cheltuială',
+    'Partener',
+    'Valoare cu TVA (RON)',
+    'Tip achiziție',
+    'Neconformitate',
+    'Observații',
+    'Creat de utilizatorul',
+    'Modificat de utilizatorul'
+  ]
+  sheet.add_row header
+
+  @commitments.each do |commitment|
+    row = [
+      "#{commitment.registration_number}/#{commitment.year}",
+      commitment.registration_date.strftime('%d.%m.%Y'),
+      commitment.document_number,
+      commitment.validity,
+      commitment.financing_sources.map(&:name).join(', '),
+      commitment.project_details,
+      "#{commitment.expenditure_article&.code} - #{commitment.expenditure_article&.name}",
+      commitment.partner,
+      number_to_currency(commitment.value, unit: ''),
+      commitment.procurement_type,
+      commitment.noncompliance,
+      commitment.remarks,
+      commitment.created_by_user.full_name,
+      commitment.updated_by_user.full_name
+    ]
+    sheet.add_row row, types: ([:string] * row.length)
+  end
+end

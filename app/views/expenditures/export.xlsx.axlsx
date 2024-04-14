@@ -1,0 +1,51 @@
+# frozen_string_literal: true
+
+workbook = xlsx_package.workbook
+
+workbook.add_worksheet(name: 'Cheltuieli') do |sheet|
+  header = [
+    'Număr de înregistrare',
+    'Data înregistrării',
+    'Sursa de finanțare',
+    'Categorie proiect',
+    'Detalii proiect',
+    'Articol de cheltuială',
+    'Detalii',
+    'Tip achiziție',
+    'Număr ordonanțare',
+    'Dată ordonanțare',
+    'Valoare plată (RON)',
+    'Tip de plată',
+    'Beneficiar',
+    'Factură',
+    'Neconformitate',
+    'Observații',
+    'Creat de utilizatorul',
+    'Modificat de utilizatorul'
+  ]
+  sheet.add_row header
+
+  @expenditures.each do |expenditure|
+    row = [
+      "#{expenditure.registration_number}/#{expenditure.year}",
+      expenditure.registration_date.strftime('%d.%m.%Y'),
+      expenditure.financing_source&.name,
+      expenditure.project_category&.name,
+      expenditure.project_details,
+      "#{expenditure.expenditure_article&.code} - #{expenditure.expenditure_article&.name}",
+      expenditure.details,
+      expenditure.procurement_type,
+      expenditure.ordinance_number,
+      expenditure.ordinance_date&.strftime('%d.%m.%Y'),
+      number_to_currency(expenditure.value, unit: ''),
+      expenditure.payment_type&.name,
+      expenditure.beneficiary,
+      expenditure.invoice,
+      expenditure.noncompliance,
+      expenditure.remarks,
+      expenditure.created_by_user.full_name,
+      expenditure.updated_by_user.full_name
+    ]
+    sheet.add_row row, types: ([:string] * row.length)
+  end
+end

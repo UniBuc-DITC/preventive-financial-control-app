@@ -103,7 +103,7 @@ class ExpenditureArticlesController < ApplicationController
 
   def export_download
     @expenditure_articles = ExpenditureArticle.order(name: :asc)
-    date = Time.now.strftime('%Y-%m-%d')
+    date = Time.current.strftime('%Y-%m-%d')
     render xlsx: 'export', disposition: 'attachment', filename: "Export articole de cheltuială #{date}.xlsx"
   end
 

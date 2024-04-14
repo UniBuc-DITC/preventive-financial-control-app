@@ -5,79 +5,14 @@ class ExpendituresController < ApplicationController
 
   def index
     @expenditures = Expenditure.order('year desc, registration_number desc')
-
-    relation_names = %i[financing_source project_category expenditure_article payment_type created_by_user]
-    @expenditures = @expenditures.references(relation_names).includes(relation_names)
+    
+    include_dependent_entities
 
     if cookies[:show_filter_form].present?
       @show_filter_form = ActiveRecord::Type::Boolean.new.cast(cookies[:show_filter_form])
     end
 
-    @any_filters_applied = false
-
-    @expenditures = apply_field_value_filter @expenditures, :registration_number
-    @expenditures = apply_field_value_filter @expenditures, :year
-
-    if params[:start_date].present?
-      start_date = Date.strptime(params[:start_date], '%d.%m.%Y')
-      @expenditures = @expenditures.where('registration_date >= ?', start_date)
-      @any_filters_applied = true
-    end
-
-    if params[:end_date].present?
-      end_date = Date.strptime(params[:end_date], '%d.%m.%Y')
-      @expenditures = @expenditures.where('registration_date <= ?', end_date)
-      @any_filters_applied = true
-    end
-
-    if params[:expenditure_category_code].present?
-      @expenditures = @expenditures.where(
-        expenditure_article: {
-          expenditure_category_code: params[:expenditure_category_code]
-        }
-      )
-      @any_filters_applied = true
-    end
-
-    @expenditures = apply_ids_filter @expenditures,
-                                     :financing_source_ids,
-                                     :financing_source_id
-
-    @expenditures = apply_ids_filter @expenditures,
-                                     :project_category_ids,
-                                     :project_category_id
-
-    @expenditures = apply_ids_filter @expenditures,
-                                     :expenditure_article_ids,
-                                     :expenditure_article_id
-
-    @expenditures = apply_exclude_cash_receipts_filter @expenditures
-
-    @expenditures = apply_string_field_filter @expenditures, :project_details
-    @expenditures = apply_string_field_filter @expenditures, :details
-    @expenditures = apply_string_field_filter @expenditures, :procurement_type
-    @expenditures = apply_string_field_filter @expenditures, :ordinance_number
-
-    if params[:ordinance_date].present?
-      ordinance_date = Date.strptime(params[:ordinance_date], '%d.%m.%Y')
-      @expenditures = @expenditures.where(ordinance_date:)
-      @any_filters_applied = true
-    end
-
-    @expenditures = apply_value_range_filter @expenditures
-
-    @expenditures = apply_ids_filter @expenditures,
-                                     :payment_type_ids,
-                                     :payment_type_id,
-                                     :payment_type_ids
-
-    @expenditures = apply_string_field_filter @expenditures, :beneficiary
-    @expenditures = apply_string_field_filter @expenditures, :invoice
-    @expenditures = apply_string_field_filter @expenditures, :noncompliance
-    @expenditures = apply_string_field_filter @expenditures, :remarks
-
-    @expenditures = apply_created_by_user_ids_filter @expenditures
-    @expenditures = apply_updated_by_user_ids_filter @expenditures
+    apply_filters
 
     @paginated_expenditures = @expenditures.paginate(page: params[:page], per_page: 5)
   end
@@ -161,6 +96,16 @@ class ExpendituresController < ApplicationController
     render :import
   end
 
+  def export_download
+    @expenditures = Expenditure.order('year, registration_number')
+
+    include_dependent_entities
+    apply_filters
+
+    date = Time.current.strftime('%Y-%m-%d')
+    render xlsx: 'export', disposition: 'attachment', filename: "Export cheltuieli #{date}.xlsx"
+  end
+
   private
 
   def expenditure_params
@@ -181,6 +126,83 @@ class ExpendituresController < ApplicationController
       :noncompliance,
       :remarks
     )
+  end
+
+  def include_dependent_entities
+    relation_names = %i[
+      financing_source project_category expenditure_article payment_type
+      created_by_user updated_by_user
+    ]
+    @expenditures = @expenditures.references(relation_names).includes(relation_names)
+  end
+
+  def apply_filters
+    @any_filters_applied = false
+
+    @expenditures = apply_field_value_filter @expenditures, :registration_number
+    @expenditures = apply_field_value_filter @expenditures, :year
+
+    if params[:start_date].present?
+      start_date = Date.strptime(params[:start_date], '%d.%m.%Y')
+      @expenditures = @expenditures.where('registration_date >= ?', start_date)
+      @any_filters_applied = true
+    end
+
+    if params[:end_date].present?
+      end_date = Date.strptime(params[:end_date], '%d.%m.%Y')
+      @expenditures = @expenditures.where('registration_date <= ?', end_date)
+      @any_filters_applied = true
+    end
+
+    if params[:expenditure_category_code].present?
+      @expenditures = @expenditures.where(
+        expenditure_article: {
+          expenditure_category_code: params[:expenditure_category_code]
+        }
+      )
+      @any_filters_applied = true
+    end
+
+    @expenditures = apply_ids_filter @expenditures,
+                                     :financing_source_ids,
+                                     :financing_source_id
+
+    @expenditures = apply_ids_filter @expenditures,
+                                     :project_category_ids,
+                                     :project_category_id
+
+    @expenditures = apply_ids_filter @expenditures,
+                                     :expenditure_article_ids,
+                                     :expenditure_article_id
+
+    @expenditures = apply_exclude_cash_receipts_filter @expenditures
+
+    @expenditures = apply_string_field_filter @expenditures, :project_details
+    @expenditures = apply_string_field_filter @expenditures, :details
+    @expenditures = apply_string_field_filter @expenditures, :procurement_type
+    @expenditures = apply_string_field_filter @expenditures, :ordinance_number
+
+    if params[:ordinance_date].present?
+      ordinance_date = Date.strptime(params[:ordinance_date], '%d.%m.%Y')
+      @expenditures = @expenditures.where(ordinance_date:)
+      @any_filters_applied = true
+    end
+
+    @expenditures = apply_value_range_filter @expenditures
+
+    @expenditures = apply_ids_filter @expenditures,
+                                     :payment_type_ids,
+                                     :payment_type_id,
+                                     :payment_type_ids
+
+    @expenditures = apply_string_field_filter @expenditures, :beneficiary
+    @expenditures = apply_string_field_filter @expenditures, :invoice
+    @expenditures = apply_string_field_filter @expenditures, :noncompliance
+    @expenditures = apply_string_field_filter @expenditures, :remarks
+
+    @expenditures = apply_created_by_user_ids_filter @expenditures
+    @expenditures = apply_updated_by_user_ids_filter @expenditures
+
   end
 
   def parse_expenditure(row_index, row)
