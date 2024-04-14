@@ -6,6 +6,20 @@ ro:
     update:
       success_message: "A fost actualizată cu succes cheltuiala cu numărul de înregistrare %{registration_number}/%{year}."
       error_message: "Nu s-au putut salva modificările la cheltuială. Verificați mesajele de eroare și încercați din nou."
+  audit_events:
+    actions:
+      insert: "Adăugare"
+      update: "Modificare"
+      delete: "Ștergere"
+    tables:
+      expenditures: "Cheltuieli"
+      commitments: "Angajamente"
+      financing_sources: "Surse de finanțare"
+      project_categories: "Categorii de proiect"
+      expenditure_articles: "Articole de cheltuială"
+      payment_types: "Tipuri de plăți"
+      settings: "Setări"
+      users: "Utilizatori"
   activerecord:
     errors:
       messages:

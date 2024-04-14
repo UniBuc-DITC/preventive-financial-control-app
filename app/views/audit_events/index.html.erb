@@ -20,9 +20,9 @@
         <th scope="row"><%= audit_event.id %></th>
         <td><%= audit_event.timestamp.strftime('%d.%m.%Y %H:%M:%S %Z') %></td>
         <td><%= audit_event.user.full_name %></td>
-        <td><%= audit_event.action %></td>
-        <td><%= audit_event.target_table %></td>
-        <td><%= audit_event.target_object_id %></td>
+        <td><%= t "audit_events.actions.#{audit_event.action}" %></td>
+        <td><%= t "audit_events.tables.#{audit_event.target_table}" %></td>
+        <td><%= t audit_event.target_object_id %></td>
       </tr>
     <% end %>
     </tbody>
