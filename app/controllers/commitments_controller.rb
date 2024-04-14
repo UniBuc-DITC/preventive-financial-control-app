@@ -3,6 +3,8 @@
 class CommitmentsController < ApplicationController
   include Filtrable
 
+  before_action :require_supervisor_or_admin, only: %i[edit update import import_upload]
+
   def index
     @commitments = Commitment.order('year desc, registration_number desc')
 

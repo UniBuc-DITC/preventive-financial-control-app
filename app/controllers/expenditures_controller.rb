@@ -3,6 +3,8 @@
 class ExpendituresController < ApplicationController
   include Filtrable
 
+  before_action :require_supervisor_or_admin, only: %i[edit update import import_upload]
+
   def index
     @expenditures = Expenditure.order('year desc, registration_number desc')
 
