@@ -64,6 +64,7 @@ ro:
         noncompliance: "Neconformitate"
         remarks: "Observații"
         created_by_user: "Creat de utilizatorul"
+        updated_by_user: "Modificat de utilizatorul"
       commitment:
         year: "Anul înregistrării"
         registration_number: "Număr de înregistrare"
@@ -80,3 +81,4 @@ ro:
         noncompliance: "Neconformitate"
         remarks: "Observații"
         created_by_user: "Creat de utilizatorul"
+        updated_by_user: "Modificat de utilizatorul"
