@@ -100,3 +100,8 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
 end
+
+group :production do
+  # Enable the Elastic Application Performance Monitoring agent for Ruby
+  gem 'elastic-apm'
+end

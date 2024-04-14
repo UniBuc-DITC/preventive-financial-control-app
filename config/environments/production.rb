@@ -52,7 +52,7 @@ Rails.application.configure do
 
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new($stdout)
-                                       .tap  { |logger| logger.formatter = Logger::Formatter.new }
+                                       .tap { |logger| logger.formatter = Logger::Formatter.new }
                                        .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
 
   # Prepend all log lines with the following tags.
@@ -83,4 +83,13 @@ Rails.application.configure do
   # ]
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # Set the host name and the node name.
+  # These would otherwise be implicitly set to the container ID, since
+  # we're running in Docker in production.
+  config.elastic_apm.hostname = 'bd-cfp.unibuc.ro'
+  config.elastic_apm.service_node_name = 'bd-cfp.unibuc.ro'
+
+  # Set the service name to the application name, to help identify it in the Kibana dashboard.
+  config.elastic_apm.service_name = 'Preventive Financial Control App'
 end
