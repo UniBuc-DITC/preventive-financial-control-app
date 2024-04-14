@@ -67,6 +67,23 @@ module Filtrable
       collection
     end
 
+    def apply_exclude_cash_receipts_filter(collection)
+      if params[:exclude_cash_receipts].present?
+        exclude_cash_receipts = ActiveRecord::Type::Boolean.new.cast(params[:exclude_cash_receipts])
+        if exclude_cash_receipts
+          receipts_expenditure_article = ExpenditureArticle.find_by(code: '12')
+          if receipts_expenditure_article.present?
+            collection = collection.where.not(expenditure_article: receipts_expenditure_article)
+            @any_filters_applied = true
+          else
+            flash[:alert] = 'Nu s-a putut aplica filtrul deoarece nu este definit articolul de cheltuială cu codul 12, "Încasări"'
+          end
+        end
+      end
+
+      collection
+    end
+
     # Filters a collection by the user who created the entities,
     # based on a list of user IDs received from the request.
     def apply_created_by_user_ids_filter(collection)

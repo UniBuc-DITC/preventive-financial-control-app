@@ -49,6 +49,8 @@ class CommitmentsController < ApplicationController
                                     :expenditure_article_ids,
                                     :expenditure_article_id
 
+    @commitments = apply_exclude_cash_receipts_filter @commitments
+
     @commitments = apply_string_field_filter @commitments, :validity
     @commitments = apply_string_field_filter @commitments, :project_details
     @commitments = apply_string_field_filter @commitments, :partner

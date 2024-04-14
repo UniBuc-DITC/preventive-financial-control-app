@@ -85,6 +85,9 @@
                     }
                   }
   %>
+  <%= form.check_box :exclude_cash_receipts,
+                     checked: params[:exclude_cash_receipts] == '1' ? true : false,
+                     label: 'Exclude încasările' %>
   <%= form.text_field :project_details,
                       value: params[:project_details],
                       label: 'Detalii proiect' %>

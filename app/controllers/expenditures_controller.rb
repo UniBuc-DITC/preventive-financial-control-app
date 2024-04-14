@@ -47,15 +47,11 @@ class ExpendituresController < ApplicationController
                                      :project_category_ids,
                                      :project_category_id
 
-    @expenditure_article_ids = params[:expenditure_article_ids]
-    if @expenditure_article_ids.present?
-      @expenditure_article_ids = @expenditure_article_ids.select(&:present?)
+    @expenditures = apply_ids_filter @expenditures,
+                                     :expenditure_article_ids,
+                                     :expenditure_article_id
 
-      unless @expenditure_article_ids.empty?
-        @expenditures = @expenditures.where(expenditure_article_id: @expenditure_article_ids)
-        @any_filters_applied = true
-      end
-    end
+    @expenditures = apply_exclude_cash_receipts_filter @expenditures
 
     @expenditures = apply_string_field_filter @expenditures, :project_details
     @expenditures = apply_string_field_filter @expenditures, :details

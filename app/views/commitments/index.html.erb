@@ -71,6 +71,9 @@
                     }
                   }
   %>
+  <%= form.check_box :exclude_cash_receipts,
+                     checked: params[:exclude_cash_receipts] == '1' ? true : false,
+                     label: 'Exclude încasările' %>
   <%= form.text_field :validity,
                       value: params[:validity],
                       label: 'Valabilitate' %>
@@ -162,7 +165,11 @@
       <% if @commitments.empty? %>
         <tr>
           <td colspan="17" class="ps-5 py-3">
-            Nu a fost adăugat încă niciun angajament.
+            <% if @any_filters_applied %>
+              Nu a fost găsit niciun angajament care să se potrivească cu criteriile introduse.
+            <% else %>
+              Nu a fost adăugat încă niciun angajament.
+            <% end %>
           </td>
         </tr>
       <% end %>
