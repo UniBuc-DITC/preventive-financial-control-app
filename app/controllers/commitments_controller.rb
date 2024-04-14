@@ -33,6 +33,11 @@ class CommitmentsController < ApplicationController
     end
   end
 
+  def edit
+    @commitment = Commitment.find(params[:id])
+    @commitment.updated_by_user = current_user
+  end
+
   def create
     @commitment = Commitment.new commitment_params
     @commitment.year = Setting.current_year
@@ -64,6 +69,30 @@ class CommitmentsController < ApplicationController
     else
       flash[:alert] = 'Nu s-a putut salva noul angajament. Verificați erorile și încercați din nou.'
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    @commitment = Commitment.find(params[:id])
+    @commitment.update commitment_params
+    @commitment.updated_by_user = current_user
+
+    Commitment.transaction do
+      if @commitment.save
+        AuditEvent.create!(
+          timestamp: DateTime.now,
+          user: current_user,
+          action: :update,
+          target_table: :commitments,
+          target_object_id: "#{@commitment.registration_number}/#{@commitment.year}",
+        )
+
+        flash[:notice] = "A fost modificat cu succes angajamentul cu numărul de înregistrare #{@commitment.registration_number}/#{@commitment.year}"
+        redirect_to commitments_path
+      else
+        flash[:alert] = 'Nu s-au putut salva modificările la angajament. Verificați erorile și încercați din nou.'
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
 

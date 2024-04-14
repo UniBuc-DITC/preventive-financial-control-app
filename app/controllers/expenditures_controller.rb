@@ -5,7 +5,7 @@ class ExpendituresController < ApplicationController
 
   def index
     @expenditures = Expenditure.order('year desc, registration_number desc')
-    
+
     include_dependent_entities
 
     if cookies[:show_filter_form].present?
@@ -22,6 +22,11 @@ class ExpendituresController < ApplicationController
     @expenditure.year = Setting.current_year
     @expenditure.registration_date = Time.zone.today
     @expenditure.created_by_user = current_user
+  end
+
+  def edit
+    @expenditure = Expenditure.find(params[:id])
+    @expenditure.updated_by_user = current_user
   end
 
   def create
@@ -57,6 +62,32 @@ class ExpendituresController < ApplicationController
     else
       flash[:alert] = t 'expenditures.create.error_message'
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    @expenditure = Expenditure.find(params[:id])
+    @expenditure.update expenditure_params
+    @expenditure.updated_by_user = current_user
+
+    Expenditure.transaction do
+      if @expenditure.save
+        AuditEvent.create!(
+          timestamp: DateTime.now,
+          user: current_user,
+          action: :update,
+          target_table: :expenditures,
+          target_object_id: "#{@expenditure.registration_number}/#{@expenditure.year}",
+        )
+
+        flash[:notice] = t('expenditures.update.success_message',
+                           registration_number: @expenditure.registration_number,
+                           year: @expenditure.year)
+        redirect_to expenditures_path
+      else
+        flash[:alert] = t 'expenditures.update.error_message'
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
 

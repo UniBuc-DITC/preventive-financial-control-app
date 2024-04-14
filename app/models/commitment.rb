@@ -20,6 +20,7 @@ class Commitment < ApplicationRecord
   end
 
   def financing_sources_ids=(ids)
+    self.financing_sources = []
     @financing_sources_ids = []
     ids.each do |id|
       next if id.blank?

@@ -64,6 +64,10 @@
 
     <%= f.text_field :created_by_user, value: f.object.created_by_user.full_name, disabled: true %>
 
+    <% if f.object.persisted? %>
+      <%= f.text_field :updated_by_user, value: f.object.updated_by_user.full_name, disabled: true %>
+    <% end %>
+
     <%= f.submit f.object.persisted? ? 'Salvează' : 'Adaugă' %>
   </div>
 <% end %>

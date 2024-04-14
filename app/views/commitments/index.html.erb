@@ -1,5 +1,7 @@
 <h1>Angajamente</h1>
 
+<% can_modify_commitments = current_user.supervisor? || current_user.admin? %>
+
 <div class="container">
   <div class="row">
     <div class="col">
@@ -160,6 +162,14 @@
           <td><%= commitment.created_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
           <td><%= commitment.updated_by_user.full_name %></td>
           <td><%= commitment.updated_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
+          <td class="text-nowrap">
+            <% if can_modify_commitments %>
+              <%= link_to 'Editează',
+                          edit_commitment_path(commitment.id),
+                          target: '_top',
+                          class: 'ms-1 btn btn-warning' %>
+            <% end %>
+          </td>
         </tr>
       <% end %>
       </tbody>

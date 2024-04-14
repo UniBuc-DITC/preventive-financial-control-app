@@ -1,5 +1,7 @@
 <h1>Cheltuieli</h1>
 
+<% can_modify_expenditures = current_user.supervisor? || current_user.admin? %>
+
 <div class="container">
   <div class="row">
     <div class="col">
@@ -211,10 +213,17 @@
           <td><%= expenditure.created_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
           <td><%= expenditure.updated_by_user.full_name %></td>
           <td><%= expenditure.updated_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
-          <td>
+          <td class="text-nowrap">
             <%= link_to 'Convertește în angajament',
                         new_commitment_path(source_expenditure_id: expenditure.id),
+                        target: '_top',
                         class: 'btn btn-primary' %>
+            <% if can_modify_expenditures %>
+              <%= link_to 'Editează',
+                          edit_expenditure_path(expenditure.id),
+                          target: '_top',
+                          class: 'ms-1 btn btn-warning' %>
+            <% end %>
           </td>
         </tr>
       <% end %>
