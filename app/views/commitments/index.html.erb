@@ -7,7 +7,7 @@
     <div class="col">
       <p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
       <p><%= link_to 'Adaugă un angajament nou', new_commitment_path, class: 'btn btn-primary' %></p>
-      <% if current_user.admin? %>
+      <% if can_modify_commitments %>
         <p><%= link_to 'Importă angajamente din Excel', import_commitments_path, class: 'btn btn-success' %></p>
       <% end %>
       <p><%= link_to 'Exportă lista de angajamente ca Excel', export_download_commitments_path,

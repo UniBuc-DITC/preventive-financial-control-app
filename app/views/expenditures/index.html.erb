@@ -7,7 +7,7 @@
     <div class="col">
       <p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
       <p><%= link_to 'Adaugă o cheltuială nouă', new_expenditure_path, class: 'btn btn-primary' %></p>
-      <% if current_user.admin? %>
+      <% if can_modify_expenditures %>
         <p><%= link_to 'Importă cheltuieli din Excel', import_expenditures_path, class: 'btn btn-success' %></p>
       <% end %>
       <p><%= link_to 'Exportă lista de cheltuieli ca Excel', export_download_expenditures_path,
