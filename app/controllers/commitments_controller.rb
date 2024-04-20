@@ -355,7 +355,7 @@ class CommitmentsController < ApplicationController
       financing_sources << FinancingSource.find_by(name: 'Grădina Botanică')
     when 'st sf gheorghe'
       financing_sources << FinancingSource.find_by(name: 'Stațiunea de cercetări de la Sfântu Gheorghe')
-    when 'st orsova', 'st. orsova'
+    when 'statiunea orsova', 'st orsova', 'st. orsova'
       financing_sources << FinancingSource.find_by(name: 'Stațiunea de cercetare de la Orșova')
     when 'statiunea braila', 'statiune braila', 'statiune Braila', 'st braila', 'braila'
       financing_sources << FinancingSource.find_by(name: 'Stațiunea de Cercetări Ecologice Brăila')
