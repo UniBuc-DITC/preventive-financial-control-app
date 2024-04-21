@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-class Expenditure < ApplicationRecord
-  validates :year, :registration_number, :registration_date, presence: true
+class Expenditure < RegistryRecord
   validates :financing_source, :expenditure_article, :payment_type, :value,
             presence: true, unless: :cancelled?
   # Some imported records might not have a beneficiary listed
@@ -21,10 +20,6 @@ class Expenditure < ApplicationRecord
 
   def imported?
     !!@imported
-  end
-
-  def cancelled?
-    !!cancelled
   end
 
   private

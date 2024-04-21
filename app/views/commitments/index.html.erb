@@ -1,4 +1,6 @@
-<h1>Angajamente</h1>
+<% content_for :title, 'Angajamente' %>
+
+<h1>Registru angajamente</h1>
 
 <% can_modify_commitments = current_user.supervisor? || current_user.admin? %>
 

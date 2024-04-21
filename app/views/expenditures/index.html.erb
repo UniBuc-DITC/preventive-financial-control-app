@@ -1,4 +1,6 @@
-<h1>Cheltuieli</h1>
+<% content_for :title, 'Cheltuieli' %>
+
+<h1>Registru cheltuieli</h1>
 
 <% can_modify_expenditures = current_user.supervisor? || current_user.admin? %>
 

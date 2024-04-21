@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="<%= I18n.locale %>">
 <head>
-  <title>Aplicație CFP</title>
+  <title><%= (yield(:title) + ' - ' unless yield(:title).blank?).to_s + 'Aplicație CFP' %></title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>

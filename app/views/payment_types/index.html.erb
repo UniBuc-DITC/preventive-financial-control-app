@@ -1,15 +1,18 @@
+<% content_for :title, 'Tipuri de plăți' %>
+
 <h1>Tipuri de plăți</h1>
 
 <% can_modify_payment_types = current_user.supervisor? || current_user.admin? %>
 
-<p><%= link_to 'Înapoi la pagina principală', root_path %></p>
+<p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
 <% if can_modify_payment_types %>
-  <p><%= link_to 'Adaugă un tip de plată nou', new_payment_type_path %></p>
+  <p><%= link_to 'Adaugă un tip de plată nou', new_payment_type_path, class: 'btn btn-primary' %></p>
 <% end %>
 <p><%= link_to 'Exportă lista de tipuri de plăți', export_download_payment_types_path,
+               class: 'btn btn-success',
                download: true, data: { turbo: false } %></p>
 <% if can_modify_payment_types %>
-  <p><%= link_to 'Importă tipuri de plăți din Excel', import_payment_types_path %></p>
+  <p><%= link_to 'Importă tipuri de plăți din Excel', import_payment_types_path, class: 'btn btn-success' %></p>
 <% end %>
 
 <%= render partial: 'flashes' %>
@@ -32,8 +35,8 @@
         <td><%= payment_type.name %></td>
         <% if can_modify_payment_types %>
           <td>
-            <%= link_to 'Editează', edit_payment_type_path(payment_type.id) %>
-            <%= link_to 'Șterge', payment_type_path(payment_type.id), method: :delete,
+            <%= link_to 'Editează', edit_payment_type_path(payment_type.id), class: 'btn btn-warning' %>
+            <%= link_to 'Șterge', payment_type_path(payment_type.id), method: :delete, class: 'btn btn-danger',
                         data: { confirm: 'Ești sigur că vrei să ștergi acest tip de plată?' } %>
           </td>
         <% end %>

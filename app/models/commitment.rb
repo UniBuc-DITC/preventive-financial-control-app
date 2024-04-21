@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class Commitment < ApplicationRecord
-  validates :year, :registration_number, :registration_date, presence: true
-
+class Commitment < RegistryRecord
   validates :expenditure_article, :financing_sources_ids, :document_number, :partner, :value,
             presence: true, unless: :cancelled?
 
@@ -28,9 +26,5 @@ class Commitment < ApplicationRecord
       financing_sources << FinancingSource.find(id)
       @financing_sources_ids << id
     end
-  end
-
-  def cancelled?
-    !!cancelled
   end
 end

@@ -1,7 +1,9 @@
+<% content_for :title, 'Utilizatori' %>
+
 <h1>Utilizatori</h1>
 
-<p><%= link_to 'Înapoi la pagina principală', root_path %></p>
-<p><%= link_to 'Adaugă un utilizator nou', new_user_path %></p>
+<p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
+<p><%= link_to 'Adaugă un utilizator nou', new_user_path, class: 'btn btn-primary' %></p>
 
 <%= render partial: 'flashes' %>
 

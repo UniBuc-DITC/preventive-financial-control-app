@@ -1,15 +1,19 @@
+<% content_for :title, 'Articole de cheltuială' %>
+
 <h1>Articole de cheltuială</h1>
 
 <% can_modify_expenditure_articles = current_user.supervisor? || current_user.admin? %>
 
-<p><%= link_to 'Înapoi la pagina principală', root_path %></p>
+<p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
 <% if can_modify_expenditure_articles %>
-  <p><%= link_to 'Adaugă un articol de cheltuială nou', new_expenditure_article_path %></p>
+  <p><%= link_to 'Adaugă un articol de cheltuială nou', new_expenditure_article_path, class: 'btn btn-primary' %></p>
 <% end %>
 <p><%= link_to 'Exportă lista de articole de cheltuială', export_download_expenditure_articles_path,
+               class: 'btn btn-success',
                download: true, data: { turbo: false } %></p>
 <% if can_modify_expenditure_articles %>
-  <p><%= link_to 'Importă articole de cheltuială din Excel', import_expenditure_articles_path %></p>
+  <p><%= link_to 'Importă articole de cheltuială din Excel', import_expenditure_articles_path,
+                 class: 'btn btn-success' %></p>
 <% end %>
 
 <%= render partial: 'flashes' %>
