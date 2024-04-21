@@ -201,7 +201,7 @@ class CommitmentsController < ApplicationController
 
     @commitments = apply_ids_filter @commitments,
                                     :financing_source_ids,
-                                    :financing_source_ids
+                                    :financing_sources
 
     @commitments = apply_ids_filter @commitments,
                                     :expenditure_article_ids,
