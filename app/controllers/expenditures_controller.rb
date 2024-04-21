@@ -410,7 +410,7 @@ class ExpendituresController < ApplicationController
       financing_source = FinancingSource.find_by(name: 'Departamentul de Educație Fizică și Sport')
     else
       @financing_sources.each do |fs|
-        financing_source = fs if financing_source_name.match(fs.import_code)
+        financing_source = fs if fs.import_regexp.match(financing_source_name)
       end
     end
 
@@ -646,7 +646,7 @@ class ExpendituresController < ApplicationController
     else
       if project_name.present?
         @project_categories.each do |pc|
-          project_category = pc if project_name.match(pc.import_code)
+          project_category = pc if pc.import_regexp.match(project_name)
         end
 
         if project_category.nil?

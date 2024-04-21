@@ -537,7 +537,7 @@ class CommitmentsController < ApplicationController
       financing_sources << FinancingSource.find_by(name: 'Direcția IT&C')
     else
       @financing_sources.each do |fs|
-        financing_sources << fs if financing_sources_column.match(fs.import_code)
+        financing_sources << fs if fs.import_regexp.match(financing_sources_column)
       end
     end
 
