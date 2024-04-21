@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   get '/auth/:provider/callback', to: 'sessions#create'
   post '/auth/sign_out', to: 'sessions#destroy', as: :sign_out
 
-  resources :users, only: %i[index new create]
+  resources :users, only: %i[index new edit create update]
 
   resources :financing_sources do
     get 'export', to: 'financing_sources#export_download', as: :export_download, on: :collection, format: 'xlsx'

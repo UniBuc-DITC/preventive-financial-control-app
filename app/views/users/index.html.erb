@@ -2,6 +2,8 @@
 
 <h1>Utilizatori</h1>
 
+<% can_modify_users = current_user.supervisor? || current_user.admin? %>
+
 <p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
 <p><%= link_to 'Adaugă un utilizator nou', new_user_path, class: 'btn btn-primary' %></p>
 
@@ -16,6 +18,7 @@
       <th scope="col">Nume de familie</th>
       <th scope="col">E-mail</th>
       <th scope="col">Rol</th>
+      <th scope="col">Acțiuni</th>
     </tr>
     </thead>
     <tbody>
@@ -25,7 +28,15 @@
         <td><%= user.first_name %></td>
         <td><%= user.last_name %></td>
         <td><%= user.email %></td>
-        <td><%= user.role %></td>
+        <td><%= t "roles.#{user.role}" %></td>
+        <td>
+          <% if can_modify_users && user.id != current_user.id && (!current_user.supervisor? || !user.admin?) %>
+            <%= link_to 'Editează',
+                        edit_user_path(user.id),
+                        target: '_top',
+                        class: 'ms-1 btn btn-warning' %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
     </tbody>

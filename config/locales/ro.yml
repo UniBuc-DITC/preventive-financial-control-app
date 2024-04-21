@@ -1,4 +1,8 @@
 ro:
+  roles:
+    admin: "Administrator"
+    supervisor: "Șef birou"
+    employee: "Angajat"
   expenditures:
     create:
       success_message: "A fost salvată cu succes cheltuiala cu numărul de înregistrare %{registration_number}/%{year}."
@@ -29,7 +33,8 @@ ro:
           has_many: "nu se poate șterge un obiect cât timp încă există entități asociate acestuia"
     attributes:
       user:
-        entra_user_id: "ID în Microsoft Entra"
+        entra_user_id: "Utilizator din Microsoft 365"
+        role: "Rol"
       financing_source:
         name: "Denumire"
         import_code: "Cod import"

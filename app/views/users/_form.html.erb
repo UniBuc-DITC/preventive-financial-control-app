@@ -1,0 +1,17 @@
+<%= bootstrap_form_for @user do |f| %>
+  <%= f.alert_message 'Vă rog să rezolvați erorile de mai jos:' %>
+
+  <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+    <%= f.text_field :entra_user_id, disabled: f.object.persisted? %>
+
+    <%= f.select :role,
+                 selectable_roles.map { |role|
+                   [t("roles.#{role}"), role]
+                 },
+                 { include_blank: 'Selectează rolul utilizatorului...' },
+                 { data: { use_select2: true } }
+    %>
+
+    <%= f.submit f.object.persisted? ? 'Salvează' : 'Adaugă' %>
+  </div>
+<% end %>
