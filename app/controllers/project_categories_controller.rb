@@ -104,6 +104,6 @@ class ProjectCategoriesController < ApplicationController
   private
 
   def project_category_params
-    params.require(:project_category).permit(:name)
+    params.require(:project_category).permit(:name, :import_code)
   end
 end

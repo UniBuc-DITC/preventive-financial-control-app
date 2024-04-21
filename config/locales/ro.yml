@@ -32,8 +32,10 @@ ro:
         entra_user_id: "ID în Microsoft Entra"
       financing_source:
         name: "Denumire"
+        import_code: "Cod import"
       project_category:
         name: "Denumire"
+        import_code: "Cod import"
       expenditure_article:
         code: "Cod"
         name: "Denumire"

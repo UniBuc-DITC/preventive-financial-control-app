@@ -1,11 +1,33 @@
 <h1>Importă cheltuieli</h1>
 
-<p><%= link_to 'Înapoi la registrul de cheltuieli', expenditures_path %></p>
+<p>
+  <%= link_to 'Înapoi la registrul de cheltuieli', expenditures_path, class: 'btn btn-light' %>
+</p>
+
+<p>
+  Pe această pagină puteți importa cheltuieli dintr-un registru în format Excel.
+  Asigurați-vă că fișierul conține doar înregistrările care vreți să fie aduse în aplicație. Ștergeți celelalte
+  sheet-uri și încărcați fișierul în formularul de mai jos.
+
+  Aplicația vă va semnala potențialele erori care previn importarea corectă a datelor.
+</p>
 
 <%= render partial: 'flashes' %>
 
+<% if @error_messages&.any? %>
+  <div class="alert alert-danger">
+    <ul>
+      <% @error_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <%= bootstrap_form_with url: import_upload_expenditures_path, method: :post do |form| %>
-  <%= form.file_field :file, accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' %>
+  <%= form.file_field :file,
+                      label: 'Fișier Excel cu registrul de cheltuieli',
+                      accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' %>
 
   <%= form.submit 'Importă' %>
 <% end %>

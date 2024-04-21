@@ -3,11 +3,11 @@
 workbook = xlsx_package.workbook
 
 workbook.add_worksheet(name: 'Surse de finanțare') do |sheet|
-  header = ['Denumire']
+  header = ['Denumire', 'Cod de import']
   sheet.add_row header
 
   @financing_sources.each do |financing_source|
-    row = [financing_source.name.strip]
+    row = [financing_source.name, financing_source.import_code]
     sheet.add_row row, types: ([:string] * row.length)
   end
 end

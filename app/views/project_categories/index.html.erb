@@ -2,9 +2,9 @@
 
 <% can_modify_project_categories = current_user.supervisor? || current_user.admin? %>
 
-<p><%= link_to 'Înapoi la pagina principală', root_path %></p>
+<p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
 <% if can_modify_project_categories %>
-  <p><%= link_to 'Adaugă o categorie de proiect nouă', new_project_category_path %></p>
+  <p><%= link_to 'Adaugă o categorie de proiect nouă', new_project_category_path, class: 'btn btn-primary' %></p>
 <% end %>
 
 <%= render partial: 'flashes' %>
@@ -15,6 +15,7 @@
     <tr>
       <th scope="col">ID</th>
       <th scope="col">Denumire</th>
+      <th scope="col">Cod de import</th>
       <% if can_modify_project_categories %>
         <th scope="col">Acțiuni</th>
       <% end %>
@@ -25,10 +26,12 @@
       <tr>
         <td><%= index + 1 %></td>
         <td><%= project_category.name %></td>
+        <td><%= project_category.import_code %></td>
         <% if can_modify_project_categories %>
           <td>
-            <%= link_to 'Editează', edit_project_category_path(project_category.id) %>
+            <%= link_to 'Editează', edit_project_category_path(project_category.id), class: 'btn btn-warning' %>
             <%= link_to 'Șterge', project_category_path(project_category.id), method: :delete,
+                        class: 'btn btn-danger',
                         data: { confirm: 'Ești sigur că vrei să ștergi această categorie de proiect?' } %>
           </td>
         <% end %>

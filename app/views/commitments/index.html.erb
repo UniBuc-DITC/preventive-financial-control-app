@@ -10,7 +10,8 @@
       <% if can_modify_commitments %>
         <p><%= link_to 'Importă angajamente din Excel', import_commitments_path, class: 'btn btn-success' %></p>
       <% end %>
-      <p><%= link_to 'Exportă lista de angajamente ca Excel', export_download_commitments_path,
+      <p><%= link_to 'Exportă lista de angajamente ca Excel',
+                     export_download_commitments_path(**request.query_parameters),
                      download: true, class: 'btn btn-success', data: { turbo: false } %></p>
       <p>
         <%= button_tag type: 'button', class: 'btn btn-primary',

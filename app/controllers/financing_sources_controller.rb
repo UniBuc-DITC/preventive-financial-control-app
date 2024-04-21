@@ -122,10 +122,9 @@ class FinancingSourcesController < ApplicationController
         name = row[0].strip
 
         financing_source = FinancingSource.find_or_initialize_by(name:)
+        financing_source.import_code = row[1]&.strip || ''
 
-        unless financing_source.save
-          raise ImportError.new(row_index, financing_source.errors.full_messages.join(', '))
-        end
+        raise ImportError.new(row_index, financing_source.errors.full_messages.join(', ')) unless financing_source.save
 
         total_count += 1
       end
@@ -136,12 +135,12 @@ class FinancingSourcesController < ApplicationController
 
   rescue ImportError => e
     flash.now[:alert] = e.to_s
-    return render :import
+    render :import
   end
 
   private
 
   def financing_source_params
-    params.require(:financing_source).permit(:name)
+    params.require(:financing_source).permit(:name, :import_code)
   end
 end

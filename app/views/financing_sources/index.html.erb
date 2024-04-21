@@ -2,14 +2,16 @@
 
 <% can_modify_financing_sources = current_user.supervisor? || current_user.admin? %>
 
-<p><%= link_to 'Înapoi la pagina principală', root_path %></p>
+<p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
 <% if can_modify_financing_sources %>
-  <p><%= link_to 'Adaugă o sursă de finanțare nouă', new_financing_source_path %></p>
+  <p><%= link_to 'Adaugă o sursă de finanțare nouă', new_financing_source_path, class: 'btn btn-primary' %></p>
 <% end %>
 <p><%= link_to 'Exportă lista de surse de finanțare', export_download_financing_sources_path,
+               class: 'btn btn-success',
                download: true, data: { turbo: false } %></p>
 <% if can_modify_financing_sources %>
-  <p><%= link_to 'Importă surse de finanțare din Excel', import_financing_sources_path %></p>
+  <p><%= link_to 'Importă surse de finanțare din Excel', import_financing_sources_path,
+                 class: 'btn btn-success' %></p>
 <% end %>
 
 <%= render partial: 'flashes' %>
@@ -20,6 +22,7 @@
     <tr>
       <th scope="col">Nr. crt.</th>
       <th scope="col">Denumire</th>
+      <th scope="col">Cod de import</th>
       <% if can_modify_financing_sources %>
         <th scope="col">Acțiuni</th>
       <% end %>
@@ -30,10 +33,12 @@
       <tr>
         <td><%= index + 1 %></td>
         <td><%= financing_source.name %></td>
+        <td><%= financing_source.import_code %></td>
         <% if can_modify_financing_sources %>
           <td>
-            <%= link_to 'Editează', edit_financing_source_path(financing_source.id) %>
+            <%= link_to 'Editează', edit_financing_source_path(financing_source.id), class: 'btn btn-warning' %>
             <%= link_to 'Șterge', financing_source_path(financing_source.id), method: :delete,
+                        class: 'btn btn-danger',
                         data: { confirm: 'Ești sigur că vrei să ștergi această sursă de finanțare?' } %>
           </td>
         <% end %>
