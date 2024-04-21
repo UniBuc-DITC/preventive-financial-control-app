@@ -35,7 +35,9 @@
       <tr>
         <td><%= index + 1 %></td>
         <td><%= financing_source.name %></td>
-        <td><%= financing_source.import_code %></td>
+        <td>
+          <code><%= financing_source.import_code %></code>
+        </td>
         <% if can_modify_financing_sources %>
           <td>
             <%= link_to 'Editează', edit_financing_source_path(financing_source.id), class: 'btn btn-warning' %>

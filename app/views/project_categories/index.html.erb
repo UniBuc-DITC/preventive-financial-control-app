@@ -28,7 +28,9 @@
       <tr>
         <td><%= index + 1 %></td>
         <td><%= project_category.name %></td>
-        <td><%= project_category.import_code %></td>
+        <td>
+          <code><%= project_category.import_code %></code>
+        </td>
         <% if can_modify_project_categories %>
           <td>
             <%= link_to 'Editează', edit_project_category_path(project_category.id), class: 'btn btn-warning' %>
