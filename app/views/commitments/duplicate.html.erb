@@ -1,0 +1,9 @@
+<% content_for :title, "Duplicare angajament #{@commitment.full_identifier}" %>
+
+<h1>Duplică un angajament existentă</h1>
+
+<p><%= link_to 'Înapoi la registrul de angajamente', commitments_path %></p>
+
+<%= render partial: 'flashes' %>
+
+<%= render partial: 'form' %>

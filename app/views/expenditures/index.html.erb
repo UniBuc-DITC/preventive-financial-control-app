@@ -170,6 +170,7 @@
     <table class="table table-striped table-hover">
       <thead>
       <tr>
+        <th scope="col">Acțiuni</th>
         <th scope="col">Număr de înregistrare</th>
         <th scope="col">Data înregistrării</th>
         <th scope="col">Sursă de finanțare</th>
@@ -190,12 +191,28 @@
         <th scope="col">Creat la data de</th>
         <th scope="col">Modificat de</th>
         <th scope="col">Modificat la data de</th>
-        <th scope="col">Acțiuni</th>
       </tr>
       </thead>
       <tbody>
       <% @paginated_expenditures.each do |expenditure| %>
         <tr>
+          <td class="d-grid gap-1">
+            <%= link_to 'Duplică',
+                        duplicate_expenditure_path(expenditure.id),
+                        target: '_top',
+                        class: 'btn btn-info' %>
+            <%= link_to new_commitment_path(source_expenditure_id: expenditure.id),
+                        target: '_top',
+                        class: 'btn btn-primary' do %>
+              Convertește <span class="text-nowrap">în angajament</span>
+            <% end %>
+            <% if can_modify_expenditures %>
+              <%= link_to 'Editează',
+                          edit_expenditure_path(expenditure.id),
+                          target: '_top',
+                          class: 'ms-1 btn btn-warning' %>
+            <% end %>
+          </td>
           <th scope="row"><%= expenditure.registration_number %>/<%= expenditure.year %></th>
           <td><%= expenditure.registration_date.strftime('%d.%m.%Y') %></td>
           <td><%= expenditure.financing_source&.name %></td>
@@ -216,18 +233,6 @@
           <td><%= expenditure.created_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
           <td><%= expenditure.updated_by_user.full_name %></td>
           <td><%= expenditure.updated_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
-          <td class="text-nowrap">
-            <%= link_to 'Convertește în angajament',
-                        new_commitment_path(source_expenditure_id: expenditure.id),
-                        target: '_top',
-                        class: 'btn btn-primary' %>
-            <% if can_modify_expenditures %>
-              <%= link_to 'Editează',
-                          edit_expenditure_path(expenditure.id),
-                          target: '_top',
-                          class: 'ms-1 btn btn-warning' %>
-            <% end %>
-          </td>
         </tr>
       <% end %>
       </tbody>

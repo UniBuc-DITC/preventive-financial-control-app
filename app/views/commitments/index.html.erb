@@ -128,6 +128,7 @@
     <table class="table table-striped table-hover">
       <thead>
       <tr>
+        <th scope="col">Acțiuni</th>
         <th scope="col">Număr de înregistrare</th>
         <th scope="col">Data înregistrării</th>
         <th scope="col">Număr document</th>
@@ -149,6 +150,14 @@
       <tbody>
       <% @paginated_commitments.each do |commitment| %>
         <tr>
+          <td class="text-nowrap">
+            <% if can_modify_commitments %>
+              <%= link_to 'Editează',
+                          edit_commitment_path(commitment.id),
+                          target: '_top',
+                          class: 'ms-1 btn btn-warning' %>
+            <% end %>
+          </td>
           <th scope="row"><%= commitment.registration_number %>/<%= commitment.year %></th>
           <td><%= commitment.registration_date.strftime('%d.%m.%Y') %></td>
           <td><%= commitment.document_number %></td>
@@ -165,14 +174,6 @@
           <td><%= commitment.created_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
           <td><%= commitment.updated_by_user.full_name %></td>
           <td><%= commitment.updated_at.strftime('%d.%m.%Y la %H:%M ora României') %></td>
-          <td class="text-nowrap">
-            <% if can_modify_commitments %>
-              <%= link_to 'Editează',
-                          edit_commitment_path(commitment.id),
-                          target: '_top',
-                          class: 'ms-1 btn btn-warning' %>
-            <% end %>
-          </td>
         </tr>
       <% end %>
       </tbody>

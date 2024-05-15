@@ -36,15 +36,21 @@ Rails.application.routes.draw do
   end
 
   resources :expenditures, only: %i[index new edit create update] do
-    get 'export', to: 'expenditures#export_download', as: :export_download, on: :collection, format: 'xlsx'
-    get 'import', to: 'expenditures#import', as: :import, on: :collection
-    post 'import', to: 'expenditures#import_upload', as: :import_upload, on: :collection
+    get 'duplicate', to: 'expenditures#duplicate', as: :duplicate, on: :member
+    collection do
+      get 'export', to: 'expenditures#export_download', as: :export_download, format: 'xlsx'
+      get 'import', to: 'expenditures#import', as: :import
+      post 'import', to: 'expenditures#import_upload', as: :import_upload
+    end
   end
 
   resources :commitments, only: %i[index new edit create update] do
-    get 'export', to: 'commitments#export_download', as: :export_download, on: :collection, format: 'xlsx'
-    get 'import', to: 'commitments#import', as: :import, on: :collection
-    post 'import', to: 'commitments#import_upload', as: :import_upload, on: :collection
+    get 'duplicate', to: 'commitments#duplicate', as: :duplicate, on: :member
+    collection do
+      get 'export', to: 'commitments#export_download', as: :export_download, format: 'xlsx'
+      get 'import', to: 'commitments#import', as: :import
+      post 'import', to: 'commitments#import_upload', as: :import_upload
+    end
   end
 
   resources :audit_events, only: [:index]

@@ -31,12 +31,20 @@ class CommitmentsController < ApplicationController
       @commitment.financing_sources << @source_expenditure.financing_source
       @commitment.expenditure_article = @source_expenditure.expenditure_article
       @commitment.procurement_type = @source_expenditure.procurement_type
+      @commitment.project_details = @source_expenditure.details
       @commitment.value = @source_expenditure.value
     end
   end
 
   def edit
     @commitment = Commitment.find(params[:id])
+    @commitment.updated_by_user = current_user
+  end
+
+  def duplicate
+    @commitment = Commitment.find(params[:id]).dup
+    @commitment.registration_number = nil
+    @commitment.created_by_user = current_user
     @commitment.updated_by_user = current_user
   end
 

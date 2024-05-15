@@ -31,6 +31,13 @@ class ExpendituresController < ApplicationController
     @expenditure.updated_by_user = current_user
   end
 
+  def duplicate
+    @expenditure = Expenditure.find(params[:id]).dup
+    @expenditure.registration_number = nil
+    @expenditure.created_by_user = current_user
+    @expenditure.updated_by_user = current_user
+  end
+
   def create
     @expenditure = Expenditure.new expenditure_params
     @expenditure.year = Setting.current_year
