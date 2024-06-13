@@ -64,6 +64,9 @@ gem 'will_paginate-bootstrap-style'
 gem 'caxlsx'
 gem 'caxlsx_rails'
 
+# CSV I/O
+gem 'csv'
+
 # Excel import support
 gem 'roo', '~> 2.10.0'
 
