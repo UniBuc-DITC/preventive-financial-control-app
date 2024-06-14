@@ -136,8 +136,8 @@
         <th scope="col">Reprezentant UB / sursă de finanțare</th>
         <th scope="col">Detalii proiect</th>
         <th scope="col">Articol de cheltuială</th>
-        <th scope="col">Partener</th>
         <th scope="col">Valoare cu TVA (RON)</th>
+        <th scope="col">Partener</th>
         <th scope="col">Tip achiziție</th>
         <th scope="col">Neconformitate</th>
         <th scope="col">Observații</th>
@@ -169,8 +169,8 @@
           <td><%= commitment.financing_sources.map(&:name).join(', ') %></td>
           <td><%= commitment.project_details %></td>
           <td><%= "#{commitment.expenditure_article&.code} - #{commitment.expenditure_article&.name}" %></td>
-          <td><%= commitment.partner %></td>
           <td><%= commitment.value %></td>
+          <td><%= commitment.partner %></td>
           <td><%= commitment.procurement_type %></td>
           <td><%= commitment.noncompliance %></td>
           <td><%= commitment.remarks %></td>

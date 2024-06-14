@@ -177,11 +177,11 @@
         <th scope="col">Categorie proiect</th>
         <th scope="col">Detalii proiect</th>
         <th scope="col">Articol de cheltuială</th>
+        <th scope="col">Valoare plată (RON)</th>
         <th scope="col">Detalii</th>
         <th scope="col">Tip achiziție</th>
         <th scope="col">Număr ordonanțare</th>
         <th scope="col">Dată ordonanțare</th>
-        <th scope="col">Valoare plată (RON)</th>
         <th scope="col">Tip de plată</th>
         <th scope="col">Beneficiar</th>
         <th scope="col">Factură</th>
@@ -219,11 +219,11 @@
           <td><%= expenditure.project_category&.name %></td>
           <td><%= expenditure.project_details %></td>
           <td><%= "#{expenditure.expenditure_article&.code} - #{expenditure.expenditure_article&.name}" %></td>
+          <td><%= number_to_currency expenditure.value, unit: '' %></td>
           <td><%= expenditure.details %></td>
           <td><%= expenditure.procurement_type %></td>
           <td><%= expenditure.ordinance_number %></td>
           <td><%= expenditure.ordinance_date&.strftime('%d.%m.%Y') %></td>
-          <td><%= number_to_currency expenditure.value, unit: '' %></td>
           <td><%= expenditure.payment_type&.name %></td>
           <td><%= expenditure.beneficiary %></td>
           <td><%= expenditure.invoice %></td>
