@@ -29,7 +29,7 @@
                  }
     %>
 
-    <%= f.text_field :project_details %>
+    <%= f.text_area :project_details %>
 
     <%= f.select :expenditure_article_id,
                  ExpenditureArticle.order(:code).map { |expenditure_article|
