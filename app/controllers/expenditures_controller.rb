@@ -16,7 +16,10 @@ class ExpendituresController < ApplicationController
 
     apply_filters
 
-    @paginated_expenditures = @expenditures.paginate(page: params[:page], per_page: 5)
+    @paginated_expenditures = @expenditures.paginate(
+      page: params[:page],
+      per_page: 10
+    )
   end
 
   def new

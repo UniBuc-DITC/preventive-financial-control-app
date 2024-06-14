@@ -16,7 +16,10 @@ class CommitmentsController < ApplicationController
 
     apply_filters
 
-    @paginated_commitments = @commitments.paginate(page: params[:page], per_page: 5)
+    @paginated_commitments = @commitments.paginate(
+      page: params[:page],
+      per_page: 10
+    )
   end
 
   def new
