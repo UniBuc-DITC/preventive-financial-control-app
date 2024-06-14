@@ -32,7 +32,9 @@ class CommitmentsController < ApplicationController
       @commitment.expenditure_article = @source_expenditure.expenditure_article
       @commitment.procurement_type = @source_expenditure.procurement_type
       @commitment.project_details = @source_expenditure.details
+      @commitment.partner = @source_expenditure.beneficiary
       @commitment.value = @source_expenditure.value
+      @commitment.remarks = @source_expenditure.remarks
     end
   end
 
