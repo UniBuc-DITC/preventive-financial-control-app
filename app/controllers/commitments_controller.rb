@@ -42,7 +42,11 @@ class CommitmentsController < ApplicationController
   end
 
   def duplicate
-    @commitment = Commitment.find(params[:id]).dup
+    existing_commitment = Commitment.find(params[:id])
+    @commitment = existing_commitment.dup
+    existing_commitment.financing_sources.each do |financing_source|
+      @commitment.financing_sources << financing_source
+    end
     @commitment.registration_number = nil
     @commitment.created_by_user = current_user
     @commitment.updated_by_user = current_user

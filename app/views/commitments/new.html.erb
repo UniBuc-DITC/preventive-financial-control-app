@@ -4,9 +4,9 @@
 
 <p>
   <% if params.key? :source_expenditure_id %>
-    <%= link_to 'Înapoi la registrul de cheltuieli', expenditures_path %>
+    <%= link_to 'Înapoi la registrul de cheltuieli', expenditures_path, class: 'btn btn-light' %>
   <% else %>
-    <%= link_to 'Înapoi la registrul de angajamente', commitments_path %>
+    <%= link_to 'Înapoi la registrul de angajamente', commitments_path, class: 'btn btn-light' %>
   <% end %>
 </p>
 

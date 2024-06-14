@@ -151,6 +151,10 @@
       <% @paginated_commitments.each do |commitment| %>
         <tr>
           <td class="text-nowrap">
+            <%= link_to 'Duplică',
+                        duplicate_commitment_path(commitment.id),
+                        target: '_top',
+                        class: 'btn btn-info' %>
             <% if can_modify_commitments %>
               <%= link_to 'Editează',
                           edit_commitment_path(commitment.id),
