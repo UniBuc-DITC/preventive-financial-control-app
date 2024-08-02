@@ -41,6 +41,9 @@ Rails.application.routes.draw do
       get 'export', to: 'expenditures#export_download', as: :export_download, format: 'xlsx'
       get 'import', to: 'expenditures#import', as: :import
       post 'import', to: 'expenditures#import_upload', as: :import_upload
+      get 'find_matching_invoices', to: 'expenditures#find_matching_invoices',
+                                    as: :find_matching_invoices,
+                                    defaults: { format: :json }
     end
   end
 

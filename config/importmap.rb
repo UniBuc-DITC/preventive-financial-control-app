@@ -9,6 +9,7 @@ pin '@hotwired/stimulus', to: 'stimulus.min.js'
 pin '@hotwired/stimulus-loading', to: 'stimulus-loading.js'
 
 pin 'jquery', to: 'jquery3.min.js', preload: true
+pin 'jquery-ui', to: 'jquery-ui.min.js', preload: true
 pin '@rails/ujs', to: 'rails-ujs.js', preload: true
 
 pin 'bootstrap', to: 'bootstrap.min.js', preload: true

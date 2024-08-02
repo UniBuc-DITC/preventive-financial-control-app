@@ -166,6 +166,18 @@ class ExpendituresController < ApplicationController
     render xlsx: 'export', disposition: 'attachment', filename: "Export cheltuieli #{date}.xlsx"
   end
 
+  def find_matching_invoices
+    term = params[:term]
+
+    return render json: [] if term.blank? || term.size < 2
+
+    matching_invoices = Expenditure.where('invoice LIKE ?', "%#{term}%")
+                                   .limit(15)
+                                   .pluck(:invoice)
+
+    render json: matching_invoices
+  end
+
   private
 
   def expenditure_params

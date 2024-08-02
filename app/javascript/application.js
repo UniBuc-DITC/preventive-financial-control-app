@@ -3,6 +3,7 @@ import "@hotwired/turbo-rails";
 import "controllers";
 
 import "jquery";
+import "jquery-ui";
 import "@rails/ujs";
 
 import "@popperjs/core";
@@ -95,6 +96,14 @@ document.documentElement.addEventListener("turbo:load", () => {
       });
     }
   });
+
+  // Suggest invoice numbers based on existing invoices.
+  $("#expenditure_invoice")
+    .autocomplete({
+      source: '/expenditures/find_matching_invoices',
+      autoFocus: true,
+      minLength: 2
+    });
 
   // We used to allow the selection of projects only for expenditures associated to "Research" financing sources,
   // but this is not the case anymore.
