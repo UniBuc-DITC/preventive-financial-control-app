@@ -28,140 +28,142 @@
       <%= render partial: 'application/statistics', locals: { collection: @expenditures } %>
     </section>
   </div>
-</div>
 
-<%= bootstrap_form_with method: :get, layout: :inline, id: 'filter-form',
-                        html: { class: 'border my-3 pb-2 collapse' + (@show_filter_form ? ' show' : '') } do |form| %>
-  <%= form.text_field :registration_number,
-                      value: params[:registration_number],
-                      label: 'Număr de înregistrare' %>
-  <%= form.text_field :year,
-                      value: params[:year],
-                      label: 'Anul', wrapper: { style: 'width: 100px' } %>
-  <%= render partial: 'application/filters/start_end_date_filters', locals: { form: } %>
-  <%= form.text_field :expenditure_category_code,
-                      value: params[:expenditure_category_code],
-                      label: 'Indicator tip de cheltuială',
-                      help: 'Exemplu: C1' %>
-  <%= form.select :financing_source_ids,
-                  FinancingSource.order(:name).map { |financing_source|
-                    [financing_source.name, financing_source.id]
-                  },
-                  {
-                    multiple: true,
-                    selected: @financing_source_ids,
-                    label: 'Sursă de finanțare (centru de cost)',
-                    wrapper: { class: 'col-12' }
-                  },
-                  {
-                    data: {
-                      use_select2: true,
-                      placeholder: 'Selectează o sursă de finanțare...'
-                    }
-                  } %>
-  <%= form.select :project_category_ids,
-                  ProjectCategory.order(:name).map { |project_category|
-                    [project_category.name, project_category.id]
-                  },
-                  {
-                    multiple: true,
-                    selected: @project_category_ids,
-                    label: 'Categorie de proiect',
-                    wrapper: { class: 'col-12' }
-                  },
-                  {
-                    data: {
-                      use_select2: true,
-                      placeholder: 'Selectează o categorie de proiect...'
-                    }
-                  } %>
-  <%= form.select :expenditure_article_ids,
-                  ExpenditureArticle.order(:code).map { |expenditure_article|
-                    ["#{expenditure_article.code} - #{expenditure_article.name}", expenditure_article.id]
-                  },
-                  {
-                    multiple: true,
-                    selected: @expenditure_article_ids,
-                    label: 'Articol de cheltuială',
-                    wrapper: { class: 'col-12' }
-                  },
-                  {
-                    data: {
-                      use_select2: true,
-                      placeholder: 'Selectează un articol de cheltuială...'
-                    }
-                  }
-  %>
-  <%= form.check_box :exclude_cash_receipts,
-                     checked: params[:exclude_cash_receipts] == '1' ? true : false,
-                     label: 'Exclude încasările' %>
-  <%= form.text_field :project_details,
-                      value: params[:project_details],
-                      label: 'Detalii proiect' %>
-  <%= form.text_field :details,
-                      value: params[:details],
-                      label: 'Detalii cheltuială' %>
-  <%= form.text_field :procurement_type,
-                      value: params[:procurement_type],
-                      label: 'Tip achiziție' %>
-  <%= form.text_field :ordinance_number,
-                      value: params[:ordinance_number],
-                      label: 'Număr ordonanțare' %>
-  <%= form.text_field :ordinance_date,
-                      value: params[:ordinance_date],
-                      label: 'Dată ordonanțare',
-                      data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
-  <%= render partial: 'application/filters/value_filter', locals: { form: } %>
-  <%= form.select :payment_type_ids,
-                  PaymentType.order(:name).map { |payment_type|
-                    [payment_type.name, payment_type.id]
-                  },
-                  {
-                    multiple: true,
-                    selected: @payment_type_ids,
-                    label: 'Tip de plată',
-                    wrapper: { class: 'col-3' }
-                  },
-                  {
-                    data: {
-                      use_select2: true,
-                      placeholder: 'Selectează un tip de plată...'
-                    }
-                  } %>
-  <%= form.text_field :beneficiary,
-                      value: params[:beneficiary],
-                      label: 'Beneficiar' %>
-  <%= form.text_field :invoice,
-                      value: params[:invoice],
-                      label: 'Factură' %>
-  <%= form.text_field :noncompliance,
-                      value: params[:noncompliance],
-                      label: 'Neconformitate' %>
-  <%= form.text_field :remarks,
-                      value: params[:remarks],
-                      label: 'Observații' %>
-  <%= render partial: 'application/filters/user_filter',
-             locals: {
-               form:,
-               id: :created_by_user_ids,
-               label: 'Creat de utilizatorul',
-               selected: @created_by_user_ids
-             }
-  %>
-  <%= render partial: 'application/filters/user_filter',
-             locals: {
-               form:,
-               id: :updated_by_user_ids,
-               label: 'Modificat de utilizatorul',
-               selected: @updated_by_user_ids
-             }
-  %>
-  <div class="col-12">
-    <%= render partial: 'filter_button', locals: { form: } %>
+  <%= render partial: 'flashes' %>
+
+  <div class="mx-10">
+    <%= bootstrap_form_with method: :get, layout: :inline, id: 'filter-form',
+                            html: { class: 'border my-3 pb-2 collapse' + (@show_filter_form ? ' show' : '') } do |form| %>
+      <%= form.text_field :registration_number,
+                          value: params[:registration_number],
+                          label: 'Număr de înregistrare' %>
+      <%= form.text_field :year,
+                          value: params[:year],
+                          label: 'Anul', wrapper: { style: 'width: 100px' } %>
+      <%= render partial: 'application/filters/start_end_date_filters', locals: { form: } %>
+      <%= form.text_field :expenditure_category_code,
+                          value: params[:expenditure_category_code],
+                          label: 'Indicator tip de cheltuială',
+                          help: 'Exemplu: C1' %>
+      <%= form.select :financing_source_ids,
+                      FinancingSource.order(:name).map { |financing_source|
+                        [financing_source.name, financing_source.id]
+                      },
+                      {
+                        multiple: true,
+                        selected: @financing_source_ids,
+                        label: 'Sursă de finanțare (centru de cost)',
+                        wrapper: { class: 'col-12' }
+                      },
+                      {
+                        data: {
+                          use_select2: true,
+                          placeholder: 'Selectează o sursă de finanțare...'
+                        }
+                      } %>
+      <%= form.select :project_category_ids,
+                      ProjectCategory.order(:name).map { |project_category|
+                        [project_category.name, project_category.id]
+                      },
+                      {
+                        multiple: true,
+                        selected: @project_category_ids,
+                        label: 'Categorie de proiect',
+                        wrapper: { class: 'col-12' }
+                      },
+                      {
+                        data: {
+                          use_select2: true,
+                          placeholder: 'Selectează o categorie de proiect...'
+                        }
+                      } %>
+      <%= form.select :expenditure_article_ids,
+                      ExpenditureArticle.order(:code).map { |expenditure_article|
+                        ["#{expenditure_article.code} - #{expenditure_article.name}", expenditure_article.id]
+                      },
+                      {
+                        multiple: true,
+                        selected: @expenditure_article_ids,
+                        label: 'Articol de cheltuială',
+                        wrapper: { class: 'col-12' }
+                      },
+                      {
+                        data: {
+                          use_select2: true,
+                          placeholder: 'Selectează un articol de cheltuială...'
+                        }
+                      }
+      %>
+      <%= form.check_box :exclude_cash_receipts,
+                         checked: params[:exclude_cash_receipts] == '1' ? true : false,
+                         label: 'Exclude încasările' %>
+      <%= form.text_field :project_details,
+                          value: params[:project_details],
+                          label: 'Detalii proiect' %>
+      <%= form.text_field :details,
+                          value: params[:details],
+                          label: 'Detalii cheltuială' %>
+      <%= form.text_field :procurement_type,
+                          value: params[:procurement_type],
+                          label: 'Tip achiziție' %>
+      <%= form.text_field :ordinance_number,
+                          value: params[:ordinance_number],
+                          label: 'Număr ordonanțare' %>
+      <%= form.text_field :ordinance_date,
+                          value: params[:ordinance_date],
+                          label: 'Dată ordonanțare',
+                          data: { datepicker: true, max_date: Time.zone.today.strftime('%d.%m.%Y') } %>
+      <%= render partial: 'application/filters/value_filter', locals: { form: } %>
+      <%= form.select :payment_type_ids,
+                      PaymentType.order(:name).map { |payment_type|
+                        [payment_type.name, payment_type.id]
+                      },
+                      {
+                        multiple: true,
+                        selected: @payment_type_ids,
+                        label: 'Tip de plată',
+                        wrapper: { class: 'col-3' }
+                      },
+                      {
+                        data: {
+                          use_select2: true,
+                          placeholder: 'Selectează un tip de plată...'
+                        }
+                      } %>
+      <%= form.text_field :beneficiary,
+                          value: params[:beneficiary],
+                          label: 'Beneficiar' %>
+      <%= form.text_field :invoice,
+                          value: params[:invoice],
+                          label: 'Factură' %>
+      <%= form.text_field :noncompliance,
+                          value: params[:noncompliance],
+                          label: 'Neconformitate' %>
+      <%= form.text_field :remarks,
+                          value: params[:remarks],
+                          label: 'Observații' %>
+      <%= render partial: 'application/filters/user_filter',
+                 locals: {
+                   form:,
+                   id: :created_by_user_ids,
+                   label: 'Creat de utilizatorul',
+                   selected: @created_by_user_ids
+                 }
+      %>
+      <%= render partial: 'application/filters/user_filter',
+                 locals: {
+                   form:,
+                   id: :updated_by_user_ids,
+                   label: 'Modificat de utilizatorul',
+                   selected: @updated_by_user_ids
+                 }
+      %>
+      <div class="col-12">
+        <%= render partial: 'filter_button', locals: { form: } %>
+      </div>
+    <% end %>
   </div>
-<% end %>
-
-<%= render partial: 'flashes' %>
+</div>
 
 <turbo-frame id="expenditures-table">
   <%= will_paginate @paginated_expenditures, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>
