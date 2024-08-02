@@ -6,6 +6,8 @@ class CommitmentsController < ApplicationController
   before_action :require_supervisor_or_admin, only: %i[edit update import import_upload]
 
   def index
+    @layout_without_container = true
+
     @commitments = Commitment.order('year desc, registration_number desc')
 
     include_dependent_entities

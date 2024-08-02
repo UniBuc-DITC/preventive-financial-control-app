@@ -11,8 +11,14 @@
 </head>
 
 <body>
+
+<% unless defined? @layout_without_container %>
 <main class="mt-5 container">
+<% end %>
   <%= yield %>
+<% unless defined? @layout_without_container %>
 </main>
+<% end %>
+
 </body>
 </html>

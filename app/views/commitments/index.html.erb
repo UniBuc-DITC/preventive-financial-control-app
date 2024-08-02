@@ -1,10 +1,10 @@
 <% content_for :title, 'Angajamente' %>
 
-<h1>Registru angajamente</h1>
-
 <% can_modify_commitments = current_user.supervisor? || current_user.admin? %>
 
 <div class="container">
+  <h1 class="mt-5 mb-3">Registru angajamente</h1>
+
   <div class="row">
     <div class="col">
       <p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
