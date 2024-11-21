@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class Setting < ApplicationRecord
-  validates :key, :value, presence: true, uniqueness: true
+  validates :key, :value, presence: true
+
+  validates :key, uniqueness: true
 
   validates :key, inclusion: { in: %w(current_year) }
 

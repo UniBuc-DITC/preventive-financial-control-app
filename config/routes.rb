@@ -56,5 +56,9 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :settings, only: %i[index] do
+    post 'update', to: 'settings#update', as: :update, on: :collection
+  end
+
   resources :audit_events, only: [:index]
 end

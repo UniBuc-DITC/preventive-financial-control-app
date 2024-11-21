@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_supervisor_or_admin
-    return if session[:current_user_role] == 'supervisor' or session[:current_user_role] == 'admin'
+    return if helpers.current_user_is_supervisor_or_admin?
 
     flash[:alert] = 'Trebuie să fii șef de birou sau administrator de aplicație pentru a putea accesa această pagină.'
     redirect_back_or_to root_path

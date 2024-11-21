@@ -1,0 +1,17 @@
+<% content_for :title, 'Setări' %>
+
+<h1>Setări</h1>
+
+<p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
+
+<%= render partial: 'flashes' %>
+
+<%= bootstrap_form_for @settings, url: update_settings_path do |f| %>
+  <%= f.alert_message 'Vă rog să rezolvați erorile de mai jos:' %>
+
+  <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+    <%= f.number_field :current_year, label: 'Anul înregistrării' %>
+
+    <%= f.submit 'Salvează' %>
+  </div>
+<% end %>
