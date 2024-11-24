@@ -2,7 +2,7 @@
 
 module ApplicationHelper
   def current_user_role
-    session[:current_user_role]
+    @current_user_role ||= session[:current_user_role]
   end
 
   def current_user_is_supervisor_or_admin?
