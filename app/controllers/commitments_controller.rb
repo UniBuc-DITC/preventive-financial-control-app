@@ -30,17 +30,17 @@ class CommitmentsController < ApplicationController
     @commitment.registration_date = Time.zone.today
     @commitment.created_by_user = current_user
 
-    if params[:source_expenditure_id].present?
-      @source_expenditure = Expenditure.find(params[:source_expenditure_id])
+    return unless params[:source_expenditure_id].present?
 
-      @commitment.financing_sources << @source_expenditure.financing_source
-      @commitment.expenditure_article = @source_expenditure.expenditure_article
-      @commitment.procurement_type = @source_expenditure.procurement_type
-      @commitment.project_details = @source_expenditure.details
-      @commitment.partner = @source_expenditure.beneficiary
-      @commitment.value = @source_expenditure.value
-      @commitment.remarks = @source_expenditure.remarks
-    end
+    @source_expenditure = Expenditure.find(params[:source_expenditure_id])
+
+    @commitment.financing_sources << @source_expenditure.financing_source
+    @commitment.expenditure_article = @source_expenditure.expenditure_article
+    @commitment.procurement_type = @source_expenditure.procurement_type
+    @commitment.project_details = @source_expenditure.details
+    @commitment.partner = @source_expenditure.beneficiary
+    @commitment.value = @source_expenditure.value
+    @commitment.remarks = @source_expenditure.remarks
   end
 
   def edit
@@ -79,13 +79,14 @@ class CommitmentsController < ApplicationController
           user: current_user,
           action: :insert,
           target_table: :commitments,
-          target_object_id: "#{@commitment.registration_number}/#{@commitment.year}",
+          target_object_id: "#{@commitment.registration_number}/#{@commitment.year}"
         )
       end
     end
 
     if successfully_saved
-      flash[:notice] = "A fost salvat cu succes angajamentul cu numărul de înregistrare #{@commitment.registration_number}/#{@commitment.year}"
+      flash[:notice] =
+        "A fost salvat cu succes angajamentul cu numărul de înregistrare #{@commitment.registration_number}/#{@commitment.year}"
       redirect_to commitments_path
     else
       flash[:alert] = 'Nu s-a putut salva noul angajament. Verificați erorile și încercați din nou.'
@@ -105,10 +106,11 @@ class CommitmentsController < ApplicationController
           user: current_user,
           action: :update,
           target_table: :commitments,
-          target_object_id: "#{@commitment.registration_number}/#{@commitment.year}",
+          target_object_id: "#{@commitment.registration_number}/#{@commitment.year}"
         )
 
-        flash[:notice] = "A fost modificat cu succes angajamentul cu numărul de înregistrare #{@commitment.registration_number}/#{@commitment.year}"
+        flash[:notice] =
+          "A fost modificat cu succes angajamentul cu numărul de înregistrare #{@commitment.registration_number}/#{@commitment.year}"
         redirect_to commitments_path
       else
         flash[:alert] = 'Nu s-au putut salva modificările la angajament. Verificați erorile și încercați din nou.'
@@ -215,13 +217,13 @@ class CommitmentsController < ApplicationController
 
     if params[:start_date].present?
       start_date = Date.strptime(params[:start_date], '%d.%m.%Y')
-      @commitments = @commitments.where('registration_date >= ?', start_date)
+      @commitments = @commitments.where(registration_date: start_date..)
       @any_filters_applied = true
     end
 
     if params[:end_date].present?
       end_date = Date.strptime(params[:end_date], '%d.%m.%Y')
-      @commitments = @commitments.where('registration_date <= ?', end_date)
+      @commitments = @commitments.where(registration_date: ..end_date)
       @any_filters_applied = true
     end
 
@@ -283,7 +285,10 @@ class CommitmentsController < ApplicationController
 
     financing_sources_column = row[4]&.strip&.downcase
 
-    raise ImportError.new(row_index, 'lipsește reprezentantul UB / sursa de finanțare') if financing_sources_column.blank?
+    if financing_sources_column.blank?
+      raise ImportError.new(row_index,
+                            'lipsește reprezentantul UB / sursa de finanțare')
+    end
 
     financing_sources = []
     project_details = ''
@@ -315,9 +320,9 @@ class CommitmentsController < ApplicationController
       'pr cu tva', 'pr nationale', 'pr internationale', 'proiecte internationale',
       'proiecte in valuta', 'pr in valuta',
       /^ctr\./,
-      /^pfe /, /^pfe\//, /^fcs /, /^fcs\//,
-      /^fss\//, /^fss /, /^proiecte fss/,
-      /^cpi\//,
+      /^pfe /, %r{^pfe/}, /^fcs /, %r{^fcs/},
+      %r{^fss/}, /^fss /, /^proiecte fss/,
+      %r{^cpi/},
       /^lifewatch/, /^timss/,
       /^proiect caipe/, /^pr growing/, /^pr employer/, /^pr ev potential/, /^pr siec/,
       /^proiect addendum/,
@@ -377,7 +382,7 @@ class CommitmentsController < ApplicationController
     when /^trace/
       project_details = financing_sources_column.strip
       financing_sources << FinancingSource.find_by(name: 'Erasmus')
-    when /^erasmus\//
+    when %r{^erasmus/}
       project_details = financing_sources_column.delete_prefix('erasmus').delete_prefix('/')
                                                 .strip
       financing_sources << FinancingSource.find_by(name: 'Erasmus')
@@ -498,7 +503,7 @@ class CommitmentsController < ApplicationController
       financing_sources << FinancingSource.find_by(name: 'Serviciul Spații de Învățământ')
     when 'achizitii'
       financing_sources << FinancingSource.find_by(name: 'Serviciul Achiziții Publice')
-    when /^achizitii\//
+    when %r{^achizitii/}
       project_details = financing_sources_column.strip
       financing_sources << FinancingSource.find_by(name: 'Serviciul Achiziții Publice')
     when 'ru'
@@ -563,7 +568,8 @@ class CommitmentsController < ApplicationController
     # Remove entries which weren't found
     financing_sources.filter!(&:present?)
     if financing_sources.empty?
-      raise ImportError.new(row_index, "nu a putut fi găsită o sursă de finanțare denumită '#{financing_sources_column}'")
+      raise ImportError.new(row_index,
+                            "nu a putut fi găsită o sursă de finanțare denumită '#{financing_sources_column}'")
     end
 
     commitment.financing_sources = financing_sources
@@ -586,7 +592,8 @@ class CommitmentsController < ApplicationController
 
     expenditure_article = ExpenditureArticle.find_by(code: expenditure_article_code)
     if expenditure_article.nil?
-      raise ImportError.new(row_index, "nu a putut fi găsit un articol de cheltuială cu codul '#{expenditure_article_code}'")
+      raise ImportError.new(row_index,
+                            "nu a putut fi găsit un articol de cheltuială cu codul '#{expenditure_article_code}'")
     end
 
     commitment.expenditure_article = expenditure_article

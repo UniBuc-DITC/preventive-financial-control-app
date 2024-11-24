@@ -5,7 +5,7 @@ class Setting < ApplicationRecord
 
   validates :key, uniqueness: true
 
-  validates :key, inclusion: { in: %w(current_year) }
+  validates :key, inclusion: { in: %w[current_year] }
 
   def self.current_year
     find_by!(key: :current_year).value

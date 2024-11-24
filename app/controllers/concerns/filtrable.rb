@@ -41,12 +41,12 @@ module Filtrable
 
     def apply_value_range_filter(collection)
       if params[:min_value].present?
-        collection = collection.where('value >= ?', params[:min_value])
+        collection = collection.where(value: params[:min_value]..)
         @any_filters_applied = true
       end
 
       if params[:max_value].present?
-        collection = collection.where('value <= ?', params[:max_value])
+        collection = collection.where(value: ..params[:max_value])
         @any_filters_applied = true
       end
 
@@ -76,7 +76,8 @@ module Filtrable
             collection = collection.where.not(expenditure_article: receipts_expenditure_article)
             @any_filters_applied = true
           else
-            flash[:alert] = 'Nu s-a putut aplica filtrul deoarece nu este definit articolul de cheltuială cu codul 12, "Încasări"'
+            flash[:alert] =
+              'Nu s-a putut aplica filtrul deoarece nu este definit articolul de cheltuială cu codul 12, "Încasări"'
           end
         end
       end

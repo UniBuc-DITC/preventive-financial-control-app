@@ -13,4 +13,3 @@ module ImportMatchable
     @import_regexp ||= Regexp.new import_code
   end
 end
-

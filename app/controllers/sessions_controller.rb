@@ -12,7 +12,7 @@ class SessionsController < ApplicationController
 
       if user.nil?
         flash[:alert] = 'Nu vă puteți conecta deoarece contul dvs. nu are drept de acces în aplicație. ' \
-          'Rugați un administrator să vă adauge contul.'
+                        'Rugați un administrator să vă adauge contul.'
       else
         session[:current_user_id] = user.id
         session[:current_user_role] = user.role

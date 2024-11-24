@@ -63,18 +63,18 @@ class ExpendituresController < ApplicationController
           user: current_user,
           action: :insert,
           target_table: :expenditures,
-          target_object_id: "#{@expenditure.registration_number}/#{@expenditure.year}",
+          target_object_id: "#{@expenditure.registration_number}/#{@expenditure.year}"
         )
       end
     end
 
     if successfully_saved
-      flash[:notice] = t('expenditures.create.success_message',
+      flash[:notice] = t('.success_message',
                          registration_number: @expenditure.registration_number,
                          year: @expenditure.year)
       redirect_to expenditures_path
     else
-      flash[:alert] = t 'expenditures.create.error_message'
+      flash[:alert] = t '.error_message'
       render :new, status: :unprocessable_entity
     end
   end
@@ -91,15 +91,15 @@ class ExpendituresController < ApplicationController
           user: current_user,
           action: :update,
           target_table: :expenditures,
-          target_object_id: "#{@expenditure.registration_number}/#{@expenditure.year}",
+          target_object_id: "#{@expenditure.registration_number}/#{@expenditure.year}"
         )
 
-        flash[:notice] = t('expenditures.update.success_message',
+        flash[:notice] = t('.success_message',
                            registration_number: @expenditure.registration_number,
                            year: @expenditure.year)
         redirect_to expenditures_path
       else
-        flash[:alert] = t 'expenditures.update.error_message'
+        flash[:alert] = t '.error_message'
         render :edit, status: :unprocessable_entity
       end
     end
@@ -218,13 +218,13 @@ class ExpendituresController < ApplicationController
 
     if params[:start_date].present?
       start_date = Date.strptime(params[:start_date], '%d.%m.%Y')
-      @expenditures = @expenditures.where('registration_date >= ?', start_date)
+      @expenditures = @expenditures.where(registration_date: start_date..)
       @any_filters_applied = true
     end
 
     if params[:end_date].present?
       end_date = Date.strptime(params[:end_date], '%d.%m.%Y')
-      @expenditures = @expenditures.where('registration_date <= ?', end_date)
+      @expenditures = @expenditures.where(registration_date: ..end_date)
       @any_filters_applied = true
     end
 
@@ -276,7 +276,6 @@ class ExpendituresController < ApplicationController
 
     @expenditures = apply_created_by_user_ids_filter @expenditures
     @expenditures = apply_updated_by_user_ids_filter @expenditures
-
   end
 
   # noinspection SpellCheckingInspection
@@ -439,7 +438,8 @@ class ExpendituresController < ApplicationController
     end
 
     if financing_source.nil?
-      raise ImportError.new(row_index, "nu a putut fi găsită o sursă de finanțare cunoscută asociată cu denumirea '#{financing_source_name}'")
+      raise ImportError.new(row_index,
+                            "nu a putut fi găsită o sursă de finanțare cunoscută asociată cu denumirea '#{financing_source_name}'")
     end
 
     expenditure_article_code = row[3].to_s.strip
@@ -453,7 +453,8 @@ class ExpendituresController < ApplicationController
 
     expenditure_article = ExpenditureArticle.find_by(code: expenditure_article_code)
     if expenditure_article.nil?
-      raise ImportError.new(row_index, "nu a putut fi găsit un articol de cheltuială cu codul '#{expenditure_article_code}'")
+      raise ImportError.new(row_index,
+                            "nu a putut fi găsit un articol de cheltuială cu codul '#{expenditure_article_code}'")
     end
 
     expenditure.expenditure_article = expenditure_article
@@ -705,8 +706,6 @@ class ExpendituresController < ApplicationController
                      PaymentType.find_by(name: 'Avans numerar')
                    when 'avans virament'
                      PaymentType.find_by(name: 'Avans virament')
-                   else
-                     nil
                    end
 
     if payment_type.nil?

@@ -29,7 +29,7 @@ class ProjectCategoriesController < ApplicationController
           user: current_user,
           action: :insert,
           target_table: :project_categories,
-          target_object_id: @project_category.id,
+          target_object_id: @project_category.id
         )
       end
     end
@@ -59,7 +59,7 @@ class ProjectCategoriesController < ApplicationController
           user: current_user,
           action: :update,
           target_table: :project_categories,
-          target_object_id: @project_category.id,
+          target_object_id: @project_category.id
         )
       end
     end
@@ -68,7 +68,8 @@ class ProjectCategoriesController < ApplicationController
       flash[:notice] = "A fost actualizată cu succes categoria de proiect cu denumirea '#{@project_category.name}'"
       redirect_to project_categories_path
     else
-      flash[:alert] = 'Nu s-au putut salva modificările la categoria de proiect. Verificați erorile și încercați din nou.'
+      flash[:alert] =
+        'Nu s-au putut salva modificările la categoria de proiect. Verificați erorile și încercați din nou.'
       render :edit, status: :unprocessable_entity
     end
   end
@@ -87,7 +88,7 @@ class ProjectCategoriesController < ApplicationController
           user: current_user,
           action: :delete,
           target_table: :project_categories,
-          target_object_id: @project_category.id,
+          target_object_id: @project_category.id
         )
       end
     end

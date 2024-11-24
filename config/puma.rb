@@ -30,8 +30,8 @@ port ENV.fetch('PORT', 3000)
 # Bind to TLS if requested to.
 if ENV['ENABLE_TLS']
   ssl_bind '0.0.0.0', 3001, {
-    cert: ENV['TLS_CERTIFICATE_PATH'],
-    key: ENV['TLS_KEY_PATH'],
+    cert: ENV.fetch('TLS_CERTIFICATE_PATH', nil),
+    key: ENV.fetch('TLS_KEY_PATH', nil),
     no_tlsv1: true,
     no_tlsv1_1: true
   }

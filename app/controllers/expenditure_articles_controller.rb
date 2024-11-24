@@ -29,7 +29,7 @@ class ExpenditureArticlesController < ApplicationController
           user: current_user,
           action: :insert,
           target_table: :expenditure_articles,
-          target_object_id: @expenditure_article.id,
+          target_object_id: @expenditure_article.id
         )
       end
     end
@@ -59,7 +59,7 @@ class ExpenditureArticlesController < ApplicationController
           user: current_user,
           action: :update,
           target_table: :expenditure_articles,
-          target_object_id: @expenditure_article.id,
+          target_object_id: @expenditure_article.id
         )
       end
     end
@@ -68,7 +68,8 @@ class ExpenditureArticlesController < ApplicationController
       flash[:notice] = "A fost actualizat cu succes articolul de cheltuială cu codul #{@expenditure_article.code}"
       redirect_to expenditure_articles_path
     else
-      flash[:alert] = 'Nu s-au putut salva modificările la articolul de cheltuială. Verificați erorile și încercați din nou.'
+      flash[:alert] =
+        'Nu s-au putut salva modificările la articolul de cheltuială. Verificați erorile și încercați din nou.'
       render :edit, status: :unprocessable_entity
     end
   end
@@ -87,7 +88,7 @@ class ExpenditureArticlesController < ApplicationController
           user: current_user,
           action: :delete,
           target_table: :expenditure_articles,
-          target_object_id: @expenditure_article.id,
+          target_object_id: @expenditure_article.id
         )
       end
     end
@@ -95,7 +96,8 @@ class ExpenditureArticlesController < ApplicationController
     if successfully_deleted
       flash[:notice] = "A fost șters cu succes articolul de cheltuială cu codul #{@expenditure_article.code}"
     else
-      flash[:alert] = "Nu s-a putut șterge articolul de cheltuială: #{@expenditure_article.errors.full_messages.join(', ')}."
+      flash[:alert] =
+        "Nu s-a putut șterge articolul de cheltuială: #{@expenditure_article.errors.full_messages.join(', ')}."
     end
 
     redirect_to expenditure_articles_path
@@ -137,10 +139,9 @@ class ExpenditureArticlesController < ApplicationController
 
     flash[:notice] = "S-au importat/actualizat cu succes #{total_count} articole de cheltuială!"
     redirect_to expenditure_articles_path
-
   rescue ImportError => e
     flash.now[:alert] = e.to_s
-    return render :import
+    render :import
   end
 
   private

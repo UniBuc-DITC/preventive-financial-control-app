@@ -29,7 +29,7 @@ class FinancingSourcesController < ApplicationController
           user: current_user,
           action: :insert,
           target_table: :financing_sources,
-          target_object_id: @financing_source.id,
+          target_object_id: @financing_source.id
         )
       end
     end
@@ -59,7 +59,7 @@ class FinancingSourcesController < ApplicationController
           user: current_user,
           action: :update,
           target_table: :financing_sources,
-          target_object_id: @financing_source.id,
+          target_object_id: @financing_source.id
         )
       end
     end
@@ -87,7 +87,7 @@ class FinancingSourcesController < ApplicationController
           user: current_user,
           action: :delete,
           target_table: :financing_sources,
-          target_object_id: @financing_source.id,
+          target_object_id: @financing_source.id
         )
       end
     end
@@ -132,7 +132,6 @@ class FinancingSourcesController < ApplicationController
 
     flash[:notice] = "S-au importat/actualizat cu succes #{total_count} surse de finanțare!"
     redirect_to financing_sources_path
-
   rescue ImportError => e
     flash.now[:alert] = e.to_s
     render :import

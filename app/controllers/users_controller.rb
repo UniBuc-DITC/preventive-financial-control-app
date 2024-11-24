@@ -46,7 +46,7 @@ class UsersController < ApplicationController
           user: current_user,
           action: :insert,
           target_table: :users,
-          target_object_id: @user.id,
+          target_object_id: @user.id
         )
       end
     end
@@ -82,7 +82,7 @@ class UsersController < ApplicationController
           user: current_user,
           action: :update,
           target_table: :users,
-          target_object_id: @user.id,
+          target_object_id: @user.id
         )
       end
     end

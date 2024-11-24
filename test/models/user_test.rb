@@ -9,7 +9,7 @@ class UserTest < ActiveSupport::TestCase
       email: 'test.user@example.com',
       first_name: 'Test',
       last_name: 'User',
-      role: :supervisor,
+      role: :supervisor
     )
 
     assert user.save

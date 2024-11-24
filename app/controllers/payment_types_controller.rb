@@ -59,7 +59,7 @@ class PaymentTypesController < ApplicationController
           user: current_user,
           action: :update,
           target_table: :payment_types,
-          target_object_id: @payment_type.id,
+          target_object_id: @payment_type.id
         )
       end
     end
@@ -87,7 +87,7 @@ class PaymentTypesController < ApplicationController
           user: current_user,
           action: :delete,
           target_table: :payment_types,
-          target_object_id: @payment_type.id,
+          target_object_id: @payment_type.id
         )
       end
     end
@@ -123,9 +123,7 @@ class PaymentTypesController < ApplicationController
 
         payment_type = PaymentType.find_or_initialize_by(name:)
 
-        unless payment_type.save
-          raise ImportError.new(row_index, payment_type.errors.full_messages.join(', '))
-        end
+        raise ImportError.new(row_index, payment_type.errors.full_messages.join(', ')) unless payment_type.save
 
         total_count += 1
       end
@@ -133,10 +131,9 @@ class PaymentTypesController < ApplicationController
 
     flash[:notice] = "S-au importat/actualizat cu succes #{total_count} tipuri de plăți!"
     redirect_to payment_types_path
-
   rescue ImportError => e
     flash.now[:alert] = e.to_s
-    return render :import
+    render :import
   end
 
   private

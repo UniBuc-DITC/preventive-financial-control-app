@@ -15,7 +15,7 @@ unless admin.persisted?
   context = MicrosoftKiotaAuthenticationOAuth::ClientCredentialContext.new(
     identity_platform_credentials[:tenant_id],
     identity_platform_credentials[:client_id],
-    identity_platform_credentials[:client_secret],
+    identity_platform_credentials[:client_secret]
   )
 
   authentication_provider = MicrosoftGraphCore::Authentication::OAuthAuthenticationProvider.new(
@@ -48,7 +48,7 @@ seed_files_directory = Rails.root / 'db' / 'seeds'
 
 csv_reader_options = {
   headers: true,
-  converters: -> (f) { f&.strip }
+  converters: ->(f) { f&.strip }
 }
 
 puts 'Seeding financing sources...'
