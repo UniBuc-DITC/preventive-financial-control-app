@@ -44,6 +44,9 @@ Rails.application.routes.draw do
       get 'find_matching_invoices', to: 'expenditures#find_matching_invoices',
                                     as: :find_matching_invoices,
                                     defaults: { format: :json }
+      get 'find_matching_beneficiaries', to: 'expenditures#find_matching_beneficiaries',
+                                         as: :find_matching_beneficiaries,
+                                         defaults: { format: :json }
     end
   end
 

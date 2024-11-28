@@ -180,6 +180,24 @@ class ExpendituresController < ApplicationController
     render json: matching_invoices
   end
 
+  def find_matching_beneficiaries
+    term = params[:term]
+
+    return render json: [] if term.blank? || term.size < 2
+
+    matching_beneficiaries = Expenditure.where('beneficiary LIKE ?', "%#{term}%")
+                                        .limit(15)
+                                        .pluck(:beneficiary)
+
+    matching_partners = Commitment.where('partner LIKE ?', "%#{term}%")
+                                  .limit(15)
+                                  .pluck(:partner)
+
+    matches = matching_beneficiaries + matching_partners
+
+    render json: matches
+  end
+
   private
 
   def expenditure_params

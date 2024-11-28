@@ -105,6 +105,14 @@ document.documentElement.addEventListener("turbo:load", () => {
       minLength: 2
     });
 
+  // Suggest beneficiaries/partners based on the ones already existing in the database.
+  $("#expenditure_beneficiary, #commitment_partner")
+    .autocomplete({
+      source: '/expenditures/find_matching_beneficiaries',
+      autoFocus: true,
+      minLength: 2
+    });
+
   // We used to allow the selection of projects only for expenditures associated to "Research" financing sources,
   // but this is not the case anymore.
   // $("select#expenditure_financing_source_id").on(
