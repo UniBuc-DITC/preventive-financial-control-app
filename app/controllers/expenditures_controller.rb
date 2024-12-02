@@ -174,6 +174,7 @@ class ExpendituresController < ApplicationController
     return render json: [] if term.blank? || term.size < 2
 
     matching_invoices = Expenditure.where('invoice LIKE ?', "%#{term}%")
+                                   .distinct
                                    .limit(15)
                                    .pluck(:invoice)
 
@@ -186,14 +187,17 @@ class ExpendituresController < ApplicationController
     return render json: [] if term.blank? || term.size < 2
 
     matching_beneficiaries = Expenditure.where('beneficiary LIKE ?', "%#{term}%")
+                                        .distinct
                                         .limit(15)
                                         .pluck(:beneficiary)
 
     matching_partners = Commitment.where('partner LIKE ?', "%#{term}%")
+                                  .distinct
                                   .limit(15)
                                   .pluck(:partner)
 
     matches = matching_beneficiaries + matching_partners
+    matches.uniq!
 
     render json: matches
   end
