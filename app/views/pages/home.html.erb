@@ -4,18 +4,31 @@
 
 <% if session.has_key? :current_user_id %>
   <p>Bună, <%= session[:current_user_full_name] %>!</p>
+  <% current_year = Setting.current_year %>
   <div class="d-flex flex-row flex-wrap justify-content-center">
     <%= render partial: 'primary_card', locals: {
       card_title: 'Cheltuieli',
-      card_text: "#{Expenditure.count} cheltuieli înregistrate",
       link_path: expenditures_path,
-      link_text: 'Deschide registrul de cheltuieli'
+      link_text: 'Deschide registrul de cheltuieli',
+      card_text: capture { %>
+        <p>
+          <%= Expenditure.where(year: current_year).count %> cheltuieli înregistrate în anul <%= current_year %>
+          <br/>
+          <%= Expenditure.count %> cheltuieli înregistrate în total
+        </p>
+      <% }
     } %>
     <%= render partial: 'primary_card', locals: {
       card_title: 'Angajamente',
-      card_text: "#{Commitment.count} angajamente înregistrate",
       link_path: commitments_path,
-      link_text: 'Deschide registrul de angajamente'
+      link_text: 'Deschide registrul de angajamente',
+      card_text: capture { %>
+        <p>
+          <%= Commitment.where(year: current_year).count %> angajamente înregistrate în anul <%= current_year %>
+          <br/>
+          <%= Commitment.count %> angajamente înregistrate în total
+        </p>
+      <% }
     } %>
   </div>
   <div class="mt-3 mx-auto row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" style="max-width: 60rem">
