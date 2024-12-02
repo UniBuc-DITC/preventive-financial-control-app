@@ -97,6 +97,19 @@ document.documentElement.addEventListener("turbo:load", () => {
     }
   });
 
+  ['#expenditures-table', '#commitments-table'].forEach(function (containerId) {
+    const wrapper1 = $(".top-scrollbar", containerId);
+    const wrapper2 = $(".table-responsive", containerId);
+
+    $(wrapper1).find('.filler').width($(wrapper2).find('.table').width());
+    wrapper1.scroll(function(){
+      wrapper2.scrollLeft(wrapper1.scrollLeft());
+    });
+    wrapper2.scroll(function(){
+      wrapper1.scrollLeft(wrapper2.scrollLeft());
+    });
+  });
+
   // Suggest invoice numbers based on existing invoices.
   $("#expenditure_invoice")
     .autocomplete({

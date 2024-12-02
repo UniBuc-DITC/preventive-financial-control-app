@@ -168,6 +168,9 @@
 <turbo-frame id="expenditures-table">
   <%= will_paginate @paginated_expenditures, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>
 
+  <div class="top-scrollbar">
+    <div class="filler"></div>
+  </div>
   <div class="table-responsive">
     <table class="table table-striped table-hover">
       <thead>

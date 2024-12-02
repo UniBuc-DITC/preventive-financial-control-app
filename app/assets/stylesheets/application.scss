@@ -4,3 +4,27 @@
 @import "../../../vendor/stylesheets/jquery-ui.min";
 @import "../../../vendor/stylesheets/select2.min";
 @import "../../../vendor/stylesheets/vanillajs-datepicker-bs5.min";
+
+/* Ensure the scrollbar is always visible, even on MacOS. */
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .5);
+  box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+/* Enforce the display of a scrollbar for this element,
+ *  which is used for displaying a scrollbar at the top of certain tables.
+ */
+.top-scrollbar {
+  overflow-x: scroll;
+
+  .filler {
+    height: 20px;
+    width: 1000px;
+  }
+}

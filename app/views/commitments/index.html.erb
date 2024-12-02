@@ -126,6 +126,9 @@
 <turbo-frame id="commitments-table">
   <%= will_paginate @paginated_commitments, renderer: WillPaginate::ActionView::BootstrapLinkRenderer %>
 
+  <div class="top-scrollbar">
+    <div class="filler"></div>
+  </div>
   <div class="table-responsive">
     <table class="table table-striped table-hover">
       <thead>
