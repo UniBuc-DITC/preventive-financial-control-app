@@ -26,10 +26,58 @@ class ExpendituresControllerTest < ActionDispatch::IntegrationTest
   def setup
     sign_in_as_admin_user
 
-    Setting.create!(key: :current_year, value: Date.today.year)
-    FinancingSource.create!(name: 'Buget')
-    ExpenditureArticle.create!(code: '1', name: 'Cheltuială')
-    PaymentType.create!(name: 'Transfer bancar')
+    create :setting, :current_year
+    create :financing_source
+    create :expenditure_article
+    create :payment_type
+  end
+
+  test 'can create new expenditure' do
+    expenditure_params = attributes_for :expenditure
+    expenditure_params[:financing_source_id] = FinancingSource.first.id
+    expenditure_params[:expenditure_article_id] = ExpenditureArticle.first.id
+    expenditure_params[:payment_type_id] = PaymentType.first.id
+    params = {
+      expenditure: expenditure_params
+    }
+
+    assert_empty Expenditure.all
+
+    post(expenditures_path, params:)
+    assert_response :redirect
+
+    assert_redirected_to expenditures_path
+
+    assert_not_empty Expenditure.all
+  end
+
+  test 'changing the current year resets the registration number' do
+    # Create some fake entities
+    create :expenditure
+    create :expenditure
+
+    assert_equal 2, Expenditure.count
+
+    # Change the current year
+    new_current_year = Time.zone.today.year + 1
+    Setting.find_by!(key: :current_year).update!(value: new_current_year)
+
+    expenditure_params = attributes_for :expenditure
+    expenditure_params[:financing_source_id] = FinancingSource.first.id
+    expenditure_params[:expenditure_article_id] = ExpenditureArticle.first.id
+    expenditure_params[:payment_type_id] = PaymentType.first.id
+    params = {
+      expenditure: expenditure_params
+    }
+
+    post(expenditures_path, params:)
+    assert_response :redirect
+
+    assert_redirected_to expenditures_path
+
+    new_expenditure = Expenditure.find_by(year: new_current_year)
+    assert_not_nil new_expenditure
+    assert_equal 1, new_expenditure.registration_number
   end
 
   test 'rolls back transaction if auditing record fails to save' do
