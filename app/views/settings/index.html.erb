@@ -12,7 +12,11 @@
   <%= f.alert_message 'Vă rog să rezolvați erorile de mai jos:' %>
 
   <div class="col-12 col-sm-8 col-md-6 col-lg-4">
-    <%= f.number_field :current_year, label: 'Anul curent pentru înregistrările nou-create' %>
+    <div class="mb-3">
+      <%= f.number_field :current_year,
+                         label: 'Anul curent pentru înregistrările nou-create' %>
+      <small class="text-muted">Numărul de înregistrare se resetează automat când se modifică anul înregistrărilor.</small>
+    </div>
 
     <%= f.submit 'Salvează' %>
   </div>
