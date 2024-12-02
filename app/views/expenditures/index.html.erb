@@ -38,7 +38,7 @@
                           value: params[:registration_number],
                           label: 'Număr de înregistrare' %>
       <%= form.text_field :year,
-                          value: params[:year],
+                          value: params[:year] || current_year,
                           label: 'Anul', wrapper: { style: 'width: 100px' } %>
       <%= render partial: 'application/filters/start_end_date_filters', locals: { form: } %>
       <%= form.text_field :expenditure_category_code,
