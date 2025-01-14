@@ -81,6 +81,9 @@
       <%= form.check_box :exclude_cash_receipts,
                          checked: params[:exclude_cash_receipts] == '1' ? true : false,
                          label: 'Exclude încasările' %>
+      <%= form.text_field :document_number,
+                          value: params[:document_number],
+                          label: 'Număr document' %>
       <%= form.text_field :validity,
                           value: params[:validity],
                           label: 'Valabilitate' %>
