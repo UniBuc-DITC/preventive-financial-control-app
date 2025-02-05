@@ -63,5 +63,9 @@ Rails.application.routes.draw do
     post 'update', to: 'settings#update', as: :update, on: :collection
   end
 
+  get :generate_pfc_activity_report, to: 'reports#generate_pfc_activity_report', as: :generate_pfc_activity_report
+  post :generate_pfc_activity_report, to: 'reports#generate_pfc_activity_report'
+  get :pfc_activity_report, to: 'reports#pfc_activity_report', as: :download_pfc_activity_report, format: 'xlsx'
+
   resources :audit_events, only: [:index]
 end

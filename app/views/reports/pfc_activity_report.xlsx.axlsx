@@ -1,0 +1,445 @@
+# frozen_string_literal: true
+
+workbook = xlsx_package.workbook
+
+workbook.add_worksheet(name: 'Raport CFP') do |sheet|
+  sheet.add_row []
+  sheet.add_row []
+
+  title = "Raport privind activitatea de control financiar preventiv propriu pe trimestrul #{@trimester} #{@year}"
+  sheet.add_row [title]
+
+  sheet.add_row []
+  sheet.add_row []
+  sheet.add_row []
+
+  title = 'Capitolul I - Operațiuni supuse vizei controlului financiar preventiv propriu.'
+  sheet.add_row [title]
+
+  row = [
+    'Nr. crt.',
+    'Operațiuni cu efect financiar asupra fondurilor publice sau a patrimoniului public',
+    'Corespondența operațiunilor din col.1 cu codurile operațiunilor din anexa nr.1.1 la normele metodologice - Cadrul general',
+    'Total operațiuni supuse vizei de CFPP',
+    '',
+    'Din care: refuzate la viză',
+    '',
+    'Din acestea: neefectuate ca urmare a refuzului de viză',
+    ''
+  ]
+  sheet.add_row row
+  sheet.merge_cells 'D8:E8'
+  sheet.merge_cells 'F8:G8'
+  sheet.merge_cells 'H8:I8'
+
+  row = [
+    '', '', '',
+    'Număr operațiuni', 'valoare (lei)',
+    'Număr operațiuni', 'valoare (lei)',
+    'Număr operațiuni', 'valoare (lei)',
+  ]
+  sheet.add_row row
+
+  row = (0...8).map(&:to_s)
+  sheet.add_row row
+
+  section_1_1_items = @commitments.where(expenditure_article: { commitment_category_code: 'A1' })
+  section_1_1_total = section_1_1_items.count
+  section_1_1_value = section_1_1_items.sum(:value)
+
+  section_1_5_items = @commitments.where(expenditure_article: {
+    commitment_category_code: %w[A3 A5]
+  })
+  section_1_5_total = section_1_5_items.count
+  section_1_5_value = section_1_5_items.sum(:value)
+
+  section_1_total = section_1_1_total + section_1_5_total
+  section_1_value = section_1_1_value + section_1_5_value
+
+  section_2_1_items = @commitments.where(expenditure_article: {
+    commitment_category_code: %w[B13 B14 B15 B16 B17]
+  })
+  section_2_1_total = section_2_1_items.count
+  section_2_1_value = section_2_1_items.sum(:value)
+
+  section_2_2_items = @commitments.where(expenditure_article: {
+    commitment_category_code: %w[B1 B3 B4 B5]
+  })
+  section_2_2_total = section_2_2_items.count
+  section_2_2_value = section_2_2_items.sum(:value)
+
+  section_2_3_items = @commitments.where(expenditure_article: {
+    commitment_category_code: %w[B2 B20 B23]
+  })
+  section_2_3_total = section_2_3_items.count
+  section_2_3_value = section_2_3_items.sum(:value)
+
+  section_2_4_items = @commitments.where(expenditure_article: {
+    commitment_category_code: %w[B6 B7 B8 B10 B11 B19]
+  })
+  section_2_4_total = section_2_4_items.count
+  section_2_4_value = section_2_4_items.sum(:value)
+
+  section_2_5_items = @commitments.where(expenditure_article: {
+    commitment_category_code: %w[B9]
+  })
+  section_2_5_total = section_2_5_items.count
+  section_2_5_value = section_2_5_items.sum(:value)
+
+  section_2_6_items = @commitments.where(expenditure_article: {
+    commitment_category_code: %w[B12 B18 B21 B22]
+  })
+  section_2_6_total = section_2_6_items.count
+  section_2_6_value = section_2_6_items.sum(:value)
+
+  section_2_total = section_2_1_total + section_2_2_total + section_2_3_total +
+    section_2_4_total + section_2_5_total + section_2_6_total
+  section_2_value = section_2_1_value + section_2_2_value + section_2_3_value +
+    section_2_4_value + section_2_5_value + section_2_6_value
+
+  section_3_items = @commitments.where(expenditure_article: {
+    commitment_category_code: %w[C2 C11]
+  })
+  section_3_total = section_3_items.count
+  section_3_value = section_3_items.sum(:value)
+
+  section_4_1_items = @expenditures.where(expenditure_article: {
+    expenditure_category_code: %w[C12]
+  })
+  section_4_1_total = section_4_1_items.count
+  section_4_1_value = section_4_1_items.sum(:value)
+
+  section_4_3_items = @expenditures.where(expenditure_article: {
+    expenditure_category_code: %w[C1 C6 C7]
+  })
+  section_4_3_total = section_4_3_items.count
+  section_4_3_value = section_4_3_items.sum(:value)
+
+  section_4_4_items = @expenditures.where(expenditure_article: {
+    expenditure_category_code: %w[C4 C5]
+  })
+  section_4_4_total = section_4_4_items.count
+  section_4_4_value = section_4_4_items.sum(:value)
+
+  section_4_5_items = @expenditures.where(expenditure_article: {
+    expenditure_category_code: %w[C9]
+  })
+  section_4_5_total = section_4_5_items.count
+  section_4_5_value = section_4_5_items.sum(:value)
+
+  section_4_6_items = @expenditures.where(expenditure_article: {
+    expenditure_category_code: %w[C3]
+  })
+  section_4_6_total = section_4_6_items.count
+  section_4_6_value = section_4_6_items.sum(:value)
+
+  section_4_7_items = @expenditures.where(expenditure_article: {
+    expenditure_category_code: %w[C8 C10]
+  })
+  section_4_7_total = section_4_7_items.count
+  section_4_7_value = section_4_7_items.sum(:value)
+
+  section_4_total = section_4_1_total + section_4_3_total + section_4_4_total + section_4_5_total + section_4_6_total + section_4_7_total
+  section_4_value = section_4_1_value + section_4_3_value + section_4_4_value + section_4_5_value + section_4_6_value + section_4_7_value
+
+  section_6_codes = %w[D1 D2 D3 D4 D5 D6 E9]
+  section_6_expenditure_items = @expenditures.where(expenditure_article: {
+    expenditure_category_code: section_6_codes
+  })
+  section_6_commitment_items = @commitments.where(expenditure_article: {
+    commitment_category_code: section_6_codes
+  })
+  section_6_total = section_6_expenditure_items.count + section_6_commitment_items.count
+  section_6_value = section_6_expenditure_items.sum(:value) + section_6_commitment_items.sum(:value)
+
+  section_7_items = @expenditures.where(expenditure_article: {
+    expenditure_category_code: %w[
+      E1 E2 E3 E4 E5 E6 E7 E8 E10
+      E11 E12 E13 E14 E15 E16 E17
+    ]
+  })
+  section_7_total = section_7_items.count
+  section_7_value = section_7_items.sum(:value)
+
+  total_operations = section_1_total + section_2_total + section_3_total + section_4_total + section_6_total + section_7_total
+  total_value = section_1_value + section_2_value + section_3_value + section_4_value + section_6_value + section_7_value
+
+  row = [
+    '',
+    'Total (rd.1+rd.2+rd.3+rd.4+rd.5+rd.6+rd.7)',
+    '',
+    total_operations,
+    total_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  ## Section 1
+  row = [
+    1,
+    'Deschideri, repartizări, alimentări, retrageri și modificări ale creditelor - total (1.1+1.2+1.3+1.4), din care:',
+    '',
+    section_1_total,
+    section_1_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '1.1 Deschideri de credite',
+    'A1',
+    section_1_1_total,
+    section_1_1_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '1.2 Repartizări de credite',
+    'A2',
+    0,
+    0,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '1.4 Virări de credite',
+    'A4',
+    0,
+    0,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '1.5 Alte operațiuni',
+    'A3; A5',
+    section_1_5_total,
+    section_1_5_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  ## Section 2
+  row = [
+    2,
+    'Angajamente legale - total',
+    '',
+    section_2_total,
+    section_2_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '(2.1+2.2+2.3+2.4+2.5+2.6+2.7) din care:',
+    '',
+    section_2_total,
+    section_2_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '2.1 Acte administrative din care rezultă obligații de plată',
+    'B13; B14; B15; B16; B17',
+    section_2_1_total,
+    section_2_1_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '2.2 Contracte/Contracte subsecvente/Comenzi de achiziții publice/sectoriale, inclusiv actele adiționale la acestea',
+    'B1; B3; B4; B5;',
+    section_2_2_total,
+    section_2_2_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '2.3 Contracte/Decizii/Ordine de finanțare sau acorduri de finanțare',
+    'B2; B20; B23;',
+    section_2_3_total,
+    section_2_3_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '2.4 Contracte/Acorduri/Convenții de împrumut, garanție, prospecte de emisiune',
+    'B6; B7; B8; B10; B11; B19;',
+    section_2_4_total,
+    section_2_4_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '2.5 Convenții de garantare',
+    'B9;',
+    section_2_5_total,
+    section_2_5_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '2.6 Contracte de închiriere, concesionare, participare, parteneriat etc',
+    'B12; B18; B21; B22;',
+    section_2_6_total,
+    section_2_6_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  ## Section 3
+  row = [
+    3,
+    'Ordonanțări de avansuri',
+    'C2; C11',
+    section_3_total,
+    section_3_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  ## Section 4
+  row = [
+    4,
+    'Ordonanțări de plăți - total (4.1 + 4.2 + 4.3 + 4.4 + 4.5 + 4.6 + 4.7), din care',
+    '',
+    section_4_total,
+    section_4_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '4.1 Drepturi de personal si obligatii fiscale aferente',
+    'C12;',
+    section_4_1_total,
+    section_4_1_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '4.2 Pensii, ajutoare, rente viagere și altele asemenea',
+    '',
+    0,
+    0,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '4.3 Servicii prestate, bunuri livrate, lucrări executate',
+    'C1; C6; C7',
+    section_4_3_total,
+    section_4_3_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '4.4 Rambursări, dobânzi, comisioane și alte costuri aferente împrumuturilor',
+    'C4; C5',
+    section_4_4_total,
+    section_4_4_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '4.5 Ajutoare de stat/de minimis, subventii, transferuri, rente, alte forme de sprijin',
+    'C9',
+    section_4_5_total,
+    section_4_5_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '4.6 Finanțări/cofinanțări',
+    'C3',
+    section_4_6_total,
+    section_4_6_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    '',
+    '4.7 Alte obligații de plată',
+    'C8;C10;',
+    section_4_7_total,
+    section_4_7_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    5,
+    'Operatiuni financiare/de plasament',
+    'E18',
+    0,
+    0,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    6,
+    'Operațiuni privind activele (vânzări, închirieri, concesionări, gajări, transferuri de bunuri etc.)',
+    'D1; D2; D3; D4; D5; D6; E9;',
+    section_6_total,
+    section_6_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  row = [
+    7,
+    'Alte operațiuni',
+    'E1; E2; E3; E4; E5; E6; E7; E8; E10; E11; E12; E13; E14; E15; E16; E17;',
+    section_7_total,
+    section_7_value,
+    0, 0, 0, 0
+  ]
+  sheet.add_row row
+
+  sheet.add_row []
+
+  sheet.add_row ['Capitolul II - Sinteza motivațiilor pe care s-au întemeiat refuzurile de viză - NU a fost cazul.']
+  sheet.add_row ['Capitolul III - În perioada analizată nu s-au înregistrat situații de refuz viză control financiar preventiv propriu și efectuate pe răspunderea ordonatorului de credite.']
+
+  sheet.add_row ['Menționăm că în cadrul insituției, înregistrările pentru viza CFPP se efectuează într-un program electronic de Popescu Aurel, Dima Leonid Ionut, Grigorescu Melania']
+
+  sheet.add_row ['Prezentul document s-a întocmit în 3 exemplare, 2 se vor înainta serviciului contabilitate iar un exemplar va fi păstrat de Biroul C.F.P.P.']
+
+  sheet.add_row ['', 'Rector'] + ([''] * 4) + ['Întocmit']
+  sheet.add_row []
+  sheet.add_row ['', 'Prof. univ. dr. Marian Preda'] + ([''] * 4) + ['Șef serviciu cu delegare C.F.P.P.']
+
+  sheet.column_widths 4, 50, 32, 22, 10, 10, 10, 10, 10
+end

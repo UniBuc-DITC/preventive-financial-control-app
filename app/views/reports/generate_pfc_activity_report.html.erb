@@ -1,0 +1,29 @@
+<% content_for :title, 'Generare raport activitate Control Financiar Preventiv' %>
+
+<h1>Generare raport activitate de control financiar preventiv propriu</h1>
+
+<p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
+
+<p>Prin intermediul acestei pagini puteți genera și descărca raportul privind activitatea de control financiar preventiv propriu.</p>
+
+<%= render partial: 'flashes' %>
+
+<%= bootstrap_form_with method: :post, path: generate_pfc_activity_report_path do |form| %>
+  <%= form.number_field :year,
+                        label: 'Anul pentru care se va genera exportul',
+                        value: Setting.current_year %>
+
+  <%= form.select :trimester,
+                  ReportsController::VALID_TRIMESTERS.map { |trimester|
+                    [trimester, trimester]
+                  },
+                  {
+                    label: 'Trimestru',
+                    required: true,
+                    include_blank: 'Selectează trimestrul pentru care să generezi raportul...'
+                  },
+                  { data: { use_select2: true } }
+  %>
+
+  <%= form.submit 'Generează și descarcă' %>
+<% end %>

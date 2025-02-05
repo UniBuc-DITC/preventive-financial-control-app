@@ -70,6 +70,12 @@
     } %>
     <% if current_user_is_supervisor_or_admin? %>
       <%= render partial: 'secondary_card', locals: {
+        card_title: 'Raport activitate CFP',
+        card_text: '',
+        link_path: generate_pfc_activity_report_path,
+        link_text: 'Generează raport CFP'
+      } %>
+      <%= render partial: 'secondary_card', locals: {
         card_title: 'Setări',
         card_text: '',
         link_path: settings_path,
