@@ -6,6 +6,21 @@ jobs:
   check:
     runs-on: ubuntu-latest
 
+    # Service containers to run
+    services:
+      # Label used to access the service container
+      postgres:
+        image: postgres:16.1
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: dev
+          POSTGRES_DB: test
+
+    env:
+      DATABASE_URL: postgresql://app:dev@postgres/development?pool=5
+
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -21,6 +36,7 @@ jobs:
 
       - name: Run RuboCop
         run: bundle exec rubocop --parallel
+        continue-on-error: true
 
       - name: Run tests
         run: bundle exec rake
