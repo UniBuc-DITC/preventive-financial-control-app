@@ -20,6 +20,7 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://app:dev@localhost:5432/development?pool=5
+      RAILS_ENV: test
 
     steps:
       - name: Check out repository code
