@@ -16,5 +16,11 @@ jobs:
           # Run `bundle install` and cache all installed gems automatically
           bundler-cache: true
 
+      - name: Install package dependencies using Bundler
+        run: bundle install
+
       - name: Run RuboCop
         run: bundle exec rubocop --parallel
+
+      - name: Run tests
+        run: bundle exec rake
