@@ -12,8 +12,8 @@ module OmniAuth
 
       DEFAULT_SCOPE = 'openid email profile User.Read'
 
-      option :client_id, Rails.application.credentials.microsoft_identity_platform.client_id
-      option :client_secret, Rails.application.credentials.microsoft_identity_platform.client_secret
+      option :client_id, Rails.application.credentials.microsoft_identity_platform!.client_id
+      option :client_secret, Rails.application.credentials.microsoft_identity_platform!.client_secret
       # Configure the Microsoft Identity Platform endpoints
       option :client_options,
              site: 'https://login.microsoftonline.com',
