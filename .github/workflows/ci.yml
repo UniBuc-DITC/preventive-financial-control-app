@@ -38,6 +38,11 @@ jobs:
         run: bundle exec rubocop --parallel
         continue-on-error: true
 
+      - name: Create database and run seed code
+        run: bundle exec rails db:create db:migrate db:seed
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+
       - name: Run tests
         run: bundle exec rake
         env:
