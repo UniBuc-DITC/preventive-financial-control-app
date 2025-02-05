@@ -40,3 +40,5 @@ jobs:
 
       - name: Run tests
         run: bundle exec rake
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
