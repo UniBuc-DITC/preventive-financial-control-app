@@ -2,9 +2,10 @@
 <% if @any_filters_applied %>
   <p>Valorile agregate se referă strict la înregistrările care respectă criterile de filtrare selectate.</p>
 <% end %>
-<p>
-  <strong>Număr înregistrări:</strong> <%= collection.count %>
-</p>
-<p>
-  <strong>Balanță totală:</strong> <%= number_to_currency collection.sum(:value) %>
-</p>
+<% current_year = Setting.current_year %>
+<% unless params[:year].present? %>
+  <h4>În anul <%= current_year %></h4>
+  <%= render partial: 'statistics_data', locals: { collection: collection.where(year: current_year) } %>
+  <h4>În total</h4>
+<% end %>
+<%= render partial: 'statistics_data', locals: { collection: } %>
