@@ -4,9 +4,9 @@ source 'https://rubygems.org'
 
 ruby '3.3.7'
 
-gem 'rails', '~> 7.1.3'
+gem 'rails', '~> 8.0'
 
-gem 'rails-i18n', '~> 7.0.0'
+gem 'rails-i18n', '~> 8.0'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'

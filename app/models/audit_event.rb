@@ -5,8 +5,8 @@ class AuditEvent < ApplicationRecord
             :target_table, :target_object_id,
             presence: true
 
-  enum action: { insert: 0, update: 1, delete: 2 }, _suffix: true
-  enum target_table: {
+  enum :action, { insert: 0, update: 1, delete: 2 }, suffix: true
+  enum :target_table, {
     expenditures: 0,
     commitments: 1,
     financing_sources: 2,

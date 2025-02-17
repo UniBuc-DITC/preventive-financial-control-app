@@ -3,7 +3,7 @@
 class User < ApplicationRecord
   ROLES = %w[employee supervisor admin].freeze
 
-  enum role: ROLES.zip(ROLES).to_h
+  enum :role, ROLES.zip(ROLES).to_h
 
   validates :entra_user_id, :email, :first_name, :last_name,
             presence: true
