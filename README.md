@@ -79,6 +79,10 @@ docker compose up
 
 Start a local development server by running `rails server`. The app will be available in your browser at `http://localhost:3000/`.
 
+### Running the tests
+
+To run the automated tests, use `rails test`. To also obtain code coverage data, set the `COVERAGE` environment variable to a non-empty/truthy value before running the command.
+
 ## License
 
 The code is [licensed](LICENSE.txt) under the permissive MIT license.

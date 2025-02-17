@@ -44,3 +44,9 @@
 
 # Ignore editor settings.
 /.idea/
+
+# Ignore test reports
+/test/reports
+
+# Ignore test coverage data
+/coverage/

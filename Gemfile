@@ -102,6 +102,13 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem 'capybara'
   gem 'selenium-webdriver'
+
+  # Support for additional test results reporting formats
+  gem 'minitest-reporters'
+
+  # Support for test coverage reporting
+  gem 'simplecov'
+  gem 'simplecov-cobertura'
 end
 
 group :production do

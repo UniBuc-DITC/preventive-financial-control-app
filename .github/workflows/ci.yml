@@ -44,7 +44,22 @@ jobs:
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
 
-      - name: Run tests
+      - name: Create directory for storing test reports
+        run: mkdir -p test/reports/ && rm -f test/reports/*.xml
+
+      - name: Run tests and collect coverage data
         run: bundle exec rake
         env:
+          COVERAGE: 1
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
