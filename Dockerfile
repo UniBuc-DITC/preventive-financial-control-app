@@ -1,4 +1,4 @@
-FROM ruby:3.3.6
+FROM ruby:3.3.7
 
 # Tell Rails this is a production environment
 ENV RAILS_ENV='production' \
