@@ -97,9 +97,8 @@ workbook.add_worksheet(name: 'Raport CFP') do |sheet|
   section_2_value = section_2_1_value + section_2_2_value + section_2_3_value +
     section_2_4_value + section_2_5_value + section_2_6_value
 
-  section_3_items = @commitments.where(expenditure_article: {
-    commitment_category_code: %w[C2 C11]
-  })
+  advance_payment_types = PaymentType.where('name ILIKE ?', '%avans%')
+  section_3_items = @expenditures.where(payment_type: advance_payment_types)
   section_3_total = section_3_items.count
   section_3_value = section_3_items.sum(:value)
 
