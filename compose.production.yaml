@@ -16,6 +16,8 @@ services:
     image: preventive-financial-control-app
     build: .
     restart: unless-stopped
+    depends_on:
+      - postgres
     environment:
       # Connect to the database container
       DATABASE_URL: postgresql://postgres:5432
