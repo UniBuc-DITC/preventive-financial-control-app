@@ -24,7 +24,7 @@
         <td><%= audit_event.user.full_name %></td>
         <td><%= t "audit_events.actions.#{audit_event.action}" %></td>
         <td><%= t "audit_events.tables.#{audit_event.target_table}" %></td>
-        <td><%= t audit_event.target_object_id %></td>
+        <td><%= audit_event.target_object_id %></td>
       </tr>
     <% end %>
     </tbody>
