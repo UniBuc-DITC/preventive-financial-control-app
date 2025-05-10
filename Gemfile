@@ -81,6 +81,7 @@ end
 group :development do
   # Automated linting and formatting
   gem 'rubocop', require: false
+  gem 'rubocop-factory_bot', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-capybara', require: false
 

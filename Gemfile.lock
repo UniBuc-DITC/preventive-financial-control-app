@@ -386,6 +386,9 @@ GEM
     rubocop-capybara (2.22.1)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
+    rubocop-factory_bot (2.27.1)
+      lint_roller (~> 1.1)
+      rubocop (~> 1.72, >= 1.72.1)
     rubocop-rails (2.31.0)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
@@ -510,6 +513,7 @@ DEPENDENCIES
   roo (~> 2.10.0)
   rubocop
   rubocop-capybara
+  rubocop-factory_bot
   rubocop-rails
   selenium-webdriver
   simplecov
