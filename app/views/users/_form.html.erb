@@ -2,7 +2,7 @@
   <%= f.alert_message 'Vă rog să rezolvați erorile de mai jos:' %>
 
   <div class="col-12 col-sm-8 col-md-6 col-lg-4">
-    <%= f.text_field :entra_user_id, disabled: f.object.persisted? %>
+    <%= f.text_field :entra_user_id, label: 'ID utilizator din Microsoft 365', disabled: f.object.persisted? %>
 
     <%= f.select :role,
                  selectable_roles.map { |role|

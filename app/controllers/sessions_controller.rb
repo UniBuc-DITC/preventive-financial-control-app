@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
   def create
     user_info = request.env['omniauth.auth']
 
-    provider = user_info['provider']
+    provider = user_info['provider']&.to_sym
     if provider == :microsoft_identity_platform
       user = User.find_by(entra_user_id: user_info['uid'])
 
@@ -20,11 +20,36 @@ class SessionsController < ApplicationController
 
         flash[:notice] = 'Autentificat cu succes.'
       end
+    elsif provider == :developer && Rails.env.development?
+      payload = user_info.info
+      email = payload.email
+      first_name = payload.first_name
+      last_name = payload.last_name
+      full_name = "#{first_name} #{last_name}"
+      role = payload.role || 'employee'
+      raise StandardError.new, "Unsupported role: '#{role}'" unless role.in? User::ROLES
 
-      return redirect_to root_path
+      id = Digest::SHA2.hexdigest(full_name)
+      session[:current_user_role] = role
+      session[:current_user_full_name] = full_name
+
+      user = User.find_or_initialize_by(entra_user_id: id)
+      unless user.persisted?
+        user.role = role
+        user.email = email
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save!
+      end
+
+      session[:current_user_id] = user.id
+
+      flash[:notice] = 'Autentificat cu succes.'
+    else
+      raise ActionController::BadRequest.new, "Unsupported authentication provider: '#{provider}'"
     end
 
-    raise ActionController::BadRequest.new
+    redirect_to root_path
   end
 
   def destroy
