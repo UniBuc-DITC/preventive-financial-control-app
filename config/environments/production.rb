@@ -108,4 +108,7 @@ Rails.application.configure do
 
   # Set the service name to the application name, to help identify it in the Kibana dashboard.
   config.elastic_apm.service_name = 'Preventive Financial Control App'
+
+  # Configure the secret token for Elastic APM
+  config.elastic_apm.secret_token = Rails.application.credentials.elastic_apm!.secret_token
 end
