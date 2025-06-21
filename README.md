@@ -6,7 +6,7 @@ This repository contains the source code for the web app used by the [Preventive
 
 ## Development environment setup guide
 
-For development we recommend using an IDE such as [Visual Studio Code](https://code.visualstudio.com/) (see [this guide](https://code.visualstudio.com/docs/languages/ruby) for enabling Ruby support) or [RubyMine](https://www.jetbrains.com/ruby/).
+For development, we recommend using an IDE such as [Visual Studio Code](https://code.visualstudio.com/) (see [this guide](https://code.visualstudio.com/docs/languages/ruby) for enabling Ruby support) or [RubyMine](https://www.jetbrains.com/ruby/).
 
 ### Installing Ruby and Node.js
 
@@ -73,6 +73,16 @@ Assuming that you've got [Docker](https://www.docker.com/) and the [Docker Compo
 
 ```shell
 docker compose up
+```
+
+### Creating and seeding the database
+
+To create the database structure, you can either run the migrations by using `rails db:migrate` (which will not destroy the existing data) or recreate the database from scratch using `rails db:schema:load`.
+
+You should then set the `ADMIN_EMAIL` environment variable to a Microsoft 365 user e-mail and run `rails db:seed` to seed the database. This will create an admin user account corresponding to the `ADMIN_EMAIL` variable and load some predefined entities from disk. Example call:
+
+```
+ADMIN_EMAIL='example@unibuc.ro' rails db:seed
 ```
 
 ### Starting the development server
