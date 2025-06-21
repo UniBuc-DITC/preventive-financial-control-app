@@ -9,8 +9,13 @@
                    [t("roles.#{role}"), role]
                  },
                  { include_blank: 'Selectează rolul utilizatorului...' },
-                 { data: { use_select2: true } }
+                 { data: { use_select2: true }, disabled: current_user == @user }
     %>
+
+    <%= f.color_field :background_color, label: 'Culoare de fundal pentru înregistrările create de acest utilizator',
+                      control_class: 'form-control form-control-color' %>
+    <%= f.color_field :text_color, label: 'Culoarea textului pentru înregistrările create de acest utilizator',
+                      control_class: 'form-control form-control-color' %>
 
     <%= f.submit f.object.persisted? ? 'Salvează' : 'Adaugă' %>
   </div>

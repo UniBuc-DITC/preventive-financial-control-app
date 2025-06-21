@@ -6,6 +6,7 @@ class User < ApplicationRecord
   enum :role, ROLES.zip(ROLES).to_h
 
   validates :entra_user_id, :email, :first_name, :last_name,
+            :background_color, :text_color,
             presence: true
 
   def full_name

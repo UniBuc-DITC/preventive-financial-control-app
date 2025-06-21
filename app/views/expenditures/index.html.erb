@@ -218,7 +218,10 @@
                           class: 'ms-1 btn btn-warning' %>
             <% end %>
           </td>
-          <th scope="row"><%= expenditure.registration_number %>/<%= expenditure.year %></th>
+          <th
+            scope="row"
+            style="background-color: <%= expenditure.created_by_user.background_color %>; color: <%= expenditure.created_by_user.text_color %>"
+          ><%= expenditure.registration_number %>/<%= expenditure.year %></th>
           <td><%= expenditure.registration_date.strftime('%d.%m.%Y') %></td>
           <td><%= expenditure.financing_source&.name %></td>
           <td><%= expenditure.project_category&.name %></td>

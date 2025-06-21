@@ -30,7 +30,7 @@
         <td><%= user.email %></td>
         <td><%= t "roles.#{user.role}" %></td>
         <td>
-          <% if can_modify_users && user.id != current_user.id && (!current_user.supervisor? || !user.admin?) %>
+          <% if can_modify_users && (!current_user.supervisor? || !user.admin?) %>
             <%= link_to 'Editează',
                         edit_user_path(user.id),
                         target: '_top',

@@ -64,13 +64,18 @@ class UsersController < ApplicationController
     user_id = params.require(:id)
     @user = User.find(user_id)
 
-    # No user can change their own role.
-    render status :bad_request if @user.id == current_user.id
     # Supervisors cannot change the role of an admin.
     render status: :unauthorized if current_user.supervisor? && @user.admin?
-    render status: :unauthorized unless params[:user][:role].in? helpers.selectable_roles
 
-    @user.assign_attributes user_params
+    new_attributes = user_params
+
+    if current_user == @user
+      new_attributes.delete :role
+    else
+      render status: :unauthorized unless params[:user][:role].in? helpers.selectable_roles
+    end
+
+    @user.assign_attributes new_attributes
 
     successfully_saved = false
     User.transaction do
@@ -99,7 +104,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:entra_user_id, :role)
+    params.require(:user).permit(:entra_user_id, :role, :background_color, :text_color)
   end
 
   def microsoft_graph_client
