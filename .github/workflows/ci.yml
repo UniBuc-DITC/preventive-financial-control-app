@@ -18,7 +18,7 @@ jobs:
           POSTGRES_PASSWORD: dev
 
     env:
-      DATABASE_URL: postgresql://app:dev@localhost:5432/development?pool=5
+      DATABASE_URL: postgresql://app:dev@localhost:5432?pool=5
       RAILS_ENV: test
 
     steps:
