@@ -4,10 +4,10 @@ require 'test_helper'
 
 class ExpendituresControllerTest < ActionDispatch::IntegrationTest
   def sign_in_as_test_user
-    role = Role.create_or_find_by!(name: 'Test user')
+    role = Role.find_or_create_by!(name: 'Test user')
 
     %w[View Create Edit Import].each do |action_name|
-      permission = Permission.create_or_find_by!(name: "Expenditure.#{action_name}")
+      permission = Permission.find_or_create_by!(name: "Expenditure.#{action_name}")
       RolesPermission.create!(role:, permission:)
     end
 
