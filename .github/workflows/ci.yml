@@ -16,7 +16,6 @@ jobs:
         env:
           POSTGRES_USER: app
           POSTGRES_PASSWORD: dev
-          POSTGRES_DB: test
 
     env:
       DATABASE_URL: postgresql://app:dev@localhost:5432/development?pool=5
