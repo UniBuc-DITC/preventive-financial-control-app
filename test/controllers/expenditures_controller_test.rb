@@ -33,7 +33,7 @@ class ExpendituresControllerTest < ActionDispatch::IntegrationTest
   def setup
     sign_in_as_test_user
 
-    create(:setting, :current_year)
+    create(:setting, :current_year) if Setting.find_by(key: 'current_year').blank?
     create(:financing_source)
     create(:expenditure_article)
     create(:payment_type)
