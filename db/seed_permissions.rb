@@ -8,7 +8,7 @@ def seed_permissions
   end
 
   %w[Expenditure Commitment].each do |entity_name|
-    %w[Create View Edit].each do |action_name|
+    %w[Create View Edit Import].each do |action_name|
       Permission.find_or_create_by! name: "#{entity_name}.#{action_name}"
     end
   end
@@ -16,4 +16,5 @@ def seed_permissions
   Permission.find_or_create_by! name: 'AuditEvent.View'
   Permission.find_or_create_by! name: 'Setting.View'
   Permission.find_or_create_by! name: 'Setting.Edit'
+  Permission.find_or_create_by! name: 'Report.Generate'
 end
