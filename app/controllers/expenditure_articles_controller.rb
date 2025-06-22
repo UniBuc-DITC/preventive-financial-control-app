@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class ExpenditureArticlesController < ApplicationController
-  before_action :require_supervisor_or_admin, only: %i[new edit create update destroy import import_upload]
+  before_action -> { require_permission 'ExpenditureArticle.View' }, only: %i[index export_download]
+  before_action -> { require_permission 'ExpenditureArticle.Create' }, only: %i[new create import import_upload]
+  before_action -> { require_permission 'ExpenditureArticle.Edit' }, only: %i[edit update]
+  before_action -> { require_permission 'ExpenditureArticle.Delete' }, only: %i[destroy]
 
   def index
     @expenditure_articles = ExpenditureArticle.order(code: :asc)
@@ -106,7 +109,8 @@ class ExpenditureArticlesController < ApplicationController
   def export_download
     @expenditure_articles = ExpenditureArticle.order(name: :asc)
     date = Time.current.strftime('%Y-%m-%d')
-    render xlsx: 'export', disposition: 'attachment', filename: "Export articole de cheltuială #{date}.xlsx"
+    render xlsx: 'export', template: 'expenditure_articles/export',
+           disposition: 'attachment', filename: "Export articole de cheltuială #{date}.xlsx"
   end
 
   def import; end
@@ -147,11 +151,6 @@ class ExpenditureArticlesController < ApplicationController
   private
 
   def expenditure_article_params
-    params.require(:expenditure_article).permit(
-      :code,
-      :expenditure_category_code,
-      :commitment_category_code,
-      :name
-    )
+    params.expect(expenditure_article: %i[code expenditure_category_code commitment_category_code name])
   end
 end

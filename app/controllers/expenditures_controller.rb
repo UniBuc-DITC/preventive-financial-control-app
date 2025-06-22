@@ -3,7 +3,11 @@
 class ExpendituresController < ApplicationController
   include Filtrable
 
-  before_action :require_supervisor_or_admin, only: %i[edit update import import_upload]
+  before_action -> { require_permission 'Expenditure.View' },
+                only: %i[index export_download find_matching_beneficiaries find_matching_invoices]
+  before_action -> { require_permission 'Expenditure.Create' }, only: %i[new duplicate create]
+  before_action -> { require_permission 'Expenditure.Edit' }, only: %i[edit update]
+  before_action -> { require_permission 'Expenditure.Import' }, only: %i[import import_upload]
 
   def index
     @layout_without_container = true
@@ -69,12 +73,12 @@ class ExpendituresController < ApplicationController
     end
 
     if successfully_saved
-      flash[:notice] = t('.success_message',
+      flash[:notice] = t('expenditures.update.success_message',
                          registration_number: @expenditure.registration_number,
                          year: @expenditure.year)
       redirect_to expenditures_path
     else
-      flash[:alert] = t '.error_message'
+      flash[:alert] = t 'expenditures.update.error_message'
       render :new, status: :unprocessable_entity
     end
   end
@@ -94,12 +98,12 @@ class ExpendituresController < ApplicationController
           target_object_id: "#{@expenditure.registration_number}/#{@expenditure.year}"
         )
 
-        flash[:notice] = t('.success_message',
+        flash[:notice] = t('expenditures.update.success_message',
                            registration_number: @expenditure.registration_number,
                            year: @expenditure.year)
         redirect_to expenditures_path
       else
-        flash[:alert] = t '.error_message'
+        flash[:alert] = t 'expenditures.update.error_message'
         render :edit, status: :unprocessable_entity
       end
     end
@@ -108,6 +112,11 @@ class ExpendituresController < ApplicationController
   def import; end
 
   def import_upload
+    if params[:file].blank?
+      flash[:alert] = t 'expenditures.import.missing_file'
+      return redirect_to import_expenditures_path
+    end
+
     uploaded_file = params.require(:file)
     spreadsheet = Roo::Spreadsheet.open(uploaded_file)
     sheet = spreadsheet.sheet(0)
@@ -159,13 +168,16 @@ class ExpendituresController < ApplicationController
   end
 
   def export_download
+    require_permission 'Expenditure.View'
+
     @expenditures = Expenditure.order('year, registration_number')
 
     include_dependent_entities
     apply_filters
 
     date = Time.current.strftime('%Y-%m-%d')
-    render xlsx: 'export', disposition: 'attachment', filename: "Export cheltuieli #{date}.xlsx"
+    render xlsx: 'export', template: 'expenditures/export',
+           disposition: 'attachment', filename: "Export cheltuieli #{date}.xlsx"
   end
 
   def find_matching_invoices
@@ -205,22 +217,24 @@ class ExpendituresController < ApplicationController
   private
 
   def expenditure_params
-    params.require(:expenditure).permit(
-      :registration_date,
-      :financing_source_id,
-      :project_category_id,
-      :project_details,
-      :expenditure_article_id,
-      :details,
-      :procurement_type,
-      :ordinance_number,
-      :ordinance_date,
-      :value,
-      :payment_type_id,
-      :beneficiary,
-      :invoice,
-      :noncompliance,
-      :remarks
+    params.expect(
+      expenditure: %i[
+        registration_date
+        financing_source_id
+        project_category_id
+        project_details
+        expenditure_article_id
+        details
+        procurement_type
+        ordinance_number
+        ordinance_date
+        value
+        payment_type_id
+        beneficiary
+        invoice
+        noncompliance
+        remarks
+      ]
     )
   end
 

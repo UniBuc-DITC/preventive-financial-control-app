@@ -1,6 +1,6 @@
 <% content_for :title, 'Cheltuieli' %>
 
-<% can_modify_expenditures = current_user.supervisor? || current_user.admin? %>
+<% can_modify_expenditures = current_user_has_permission? 'Expenditure.Edit' %>
 
 <div class="container">
   <h1 class="mt-5 mb-3">Registru cheltuieli</h1>

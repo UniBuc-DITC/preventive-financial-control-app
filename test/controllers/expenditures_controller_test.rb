@@ -3,18 +3,25 @@
 require 'test_helper'
 
 class ExpendituresControllerTest < ActionDispatch::IntegrationTest
-  def sign_in_as_admin_user
-    admin_user = User.create!(
+  def sign_in_as_test_user
+    role = Role.create_or_find_by!(name: 'Test user')
+
+    %w[View Create Edit Import].each do |action_name|
+      permission = Permission.create_or_find_by!(name: "Expenditure.#{action_name}")
+      RolesPermission.create!(role:, permission:)
+    end
+
+    user = User.create!(
       entra_user_id: '0000',
-      email: 'admin@localhost',
-      first_name: 'Admin', last_name: 'User',
-      role: :admin
+      email: 'test@localhost',
+      first_name: 'Test', last_name: 'User',
+      role:
     )
 
     OmniAuth.config.test_mode = true
     OmniAuth.config.mock_auth[:microsoft_identity_platform] = {
       provider: :microsoft_identity_platform,
-      uid: admin_user.entra_user_id
+      uid: user.entra_user_id
     }.stringify_keys
 
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:microsoft_identity_platform]
@@ -24,16 +31,16 @@ class ExpendituresControllerTest < ActionDispatch::IntegrationTest
   end
 
   def setup
-    sign_in_as_admin_user
+    sign_in_as_test_user
 
-    create :setting, :current_year
-    create :financing_source
-    create :expenditure_article
-    create :payment_type
+    create(:setting, :current_year)
+    create(:financing_source)
+    create(:expenditure_article)
+    create(:payment_type)
   end
 
   test 'can create new expenditure' do
-    expenditure_params = attributes_for :expenditure
+    expenditure_params = attributes_for(:expenditure)
     expenditure_params[:financing_source_id] = FinancingSource.first.id
     expenditure_params[:expenditure_article_id] = ExpenditureArticle.first.id
     expenditure_params[:payment_type_id] = PaymentType.first.id
@@ -53,8 +60,8 @@ class ExpendituresControllerTest < ActionDispatch::IntegrationTest
 
   test 'changing the current year resets the registration number' do
     # Create some fake entities
-    create :expenditure
-    create :expenditure
+    create(:expenditure)
+    create(:expenditure)
 
     assert_equal 2, Expenditure.count
 
@@ -62,7 +69,7 @@ class ExpendituresControllerTest < ActionDispatch::IntegrationTest
     new_current_year = Time.zone.today.year + 1
     Setting.find_by!(key: :current_year).update!(value: new_current_year)
 
-    expenditure_params = attributes_for :expenditure
+    expenditure_params = attributes_for(:expenditure)
     expenditure_params[:financing_source_id] = FinancingSource.first.id
     expenditure_params[:expenditure_article_id] = ExpenditureArticle.first.id
     expenditure_params[:payment_type_id] = PaymentType.first.id
@@ -110,5 +117,12 @@ class ExpendituresControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_empty Expenditure.all
+  end
+
+  test 'can export expenditures' do
+    create_list(:expenditure, 5)
+
+    get export_download_expenditures_path
+    assert_response :success
   end
 end

@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class ProjectCategoriesController < ApplicationController
-  before_action :require_supervisor_or_admin, only: %i[new edit create update destroy]
+  before_action -> { require_permission 'ProjectCategory.View' }, only: %i[index]
+  before_action -> { require_permission 'ProjectCategory.Create' }, only: %i[new create]
+  before_action -> { require_permission 'ProjectCategory.Edit' }, only: %i[edit update]
+  before_action -> { require_permission 'ProjectCategory.Delete' }, only: %i[destroy]
 
   def index
     @project_categories = ProjectCategory.order(name: :asc)

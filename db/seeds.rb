@@ -118,3 +118,19 @@ PREDEFINED_PAYMENT_METHODS.each do |name|
   Rails.logger.info { "Creating project category '#{name}'" }
   PaymentType.find_or_create_by!(name:)
 end
+
+require_relative 'seed_permissions'
+
+Rails.logger.info 'Seeding permissions...'
+
+seed_permissions
+
+require_relative 'seed_roles'
+
+Rails.logger.info 'Seeding roles...'
+
+seed_roles
+
+Rails.logger.info 'Seeding role-permission associations...'
+
+seed_roles_permissions

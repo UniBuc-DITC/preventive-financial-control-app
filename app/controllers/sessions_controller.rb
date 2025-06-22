@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
                         'Rugați un administrator să vă adauge contul.'
       else
         session[:current_user_id] = user.id
-        session[:current_user_role] = user.role
+        session[:current_user_role_id] = user.role_id
         session[:current_user_full_name] = user.full_name
 
         flash[:notice] = 'Autentificat cu succes.'
@@ -26,11 +26,11 @@ class SessionsController < ApplicationController
       first_name = payload.first_name
       last_name = payload.last_name
       full_name = "#{first_name} #{last_name}"
-      role = payload.role || 'employee'
-      raise StandardError.new, "Unsupported role: '#{role}'" unless role.in? User::ROLES
+      role = Role.find_by(name: payload.role || 'Employee')
+      raise StandardError.new, "Nonexistent role: '#{payload.role}'" if role.nil?
 
       id = Digest::SHA2.hexdigest(full_name)
-      session[:current_user_role] = role
+      session[:current_user_role_id] = role.id
       session[:current_user_full_name] = full_name
 
       user = User.find_or_initialize_by(entra_user_id: id)

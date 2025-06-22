@@ -3,7 +3,7 @@
 <%= render partial: 'flashes' %>
 
 <% if session.has_key? :current_user_id %>
-  <p>Bună, <%= session[:current_user_full_name] %>!</p>
+  <p>Bună, <%= current_user_full_name %>!</p>
   <% current_year = Setting.current_year %>
   <div class="d-flex flex-row flex-wrap justify-content-center">
     <%= render partial: 'primary_card', locals: {
@@ -68,7 +68,7 @@
       link_path: audit_events_path,
       link_text: 'Vezi istoricul activităților'
     } %>
-    <% if current_user_is_supervisor_or_admin? %>
+    <% if current_user_has_permission? 'Report.Generate' %>
       <%= render partial: 'secondary_card', locals: {
         card_title: 'Raport activitate CFP',
         card_text: '',

@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
-  before_action :require_supervisor_or_admin, only: %i[new edit create update]
+  before_action -> { require_permission 'User.View' }, only: %i[index]
+  before_action -> { require_permission 'User.Create' }, only: %i[new create]
+  before_action -> { require_permission 'User.Edit' }, only: %i[edit update]
 
   def index
     @users = User.order(:id).all
@@ -19,7 +21,7 @@ class UsersController < ApplicationController
     @user = User.new user_params
 
     if @user.entra_user_id.blank?
-      flash[:alert] = 'Nu se poate crea un nou utilizator fără ID-ul din Microsoft Entra.'
+      flash.now[:alert] = 'Nu se poate crea un nou utilizator fără ID-ul din Microsoft Entra.'
       return render :new
     end
 
@@ -64,16 +66,9 @@ class UsersController < ApplicationController
     user_id = params.require(:id)
     @user = User.find(user_id)
 
-    # Supervisors cannot change the role of an admin.
-    render status: :unauthorized if current_user.supervisor? && @user.admin?
-
     new_attributes = user_params
 
-    if current_user == @user
-      new_attributes.delete :role
-    else
-      render status: :unauthorized unless params[:user][:role].in? helpers.selectable_roles
-    end
+    new_attributes.delete :role if current_user == @user
 
     @user.assign_attributes new_attributes
 
@@ -104,7 +99,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:entra_user_id, :role, :background_color, :text_color)
+    params.expect(user: %i[entra_user_id role_id background_color text_color])
   end
 
   def microsoft_graph_client

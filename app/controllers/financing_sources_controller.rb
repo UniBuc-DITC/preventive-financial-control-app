@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class FinancingSourcesController < ApplicationController
-  before_action :require_supervisor_or_admin, only: %i[new edit create update destroy import import_upload]
+  before_action -> { require_permission 'FinancingSource.View' }, only: %i[index export_download]
+  before_action -> { require_permission 'FinancingSource.Create' }, only: %i[new create import import_upload]
+  before_action -> { require_permission 'FinancingSource.Edit' }, only: %i[edit update]
+  before_action -> { require_permission 'FinancingSource.Delete' }, only: %i[destroy]
 
   def index
     @financing_sources = FinancingSource.order(name: :asc)
@@ -103,8 +106,10 @@ class FinancingSourcesController < ApplicationController
 
   def export_download
     @financing_sources = FinancingSource.order(name: :asc)
-    date = Time.now.strftime('%Y-%m-%d')
-    render xlsx: 'export', disposition: 'attachment', filename: "Export surse de finanțare #{date}.xlsx"
+    date = Time.current.strftime('%Y-%m-%d')
+
+    render xlsx: 'export', template: 'financing_sources/export',
+           disposition: 'attachment', filename: "Export surse de finanțare #{date}.xlsx"
   end
 
   def import; end
@@ -126,6 +131,16 @@ class FinancingSourcesController < ApplicationController
 
         raise ImportError.new(row_index, financing_source.errors.full_messages.join(', ')) unless financing_source.save
 
+        if financing_source.previously_new_record?
+          AuditEvent.create!(
+            timestamp: DateTime.now,
+            user: current_user,
+            action: :insert,
+            target_table: :financing_sources,
+            target_object_id: financing_source.id
+          )
+        end
+
         total_count += 1
       end
     end
@@ -140,6 +155,6 @@ class FinancingSourcesController < ApplicationController
   private
 
   def financing_source_params
-    params.require(:financing_source).permit(:name, :import_code)
+    params.expect(financing_source: %i[name import_code])
   end
 end

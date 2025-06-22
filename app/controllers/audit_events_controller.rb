@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class AuditEventsController < ApplicationController
+  before_action -> { require_permission('AuditEvent.View') }, only: [:index]
+
   def index
     @audit_events = AuditEvent.order(timestamp: :desc)
 

@@ -2,7 +2,7 @@
 
 <h1>Categorii de proiecte</h1>
 
-<% can_modify_project_categories = current_user.supervisor? || current_user.admin? %>
+<% can_modify_project_categories = current_user_has_permission? 'ProjectCategory.Edit' %>
 
 <p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
 <% if can_modify_project_categories %>

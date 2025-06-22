@@ -1,6 +1,6 @@
 <% content_for :title, 'Angajamente' %>
 
-<% can_modify_commitments = current_user.supervisor? || current_user.admin? %>
+<% can_modify_commitments = current_user_has_permission? 'Commitment.Edit' %>
 
 <div class="container">
   <h1 class="mt-5 mb-3">Registru angajamente</h1>

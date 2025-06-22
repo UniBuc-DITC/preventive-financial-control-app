@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class PaymentTypesController < ApplicationController
-  before_action :require_supervisor_or_admin, only: %i[new edit create update destroy import import_upload]
+  before_action -> { require_permission 'PaymentType.View' }, only: %i[index export_download]
+  before_action -> { require_permission 'PaymentType.Create' }, only: %i[new create import import_upload]
+  before_action -> { require_permission 'PaymentType.Edit' }, only: %i[edit update]
+  before_action -> { require_permission 'PaymentType.Delete' }, only: %i[destroy]
 
   def index
     @payment_types = PaymentType.order(name: :asc)
@@ -104,7 +107,8 @@ class PaymentTypesController < ApplicationController
   def export_download
     @payment_types = PaymentType.order(name: :asc)
     date = Time.current.strftime('%Y-%m-%d')
-    render xlsx: 'export', disposition: 'attachment', filename: "Export tipuri de plăți #{date}.xlsx"
+    render xlsx: 'export', template: 'payment_types/export',
+           disposition: 'attachment', filename: "Export tipuri de plăți #{date}.xlsx"
   end
 
   def import; end
@@ -125,6 +129,16 @@ class PaymentTypesController < ApplicationController
 
         raise ImportError.new(row_index, payment_type.errors.full_messages.join(', ')) unless payment_type.save
 
+        if payment_type.previously_new_record?
+          AuditEvent.create!(
+            timestamp: DateTime.now,
+            user: current_user,
+            action: :insert,
+            target_table: :payment_types,
+            target_object_id: payment_type.id
+          )
+        end
+
         total_count += 1
       end
     end
@@ -139,6 +153,6 @@ class PaymentTypesController < ApplicationController
   private
 
   def payment_type_params
-    params.require(:payment_type).permit(:name)
+    params.expect(payment_type: [:name])
   end
 end

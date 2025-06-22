@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class SettingsController < ApplicationController
-  before_action :require_supervisor_or_admin
-
   SETTINGS_CLASS = Class.new do
     include ActiveModel::Model
 
@@ -15,13 +13,16 @@ class SettingsController < ApplicationController
 
   private_constant :SETTINGS_CLASS
 
+  before_action -> { require_permission 'Setting.View' }, only: %i[index]
+  before_action -> { require_permission 'Setting.Edit' }, only: %i[update]
+
   def index
     @settings = SETTINGS_CLASS.new
     @settings.current_year = Setting.current_year
   end
 
   def update
-    @settings = SETTINGS_CLASS.new(params.require(:settings).permit(:current_year))
+    @settings = SETTINGS_CLASS.new(params.expect(settings: [:current_year]))
 
     setting = Setting.find_by!(key: :current_year)
 

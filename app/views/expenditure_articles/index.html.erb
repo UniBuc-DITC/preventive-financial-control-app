@@ -2,7 +2,7 @@
 
 <h1>Articole de cheltuială</h1>
 
-<% can_modify_expenditure_articles = current_user.supervisor? || current_user.admin? %>
+<% can_modify_expenditure_articles = current_user_has_permission? 'ExpenditureArticle.Edit' %>
 
 <p><%= link_to 'Înapoi la pagina principală', root_path, class: 'btn btn-light' %></p>
 <% if can_modify_expenditure_articles %>

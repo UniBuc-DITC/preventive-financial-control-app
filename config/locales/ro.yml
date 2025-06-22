@@ -1,6 +1,6 @@
 ro:
   roles:
-    admin: "Administrator"
+    administrator: "Administrator"
     supervisor: "Șef birou"
     employee: "Angajat"
   expenditures:
@@ -10,6 +10,8 @@ ro:
     update:
       success_message: "A fost actualizată cu succes cheltuiala cu numărul de înregistrare %{registration_number}/%{year}."
       error_message: "Nu s-au putut salva modificările la cheltuială. Verificați mesajele de eroare și încercați din nou."
+    import:
+      missing_file: "Nu ați selectat niciun fișier pentru import."
   audit_events:
     actions:
       insert: "Adăugare"
@@ -35,6 +37,7 @@ ro:
       user:
         entra_user_id: "Utilizator din Microsoft 365"
         role: "Rol"
+        role_id: "Rol"
       financing_source:
         name: "Denumire"
         import_code: "Cod import"

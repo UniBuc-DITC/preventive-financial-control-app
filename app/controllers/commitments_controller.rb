@@ -3,7 +3,10 @@
 class CommitmentsController < ApplicationController
   include Filtrable
 
-  before_action :require_supervisor_or_admin, only: %i[edit update import import_upload]
+  before_action -> { require_permission 'Commitment.View' }, only: %i[index export_download]
+  before_action -> { require_permission 'Commitment.Create' }, only: %i[new duplicate create]
+  before_action -> { require_permission 'Commitment.Edit' }, only: %i[edit update]
+  before_action -> { require_permission 'Commitment.Import' }, only: %i[import import_upload]
 
   def index
     @layout_without_container = true
@@ -181,24 +184,27 @@ class CommitmentsController < ApplicationController
     apply_filters
 
     date = Time.current.strftime('%Y-%m-%d')
-    render xlsx: 'export', disposition: 'attachment', filename: "Export angajamente #{date}.xlsx"
+    render xlsx: 'export', template: 'commitments/export',
+           disposition: 'attachment', filename: "Export angajamente #{date}.xlsx"
   end
 
   private
 
   def commitment_params
-    params.require(:commitment).permit(
-      :registration_date,
-      :project_details,
-      :expenditure_article_id,
-      :document_number,
-      :validity,
-      :procurement_type,
-      :partner,
-      :value,
-      :noncompliance,
-      :remarks,
-      financing_sources_ids: []
+    params.expect(
+      commitment: [
+        :registration_date,
+        :project_details,
+        :expenditure_article_id,
+        :document_number,
+        :validity,
+        :procurement_type,
+        :partner,
+        :value,
+        :noncompliance,
+        :remarks,
+        { financing_sources_ids: [] }
+      ]
     )
   end
 

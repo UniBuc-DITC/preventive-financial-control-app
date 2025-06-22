@@ -3,6 +3,8 @@
 class ReportsController < ApplicationController
   VALID_TRIMESTERS = %w[I II III IV].freeze
 
+  before_action -> { require_permission 'Report.Generate' }, only: %i[generate_pfc_activity_report pfc_activity_report]
+
   def generate_pfc_activity_report
     return unless request.post?
 

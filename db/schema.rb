@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_21_084055) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_22_055807) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -112,12 +112,34 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_084055) do
     t.index ["name"], name: "index_payment_types_on_name", unique: true
   end
 
+  create_table "permissions", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_permissions_on_name", unique: true
+  end
+
   create_table "project_categories", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "import_code", default: "", null: false
     t.index ["name"], name: "index_project_categories_on_name", unique: true
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_roles_on_name", unique: true
+  end
+
+  create_table "roles_permissions", id: false, force: :cascade do |t|
+    t.bigint "role_id", null: false
+    t.bigint "permission_id", null: false
+    t.index ["permission_id"], name: "index_roles_permissions_on_permission_id"
+    t.index ["role_id", "permission_id"], name: "index_roles_permissions_on_role_id_and_permission_id", unique: true
+    t.index ["role_id"], name: "index_roles_permissions_on_role_id"
   end
 
   create_table "settings", force: :cascade do |t|
@@ -132,12 +154,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_084055) do
     t.string "email", null: false
     t.string "first_name", null: false
     t.string "last_name", null: false
-    t.string "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "background_color", default: "#FFFFFF", null: false
     t.string "text_color", default: "#000000", null: false
+    t.bigint "role_id", null: false
     t.index ["entra_user_id"], name: "index_users_on_entra_user_id", unique: true
+    t.index ["role_id"], name: "index_users_on_role_id"
   end
 
   add_foreign_key "audit_events", "users"
@@ -152,4 +175,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_084055) do
   add_foreign_key "expenditures", "project_categories"
   add_foreign_key "expenditures", "users", column: "created_by_user_id"
   add_foreign_key "expenditures", "users", column: "updated_by_user_id"
+  add_foreign_key "roles_permissions", "permissions"
+  add_foreign_key "roles_permissions", "roles"
+  add_foreign_key "users", "roles"
 end
