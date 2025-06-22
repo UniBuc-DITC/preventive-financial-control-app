@@ -30,10 +30,10 @@ class ExpendituresControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
   end
 
-  def setup
+  setup do
     sign_in_as_test_user
 
-    create(:setting, :current_year) if Setting.find_by(key: 'current_year').blank?
+    create(:setting, :current_year)
     create(:financing_source)
     create(:expenditure_article)
     create(:payment_type)
