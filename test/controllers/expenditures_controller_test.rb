@@ -4,28 +4,26 @@ require 'test_helper'
 
 class ExpendituresControllerTest < ActionDispatch::IntegrationTest
   def sign_in_as_test_user
-    role = Role.find_or_create_by!(name: 'Test user')
+    role = Role.find_or_create_by!(name: 'Test Role')
 
     %w[View Create Edit Import].each do |action_name|
       permission = Permission.find_or_create_by!(name: "Expenditure.#{action_name}")
       RolesPermission.create!(role:, permission:)
     end
 
-    user = User.create!(
-      entra_user_id: '0000',
-      email: 'test@localhost',
-      first_name: 'Test', last_name: 'User',
-      role:
-    )
-
     OmniAuth.config.test_mode = true
-    OmniAuth.config.mock_auth[:microsoft_identity_platform] = {
-      provider: :microsoft_identity_platform,
-      uid: user.entra_user_id
-    }.stringify_keys
+    OmniAuth.config.mock_auth[:developer] = {
+      provider: :developer,
+      info: {
+        email: 'test@localhost',
+        first_name: 'Test',
+        last_name: 'User',
+        role: role.name
+      }.with_indifferent_access
+    }.with_indifferent_access
 
-    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:microsoft_identity_platform]
-    post '/auth/microsoft_identity_platform'
+    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:developer]
+    post '/auth/developer'
     follow_redirect!
     assert_redirected_to root_path
   end

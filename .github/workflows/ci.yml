@@ -39,7 +39,7 @@ jobs:
         continue-on-error: true
 
       - name: Create database and run seed code
-        run: bundle exec rails db:create db:migrate db:seed
+        run: bundle exec rails db:create db:migrate
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
 

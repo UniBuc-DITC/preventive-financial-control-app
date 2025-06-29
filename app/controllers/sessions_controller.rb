@@ -20,14 +20,14 @@ class SessionsController < ApplicationController
 
         flash[:notice] = 'Autentificat cu succes.'
       end
-    elsif provider == :developer && Rails.env.development?
-      payload = user_info.info
-      email = payload.email
-      first_name = payload.first_name
-      last_name = payload.last_name
+    elsif provider == :developer && Rails.env.local?
+      payload = user_info['info']
+      email = payload['email']
+      first_name = payload['first_name']
+      last_name = payload['last_name']
       full_name = "#{first_name} #{last_name}"
-      role = Role.find_by(name: payload.role || 'Employee')
-      raise StandardError.new, "Nonexistent role: '#{payload.role}'" if role.nil?
+      role = Role.find_by(name: payload['role'] || 'Employee')
+      raise StandardError.new, "Nonexistent role: '#{payload['role']}'" if role.nil?
 
       id = Digest::SHA2.hexdigest(full_name)
       session[:current_user_role_id] = role.id

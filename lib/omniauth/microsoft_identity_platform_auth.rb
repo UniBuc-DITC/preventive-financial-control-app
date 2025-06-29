@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+return if Rails.application.credentials.microsoft_identity_platform.blank?
+
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 # Source: https://github.com/microsoftgraph/msgraph-sample-rubyrailsapp/blob/89cd1a1dd8a50032cf382d0ba30ee111b16704f8/graph-sample/lib/microsoft_graph_auth.rb
