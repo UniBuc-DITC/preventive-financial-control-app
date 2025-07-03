@@ -91,8 +91,6 @@ module Filtrable
       apply_ids_filter collection,
                        :created_by_user_ids,
                        :created_by_user_id
-
-      collection
     end
 
     # Filters a collection by the user who last modified the entities,
@@ -101,8 +99,6 @@ module Filtrable
       apply_ids_filter collection,
                        :updated_by_user_ids,
                        :updated_by_user_id
-
-      collection
     end
   end
 end
