@@ -33,10 +33,10 @@ def create_admin_user_account(admin_user_principal_name)
   admin_entra_user_id = result.id
   admin = User.find_or_initialize_by(entra_user_id: admin_entra_user_id)
 
+  admin.role = Role.find_by!(name: 'Administrator')
+
   if admin.persisted?
     Rails.logger.info { "The admin user account with ID #{admin_entra_user_id} already exists" }
-
-    admin.role = :admin
   else
     Rails.logger.info 'Creating new admin user account...'
 
@@ -44,22 +44,9 @@ def create_admin_user_account(admin_user_principal_name)
     admin.email = result.mail
     admin.first_name = result.given_name
     admin.last_name = result.surname
-    admin.role = :admin
   end
 
   admin.save!
-end
-
-admin_user_email = ENV.fetch('ADMIN_EMAIL', nil)
-
-if admin_user_email.blank?
-  Rails.logger.info 'The `ADMIN_EMAIL` environment variable is blank, not creating admin user'
-else
-  begin
-    create_admin_user_account(admin_user_email)
-  rescue StandardError => e
-    Rails.logger.error "Could not create admin user: #{e}"
-  end
 end
 
 # Initialize the current year setting
@@ -134,3 +121,17 @@ seed_roles
 Rails.logger.info 'Seeding role-permission associations...'
 
 seed_roles_permissions
+
+Rails.logger.info 'Seeding admin user...'
+
+admin_user_email = ENV.fetch('ADMIN_EMAIL', nil)
+
+if admin_user_email.blank?
+  Rails.logger.info 'The `ADMIN_EMAIL` environment variable is blank, not creating admin user'
+else
+  begin
+    create_admin_user_account(admin_user_email)
+  rescue StandardError => e
+    Rails.logger.error "Could not create admin user: #{e}"
+  end
+end
