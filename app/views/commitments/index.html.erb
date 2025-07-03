@@ -170,7 +170,10 @@
                           class: 'ms-1 btn btn-warning' %>
             <% end %>
           </td>
-          <th scope="row"><%= commitment.registration_number %>/<%= commitment.year %></th>
+          <th
+            scope="row"
+            style="background-color: <%= commitment.created_by_user.background_color %>; color: <%= commitment.created_by_user.text_color %>"
+          ><%= commitment.registration_number %>/<%= commitment.year %></th>
           <td><%= commitment.registration_date.strftime('%d.%m.%Y') %></td>
           <td><%= commitment.document_number %></td>
           <td><%= commitment.validity %></td>
