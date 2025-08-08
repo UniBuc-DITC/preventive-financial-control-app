@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-ruby '3.4.4'
+ruby '3.4.5'
 
 gem 'rails', '~> 8.0'
 
@@ -12,10 +12,10 @@ gem 'rails-i18n', '~> 8.0'
 gem 'sprockets-rails'
 
 # Use PostgreSQL as the database for Active Record
-gem 'pg', '~> 1.5'
+gem 'pg', '~> 1.6'
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem 'puma', '>= 5.0'
+gem 'puma', '>= 6.0'
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem 'importmap-rails'
@@ -68,7 +68,7 @@ gem 'caxlsx_rails'
 gem 'csv'
 
 # Excel import support
-gem 'roo', '~> 2.10.0'
+gem 'roo', '~> 2.10.1'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
