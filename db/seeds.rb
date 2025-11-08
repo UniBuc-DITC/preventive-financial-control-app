@@ -28,7 +28,10 @@ def create_admin_user_account(admin_user_principal_name)
   # Look up the user by their e-mail (User Principal Name)
   result = client.users.by_user_id(admin_user_principal_name).get.resume
 
-  raise StandardError, "User with e-mail address '#{admin_user_principal_name}' not found in Microsoft 365" unless result
+  unless result
+    raise StandardError,
+          "User with e-mail address '#{admin_user_principal_name}' not found in Microsoft 365"
+  end
 
   admin_entra_user_id = result.id
   admin = User.find_or_initialize_by(entra_user_id: admin_entra_user_id)

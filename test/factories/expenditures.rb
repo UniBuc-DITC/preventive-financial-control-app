@@ -22,7 +22,7 @@ FactoryBot.define do
 
     payment_type { PaymentType.first }
 
-    sequence(:beneficiary) { "Beneficiar #{_1}" }
+    sequence(:beneficiary) { "Beneficiar #{it}" }
 
     created_by_user { User.first }
     updated_by_user { User.first }
