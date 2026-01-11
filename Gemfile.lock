@@ -253,6 +253,7 @@ GEM
     mini_portile2 (2.8.9)
     minitest (6.0.1)
       prism (~> 1.5)
+    minitest-mock (5.27.0)
     minitest-reporters (1.7.1)
       ansi
       builder
@@ -521,6 +522,7 @@ DEPENDENCIES
   jquery-rails
   lograge
   microsoft_graph (>= 0.22)
+  minitest-mock
   minitest-reporters
   omniauth
   omniauth-oauth2
