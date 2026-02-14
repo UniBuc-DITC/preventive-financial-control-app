@@ -23,6 +23,9 @@ WORKDIR /app
 # to allow caching the image.
 COPY --chown=rails:rails Gemfile Gemfile.lock ./
 
+# Install the latest Bundler, without documentation
+RUN gem install bundler --no-document
+# Install dependencies
 RUN bundle install
 # Precompile gem code for faster boot times
 RUN bundle exec bootsnap precompile --gemfile
@@ -38,6 +41,9 @@ RUN RAILS_PRECOMPILE_ASSETS=1 SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:p
 
 EXPOSE 3000
 EXPOSE 3001
+
+# Enable YJIT for better runtime performance
+ENV RUBY_YJIT_ENABLE="1"
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/app/bin/docker-entrypoint"]
