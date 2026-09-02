@@ -38,6 +38,7 @@ gem 'bootsnap', require: false
 # Sass language support
 gem 'dartsass-sprockets'
 
+
 # JQuery library
 gem 'jquery-rails'
 
@@ -63,6 +64,10 @@ gem 'will_paginate-bootstrap-style'
 # Excel export support
 gem 'caxlsx'
 gem 'caxlsx_rails'
+
+# Require a newer version of the JSON library,
+# to avoid a heap buffer overflow vulnerability.
+gem 'json', '>= 2.19.9'
 
 # CSV I/O
 gem 'csv'
