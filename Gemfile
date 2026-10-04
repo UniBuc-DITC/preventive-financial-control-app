@@ -69,7 +69,7 @@ gem 'faraday'
 gem 'csv'
 
 # Excel import support
-gem 'roo', '~> 2.10.1'
+gem 'roo', '~> 3.0.0'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
