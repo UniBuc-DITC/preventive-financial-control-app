@@ -68,6 +68,10 @@ gem 'faraday'
 # CSV I/O
 gem 'csv'
 
+# Pin the JSON gem to an older version
+# to avoid an error in Elastic APM.
+gem 'json', '< 3.0'
+
 # Excel import support
 gem 'roo', '~> 3.0.0'
 
