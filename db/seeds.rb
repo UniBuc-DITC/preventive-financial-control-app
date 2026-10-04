@@ -5,35 +5,17 @@
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 
 def create_admin_user_account(admin_user_principal_name)
-  identity_platform_credentials = Rails.application.credentials.microsoft_identity_platform
-
-  raise StandardError, 'Microsoft Graph credentials are missing' if identity_platform_credentials.blank?
-
-  # Create a new client context for authentication as an app
-  context = MicrosoftKiotaAuthenticationOAuth::ClientCredentialContext.new(
-    identity_platform_credentials[:tenant_id],
-    identity_platform_credentials[:client_id],
-    identity_platform_credentials[:client_secret]
-  )
-
-  authentication_provider = MicrosoftGraphCore::Authentication::OAuthAuthenticationProvider.new(
-    context,
-    nil,
-    ['https://graph.microsoft.com/.default']
-  )
-
-  adapter = MicrosoftGraph::GraphRequestAdapter.new(authentication_provider)
-  client = MicrosoftGraph::GraphServiceClient.new(adapter)
+  client = MicrosoftGraphClient.new
 
   # Look up the user by their e-mail (User Principal Name)
-  result = client.users.by_user_id(admin_user_principal_name).get.resume
+  result = client.get_user_by_id(admin_user_principal_name)
 
   unless result
     raise StandardError,
           "User with e-mail address '#{admin_user_principal_name}' not found in Microsoft 365"
   end
 
-  admin_entra_user_id = result.id
+  admin_entra_user_id = result['id']
   admin = User.find_or_initialize_by(entra_user_id: admin_entra_user_id)
 
   admin.role = Role.find_by!(name: 'Administrator')
@@ -43,10 +25,10 @@ def create_admin_user_account(admin_user_principal_name)
   else
     Rails.logger.info 'Creating new admin user account...'
 
-    admin.entra_user_id = result.id
-    admin.email = result.mail
-    admin.first_name = result.given_name
-    admin.last_name = result.surname
+    admin.entra_user_id = result['id']
+    admin.email = result['mail']
+    admin.first_name = result['givenName']
+    admin.last_name = result['surname']
   end
 
   admin.save!
@@ -136,5 +118,6 @@ else
     create_admin_user_account(admin_user_email)
   rescue StandardError => e
     Rails.logger.error "Could not create admin user: #{e}"
+    raise
   end
 end

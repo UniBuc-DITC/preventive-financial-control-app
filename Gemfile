@@ -48,9 +48,6 @@ gem 'bootstrap', '~> 5.3.2'
 # Make Rails form elements use Bootstrap
 gem 'bootstrap_form', '~> 5.4'
 
-# Helper for querying the Microsoft Graph API
-gem 'microsoft_graph', '>= 0.22'
-
 # Authentication support
 gem 'omniauth'
 gem 'omniauth-rails_csrf_protection'
@@ -65,9 +62,8 @@ gem 'will_paginate-bootstrap-style'
 gem 'caxlsx'
 gem 'caxlsx_rails'
 
-# Require a newer version of the JSON library,
-# to avoid a heap buffer overflow vulnerability.
-gem 'json', '>= 2.19.9'
+# Extensible HTTP client
+gem 'faraday'
 
 # CSV I/O
 gem 'csv'

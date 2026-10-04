@@ -25,14 +25,15 @@ class UsersController < ApplicationController
       return render :new
     end
 
-    client = microsoft_graph_client
+    client = MicrosoftGraphClient.new
 
     begin
-      result = client.users.by_user_id(@user.entra_user_id).get.resume
+      result = client.get_user_by_id(@user.entra_user_id)
+      raise StandardError.new, 'not found' if result.nil?
 
-      @user.email = result.mail
-      @user.first_name = result.given_name
-      @user.last_name = result.surname
+      @user.email = result['mail']
+      @user.first_name = result['givenName']
+      @user.last_name = result['surname']
     rescue StandardError
       @user.errors.add :entra_user_id, 'nu a fost găsit în tenant'
       return render :new, status: :unprocessable_entity
@@ -100,30 +101,5 @@ class UsersController < ApplicationController
 
   def user_params
     params.expect(user: %i[entra_user_id role_id background_color text_color])
-  end
-
-  def microsoft_graph_client
-    return @client if @client.present?
-
-    identity_platform_credentials = Rails.application.credentials.microsoft_identity_platform
-
-    context = MicrosoftKiotaAuthenticationOAuth::ClientCredentialContext.new(
-      identity_platform_credentials[:tenant_id],
-      identity_platform_credentials[:client_id],
-      identity_platform_credentials[:client_secret]
-    )
-
-    authentication_provider = MicrosoftGraphCore::Authentication::OAuthAuthenticationProvider.new(
-      context,
-      nil,
-      ['https://graph.microsoft.com/.default']
-    )
-
-    adapter = MicrosoftGraph::GraphRequestAdapter.new(authentication_provider)
-    client = MicrosoftGraph::GraphServiceClient.new(adapter)
-
-    @client = client
-
-    client
   end
 end
